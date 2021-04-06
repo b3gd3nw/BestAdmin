@@ -25,6 +25,7 @@ class CreateEmployeesTable extends Migration
             $table->decimal('salary', 6, 2);
             $table->string('skills');
             $table->string('status');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('countryId')->references('id')->on('countries')->onDelete('cascade');

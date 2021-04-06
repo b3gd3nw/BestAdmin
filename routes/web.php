@@ -37,6 +37,8 @@ Route::prefix('/api')->group(function (){
     Route::get('bank', [CountryController::class, 'getAmount'])->name('bank');
     Route::resource('category', CategoryController::class);
     Route::resource('employee', EmployeeController::class);
+    Route::get('send-form', [App\Http\Controllers\EmployeeController::class, 'showSendForm'])->name('showSendForm');
+    Route::get('filterby/{filter?}', [App\Http\Controllers\EmployeeController::class, 'filterBy'])->name('filterBy');
     Route::get('income', [BankController::class, 'getIncomePage'])->name('income');
     Route::get('consumption', [BankController::class, 'getConsumptionPage'])->name('consumption');
     Route::post('addincome', [BankController::class, 'store_income'])->name('storeIncome');

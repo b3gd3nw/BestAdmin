@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\Bank;
 use App\Models\Category;
@@ -36,7 +37,8 @@ class PagesController extends Controller
   // Show employee page
   public function employee()
   {
-    return view('Admin.general.employee');
+      $employes = Employee::orderBy('created_at', 'desc')->withTrashed()->get();
+      return view('Admin.general.employee', compact('employes'));
   }
 
   // Show accounting>general page

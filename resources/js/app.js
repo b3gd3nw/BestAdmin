@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 });
-import validate from "validate.js";
+
 require('./validator');
 require('./bulma-extensions');
 require('/resources/img/admin-logo-v2.png');

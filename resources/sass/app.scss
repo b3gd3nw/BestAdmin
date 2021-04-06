@@ -1,6 +1,14 @@
+// Components
+@import "Component/_dropdown";
 
 // Fonts
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+
+// Font Awesomwe
+@import '~@fortawesome/fontawesome-free/scss/brands';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
 
 // Variables
 @import "bulma";
@@ -9,3 +17,5 @@
 @import "reset_styles";
 @import "admin_layout";
 @import "main_layout";
+@import "color-classes";
+

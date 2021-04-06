@@ -73,7 +73,66 @@ if (consump_btn) {
     });
 }
 
+const add_employee_btn = document.querySelector('#add_employee');
+if (add_employee_btn) {
+    add_employee_btn.addEventListener('click', function(e) {
+        console.log('sad');
+        document.querySelector('#modal').classList.add('is-active');
+        let target = add_employee_btn.getAttribute('data-path');
+        axios.get(target)
+            .then(responce=> {
+                document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+                document.querySelector('#modal-title').innerHTML = 'Create New Employee';
+            })
+    });
+}
 
+const send_mail_btn = document.querySelector('#send_mail');
+if (send_mail_btn) {
+    send_mail_btn.addEventListener('click', function(e) {
+        console.log('sad');
+        document.querySelector('#modal').classList.add('is-active');
+        let target = send_mail_btn.getAttribute('data-path');
+        axios.get(target)
+            .then(responce=> {
+                document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+                document.querySelector('#modal-title').innerHTML = 'Create New Invite';
+            })
+    });
+}
+
+const active_btn = document.querySelector('#filter_active');
+if (active_btn){
+    active_btn.addEventListener('click', function(e) {
+        let target = active_btn.getAttribute('data-path');
+        axios.get(target)
+            .then(responce=> {
+                document.querySelector('#tbody').innerHTML = responce.data.view;
+            })
+    });
+}
+
+const pending_btn = document.querySelector('#filter_pending');
+if (pending_btn){
+    pending_btn.addEventListener('click', function(e) {
+        let target = pending_btn.getAttribute('data-path');
+        axios.get(target)
+            .then(responce=> {
+                document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+            })
+    });
+}
+
+const inactive_btn = document.querySelector('#filter_inactive');
+if (inactive_btn){
+    inactive_btn.addEventListener('click', function(e) {
+        let target = inactive_btn.getAttribute('data-path');
+        axios.get(target)
+            .then(responce=> {
+                document.querySelector('#tbody').innerHTML = responce.data.view;
+            })
+    });
+}
 // let submit = document.querySelector('.submit');
 // submit.addEventListener('click', function (){
 //     console.log(123);

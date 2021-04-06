@@ -1,0 +1,9 @@
+.dropdown-menu {
+  &.dropdown-content {
+    &.dropdown-item {
+      &a {
+        text-decoration: none;
+      }
+    }
+  }
+}
