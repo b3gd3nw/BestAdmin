@@ -24,7 +24,9 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.3",
+        "bulma-calendar": "^6.0.9",
         "font-awesome": "^4.7.0",
+        "native-daterangepicker": "^0.0.12",
         "validate.js": "^0.13.1",
         "validator": "^13.5.2"
     }

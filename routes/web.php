@@ -43,7 +43,7 @@ Route::prefix('/api')->group(function (){
     Route::get('consumption', [BankController::class, 'getConsumptionPage'])->name('consumption');
     Route::post('addincome', [BankController::class, 'store_income'])->name('storeIncome');
     Route::post('addconsumption', [BankController::class, 'store_consumption'])->name('storeConsumption');
-    Route::get('transactions', [BankController::class, 'getCategoriesConsumByMonth'])->name('getTransByMonth');
+    Route::post('transactions', [BankController::class, 'getCategoriesByMonth'])->name('getTransByMonth');
     Route::get('consbymonth', [BankController::class, 'getConsumptionByMonth'])->name('getConsByMonth');
     Route::get('getcsrf', [App\Http\Controllers\CategoryController::class, 'getCsrf']);
 });

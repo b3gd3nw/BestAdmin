@@ -65,30 +65,41 @@ class BankController extends Controller
         return redirect()->back()->withSuccess('Member was successfully updated');
     }
 
-    public function getCategoriesConsumByMonth()
+    public function getCategoriesByMonth(Request $request)
     {
-        $consumptions = [];
-        $amount = 0;
-        $transactions = Transaction::whereMonth('created_at', Carbon::now()->month)->get();
-        $categories = Category::all();
-        foreach ($categories as $category)
-        {
-            $concrete_trans = $transactions->where('categoryId', '=', $category->id);
+        $test = new Bank();
+        $data = [
+            'view' => View::make('Admin.tables.accounting-general-table')
+                ->with('categories', $test->getCategoriesConsumByMonth($request->date))
+                ->render()
+        ];
+        return response()->json($data);
 
-            foreach ($concrete_trans as $transaction)
-            {
-                if ($transaction->type == 'consumption') {
-                    $amount = $amount + $transaction->amount;
-                }
-            }
-            $consumptions [] = [
-                'category' => $category,
-                'amount' => $amount
-            ];
-        }
-
-        return $consumptions;
     }
+//    public function getCategoriesConsumByMonth(Request $request)
+//    {
+//        if ($request) {
+//            dd($request);
+//        }
+//        $consumptions = [];
+//        $amount = 0;
+//        $transactions = Transaction::whereBetween('created_at', Carbon::now()->month)->get();
+//        $categories = Category::all();
+//        foreach ($categories as $category)
+//        {
+//            $concrete_trans = $transactions->where('categoryId', '=', $category->id);
+//
+//            foreach ($concrete_trans as $transaction)
+//            {
+//                if ($transaction->type == 'consumption') {
+//                    $amount = $amount + $transaction->amount;
+//                }
+//            }
+//            $consumptions [] = compact('category', 'amount');
+//        }
+//
+//        return $consumptions;
+//    }
 
     public function getConsumptionByMonth()
     {

@@ -1,5 +1,27 @@
 import axios from 'axios';
 
+// const frm = document.querySelector(`#frm`);
+// if (frm) {
+//     frm.addEventListener('submit', function (e){
+//         //let bodyFormData = new FormData();
+//         axios.post('/api/transactions')
+//             .then(responce => {
+//                 document.querySelector('#agtable').innerHTML = responce.data.view;
+//             })
+//     })
+// }
+const srch = document.querySelector('#srch');
+if (srch) {
+    srch.addEventListener('click', function (e) {
+        // let target = srch.getAttribute('data-path');
+        let bodyFormData = new FormData();
+        axios.post('/api/transactions', bodyFormData)
+            .then(responce => {
+                document.querySelector('#agtable').innerHTML = responce.data.view;
+            })
+    });
+}
+
 const add_btn = document.querySelector('#addCard');
 if (add_btn){
     add_btn.addEventListener('click', function(e) {
@@ -76,7 +98,6 @@ if (consump_btn) {
 const add_employee_btn = document.querySelector('#add_employee');
 if (add_employee_btn) {
     add_employee_btn.addEventListener('click', function(e) {
-        console.log('sad');
         document.querySelector('#modal').classList.add('is-active');
         let target = add_employee_btn.getAttribute('data-path');
         axios.get(target)
@@ -90,7 +111,6 @@ if (add_employee_btn) {
 const send_mail_btn = document.querySelector('#send_mail');
 if (send_mail_btn) {
     send_mail_btn.addEventListener('click', function(e) {
-        console.log('sad');
         document.querySelector('#modal').classList.add('is-active');
         let target = send_mail_btn.getAttribute('data-path');
         axios.get(target)

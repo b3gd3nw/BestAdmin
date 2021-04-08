@@ -2,6 +2,11 @@
   display: flex;
 }
 
+.v-flex-end {
+  display: flex;
+  align-items: flex-end;
+}
+
 .fantom-card {
   padding: 49px;
   cursor: pointer;

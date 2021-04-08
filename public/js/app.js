@@ -27493,6 +27493,28 @@ __webpack_require__(/*! /resources/img/Background.png */ "./resources/img/Backgr
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+ // const frm = document.querySelector(`#frm`);
+// if (frm) {
+//     frm.addEventListener('submit', function (e){
+//         //let bodyFormData = new FormData();
+//         axios.post('/api/transactions')
+//             .then(responce => {
+//                 document.querySelector('#agtable').innerHTML = responce.data.view;
+//             })
+//     })
+// }
+
+var srch = document.querySelector('#srch');
+
+if (srch) {
+  srch.addEventListener('click', function (e) {
+    // let target = srch.getAttribute('data-path');
+    var bodyFormData = new FormData();
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/transactions', bodyFormData).then(function (responce) {
+      document.querySelector('#agtable').innerHTML = responce.data.view;
+    });
+  });
+}
 
 var add_btn = document.querySelector('#addCard');
 
@@ -27570,7 +27592,6 @@ var add_employee_btn = document.querySelector('#add_employee');
 
 if (add_employee_btn) {
   add_employee_btn.addEventListener('click', function (e) {
-    console.log('sad');
     document.querySelector('#modal').classList.add('is-active');
     var target = add_employee_btn.getAttribute('data-path');
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
@@ -27584,7 +27605,6 @@ var send_mail_btn = document.querySelector('#send_mail');
 
 if (send_mail_btn) {
   send_mail_btn.addEventListener('click', function (e) {
-    console.log('sad');
     document.querySelector('#modal').classList.add('is-active');
     var target = send_mail_btn.getAttribute('data-path');
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {

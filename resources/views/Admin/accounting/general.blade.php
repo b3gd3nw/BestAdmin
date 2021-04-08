@@ -30,7 +30,25 @@
             <a data-path="{{ route('income') }}" class="card-footer-item text-glow color-black" id="income">Income</a>
             <a data-path="{{ route('consumption') }}" class="card-footer-item text-glow color-black" id="consumption">Consumption</a>
           </footer>
-          </div>
+        </div>
+      </div>
+  </div>
+  <div class="columns">
+      <div class="column is-4">
+          <form id="frm" class="v-flex-end" method="POST">
+              @csrf
+              <div class="controll">
+                  <label for="date">Filter by date</label>
+                  <input name="date" class="input" type="date" id="date" data-is-range="true" data-start-date="{{ date('m.d.y') }}" data-end-date="{{ date('m.d.y', strtotime(date('m.d.y'). ' +1 month')) }}">
+              </div>
+              <p class="buttons">
+                  <button type="button" class="button" id="srch">
+                    <span class="icon is-small">
+                      <i class="fas fa-search"></i>
+                    </span>
+                  </button>
+              </p>
+          </form>
       </div>
   </div>
   <div class="columns">
@@ -41,24 +59,21 @@
             <th>#</th>
             <th>Category</th>
             <th>Consumption</th>
-            <th>Date</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="agtable">
           @foreach($categories as $category)
               @if($category['amount'] > $category['category']['budget'])
                   <tr style="box-shadow: 0 0 5px red">
                       <th>{{ $category['category']['id'] }}</th>
                       <td>{{ $category['category']['name'] }}</td>
                       <td>$ {{ $category['amount'] }}</td>
-                      <td>21.21.21</td>
                   </tr>
               @else
                   <tr>
                       <th>{{ $category['category']['id'] }}</th>
                       <td>{{ $category['category']['name'] }}</td>
                       <td>$ {{ $category['amount'] }}</td>
-                      <td>21.21.21</td>
                   </tr>
               @endif
           @endforeach
