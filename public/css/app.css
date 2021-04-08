@@ -28920,6 +28920,10 @@ select {
   }
 }
 
+.d-flex {
+  display: flex;
+}
+
 .fantom-card {
   padding: 49px;
   cursor: pointer;

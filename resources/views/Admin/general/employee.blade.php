@@ -24,11 +24,11 @@
         </div>
     </div>
     <div class="columns">
-        <div class="column is-full">
+        <div class="column is-full d-flex">
             <div class="dropdown is-hoverable">
                 <div class="dropdown-trigger">
                     <button class="button" aria-haspopup="true" aria-controls="dropdown-menu4">
-                        <span>Filter by</span>
+                        <span id="dropdown-title">Filter by ...</span>
                         <span class="icon is-small">
                             <i class="fas fa-angle-down" aria-hidden="true"></i>
                         </span>
@@ -48,6 +48,13 @@
                     </div>
                 </div>
             </div>
+            <p class="buttons">
+                <button class="button" id="clr">
+                        <span class="icon is-small">
+                          <i class="far fa-trash-alt"></i>
+                        </span>
+                </button>
+            </p>
         </div>
     </div>
     <div class="columns">

@@ -117,11 +117,11 @@ class EmployeeController extends Controller
 
     public function filterBy($status)
     {
-        $targets = DB::table('employees')->where('status', $status)->get();
+        $employes = DB::table('employees')->where('status', $status)->get();
 
         $data = [
             'view' => View::make('Admin.tables.filtered-table')
-                ->with('employes', $targets)
+                ->with('employes', $employes)
                 ->render()
         ];
         return response()->json($data);

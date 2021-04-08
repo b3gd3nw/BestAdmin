@@ -27174,6 +27174,17 @@ var isDate = function isDate(unknown) {
 
 /***/ }),
 
+/***/ "./node_modules/font-awesome/scss/font-awesome.scss":
+/*!**********************************************************!*\
+  !*** ./node_modules/font-awesome/scss/font-awesome.scss ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
 /***/ "./node_modules/process/browser.js":
 /*!*****************************************!*\
   !*** ./node_modules/process/browser.js ***!
@@ -27590,6 +27601,7 @@ if (active_btn) {
     var target = active_btn.getAttribute('data-path');
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('#tbody').innerHTML = responce.data.view;
+      document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="green">active</span>';
     });
   });
 }
@@ -27600,7 +27612,8 @@ if (pending_btn) {
   pending_btn.addEventListener('click', function (e) {
     var target = pending_btn.getAttribute('data-path');
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
-      document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+      document.querySelector('#tbody').innerHTML = responce.data.view;
+      document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="orange">pending</span>';
     });
   });
 }
@@ -27612,7 +27625,16 @@ if (inactive_btn) {
     var target = inactive_btn.getAttribute('data-path');
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('#tbody').innerHTML = responce.data.view;
+      document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="red">inactive</span>';
     });
+  });
+}
+
+var clear_btn = document.querySelector('#clr');
+
+if (clear_btn) {
+  clear_btn.addEventListener('click', function (e) {
+    window.location.reload();
   });
 } // let submit = document.querySelector('.submit');
 // submit.addEventListener('click', function (){
@@ -27631,6 +27653,17 @@ if (inactive_btn) {
 //         });
 //     });
 // })
+
+/***/ }),
+
+/***/ "./resources/js/assets/main.js":
+/*!*************************************!*\
+  !*** ./resources/js/assets/main.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
 
 /***/ }),
 
@@ -27708,15 +27741,17 @@ function validix(id) {
 /***/ }),
 
 /***/ 0:
-/*!********************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/assets/admin.js ./resources/sass/app.scss ***!
-  \********************************************************************************************/
+/*!*****************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/assets/admin.js ./resources/js/assets/main.js ./resources/sass/app.scss ./node_modules/font-awesome/scss/font-awesome.scss ***!
+  \*****************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! /home/developer/www/w/BestAdmin/resources/js/app.js */"./resources/js/app.js");
 __webpack_require__(/*! /home/developer/www/w/BestAdmin/resources/js/assets/admin.js */"./resources/js/assets/admin.js");
-module.exports = __webpack_require__(/*! /home/developer/www/w/BestAdmin/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/developer/www/w/BestAdmin/resources/js/assets/main.js */"./resources/js/assets/main.js");
+__webpack_require__(/*! /home/developer/www/w/BestAdmin/resources/sass/app.scss */"./resources/sass/app.scss");
+module.exports = __webpack_require__(/*! /home/developer/www/w/BestAdmin/node_modules/font-awesome/scss/font-awesome.scss */"./node_modules/font-awesome/scss/font-awesome.scss");
 
 
 /***/ })

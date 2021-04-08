@@ -108,6 +108,7 @@ if (active_btn){
         axios.get(target)
             .then(responce=> {
                 document.querySelector('#tbody').innerHTML = responce.data.view;
+                document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="green">active</span>';
             })
     });
 }
@@ -118,7 +119,8 @@ if (pending_btn){
         let target = pending_btn.getAttribute('data-path');
         axios.get(target)
             .then(responce=> {
-                document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+                document.querySelector('#tbody').innerHTML = responce.data.view;
+                document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="orange">pending</span>';
             })
     });
 }
@@ -130,7 +132,15 @@ if (inactive_btn){
         axios.get(target)
             .then(responce=> {
                 document.querySelector('#tbody').innerHTML = responce.data.view;
+                document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="red">inactive</span>';
             })
+    });
+}
+
+const clear_btn = document.querySelector('#clr');
+if (clear_btn){
+    clear_btn.addEventListener('click', function(e) {
+        window.location.reload();
     });
 }
 // let submit = document.querySelector('.submit');
