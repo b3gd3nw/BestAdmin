@@ -4,7 +4,7 @@
     <div class="field">
         <label class="label">Budget</label>
         <div class="control">
-            <input name="budget" class="input" type="text" placeholder="$ {{ $budget }}">
+            <input name="budget" class="input" type="text" placeholder="$ {{ $budget }}" id="budget">
         </div>
     </div>
 

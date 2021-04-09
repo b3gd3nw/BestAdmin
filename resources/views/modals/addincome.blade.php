@@ -16,7 +16,7 @@
     <div class="field">
         <label class="label">Amount</label>
         <div class="control">
-            <input name="amount" class="input" type="text" placeholder="$ 100">
+            <input name="amount" class="input" type="text" placeholder="$ 100" id="income">
         </div>
     </div>
 
