@@ -43,7 +43,7 @@
     </div>
     <div class="field">
         <p class="control">
-            <input name="salary" class="input" type="text" placeholder="Salary">
+            <input name="salary" class="input" type="text" placeholder="Salary" id="salary">
         </p>
     </div>
     <div class="field">

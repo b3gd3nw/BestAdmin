@@ -1,4 +1,5 @@
 import axios from 'axios';
+import IMask from 'imask';
 
 const srch = document.querySelector('#srch');
 if (srch) {
@@ -20,6 +21,17 @@ if (add_btn){
         axios.get(target)
             .then(responce=> {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+                let currencyMask = IMask(
+                    document.getElementById('budget'),
+                    {
+                        mask: '$num',
+                        blocks: {
+                            num: {
+                                mask: Number,
+                                thousandsSeparator: ' '
+                            }
+                        }
+                    });
             })
     });
 }
@@ -32,6 +44,17 @@ change_btn.forEach(function(elem) {
         axios.get(target)
             .then(responce => {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+                var currencyMask = IMask(
+                    document.getElementById('budget'),
+                    {
+                        mask: '$num',
+                        blocks: {
+                            num: {
+                                mask: Number,
+                                thousandsSeparator: ' '
+                            }
+                        }
+                    });
             })
     });
 });
@@ -68,6 +91,17 @@ if (income_btn) {
             .then(responce=> {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Income';
+                var currencyMask = IMask(
+                    document.getElementById('income'),
+                    {
+                        mask: '$num',
+                        blocks: {
+                            num: {
+                                mask: Number,
+                                thousandsSeparator: ' '
+                            }
+                        }
+                    });
             })
     });
 }
@@ -81,6 +115,17 @@ if (consump_btn) {
             .then(responce=> {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Consumption';
+                var currencyMask = IMask(
+                    document.getElementById('consumption'),
+                    {
+                        mask: '$num',
+                        blocks: {
+                            num: {
+                                mask: Number,
+                                thousandsSeparator: ' '
+                            }
+                        }
+                    });
             })
     });
 }
@@ -94,6 +139,17 @@ if (add_employee_btn) {
             .then(responce=> {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Employee';
+                var currencyMask = IMask(
+                    document.getElementById('salary'),
+                    {
+                        mask: '$num',
+                        blocks: {
+                            num: {
+                                mask: Number,
+                                thousandsSeparator: ' '
+                            }
+                        }
+                    });
             })
     });
 }

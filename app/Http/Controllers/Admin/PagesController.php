@@ -30,18 +30,19 @@ class PagesController extends Controller
   {
       $bank = Bank::firstOrFail();
 
+      $employes = Employee::orderBy('id')->withTrashed()->get();
       $consumptions = Transaction::whereMonth('created_at', Carbon::now()->month)->where('type', 'consumption')->sum('amount');
       $budget = Category::whereMonth('created_at', Carbon::now()->month)->sum('budget');
 
       $bank_amount = $bank->amount;
 
-      return view('Admin.general.home', compact('consumptions', 'budget', 'bank_amount'));
+      return view('Admin.general.home', compact('consumptions', 'budget', 'bank_amount', 'employes'));
   }
 
   // Show employee page
   public function employee()
   {
-      $employes = Employee::orderBy('created_at', 'desc')->withTrashed()->get();
+      $employes = Employee::orderBy('id')->withTrashed()->get();
       return view('Admin.general.employee', compact('employes'));
   }
 

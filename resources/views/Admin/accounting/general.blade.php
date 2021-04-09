@@ -35,6 +35,7 @@
   </div>
   <div class="columns">
       <div class="column is-4">
+          <h1 class="title">Costs by category</h1>
           <form action="" id="frm" class="v-flex-end" method="POST">
               @csrf
               <div class="controll">
@@ -53,7 +54,6 @@
   </div>
   <div class="columns">
     <div class="column is-full">
-      <h1 class="title">Costs by category</h1>
       <table class="table">
         <thead>
           <tr>
