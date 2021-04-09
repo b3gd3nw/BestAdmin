@@ -48,11 +48,13 @@ class PagesController extends Controller
   // Show accounting>general page
   public function accounting_general()
   {
-    $categories = new Bank();
-    $categories = $categories->getCategoriesConsumByMonth(null);
+    $bank = new Bank();
+    $consumptions = $bank->getCategoriesConsumByMonth(null);
+    $categories = Category::all();
+    $transactions = Transaction::orderBy('created_at')->get();
     $bank = Bank::firstOrFail();
     $bank_amount = $bank->amount;
-    return view('Admin.accounting.general', compact('categories', 'bank_amount'));
+    return view('Admin.accounting.general', compact('consumptions', 'bank_amount', 'transactions', 'categories'));
   }
 
   // Show accounting>categories page

@@ -53,6 +53,7 @@
   </div>
   <div class="columns">
     <div class="column is-full">
+      <h1 class="title">Costs by category</h1>
       <table class="table">
         <thead>
           <tr>
@@ -62,18 +63,18 @@
           </tr>
         </thead>
         <tbody id="agtable">
-          @foreach($categories as $category)
-              @if($category['amount'] > $category['category']['budget'])
+          @foreach($consumptions as $consumption)
+              @if($consumption['amount'] > $consumption['category']['budget'])
                   <tr style="box-shadow: 0 0 5px red">
-                      <th>{{ $category['category']['id'] }}</th>
-                      <td>{{ $category['category']['name'] }}</td>
-                      <td>$ {{ $category['amount'] }}</td>
+                      <th>{{ $consumption['category']['id'] }}</th>
+                      <td>{{ $consumption['category']['name'] }}</td>
+                      <td>$ {{ $consumption['amount'] }}</td>
                   </tr>
               @else
                   <tr>
-                      <th>{{ $category['category']['id'] }}</th>
-                      <td>{{ $category['category']['name'] }}</td>
-                      <td>$ {{ $category['amount'] }}</td>
+                      <th>{{ $consumption['category']['id'] }}</th>
+                      <td>{{ $consumption['category']['name'] }}</td>
+                      <td>$ {{ $consumption['amount'] }}</td>
                   </tr>
               @endif
           @endforeach
@@ -81,4 +82,48 @@
       </table>
     </div>
   </div>
+    <div class="columns">
+        <div class="column is-full">
+            <h1 class="title">All transactions</h1>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($transactions as $transaction)
+                        <tr>
+                            @switch($transaction['type'])
+
+                                @case('income')
+                                <td class="green">{{ $transaction['type'] }}</td>
+                                <td>$ +{{ $transaction['amount'] }}</td>
+                                @break
+
+                                @case('consumption')
+                                <td class="red">{{ $transaction['type'] }}</td>
+                                <td>$ -{{ $transaction['amount'] }}</td>
+                                @break
+
+                            @endswitch
+                            @foreach($categories as $category)
+                                @if($category['id'] === $transaction['categoryId'])
+                                    <td>{{ $category['name'] }}</td>
+                                    @break
+                                @else
+                                    <td>Without category</td>
+                                    @break
+                                @endif
+                            @endforeach
+                            <td>{{ $transaction['created_at'] }}</td>
+                        </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 @endsection
