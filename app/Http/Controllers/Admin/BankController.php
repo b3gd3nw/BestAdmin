@@ -94,11 +94,4 @@ class BankController extends Controller
                           ->sum('amount');
       return $consumptions;
     }
-
-    public function getBudgetByMonth()
-    {
-      $budget = DB::table('categories')
-                          ->sum('budget');
-      return $budget;
-    }
 }

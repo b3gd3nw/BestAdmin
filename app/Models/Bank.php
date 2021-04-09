@@ -10,14 +10,18 @@ class Bank extends Model
     /**
      * Return consumptions for a certain period
      *
-     * @param  string  $date
+     * @param  string  $range
      * @return array
      */
-    public function getCategoriesConsumByMonth($date)
+    public function getCategoriesConsumByMonth($range)
     {
-        if ($date) {
-           $dates = explode('-', $date);
-           $transactions = Transaction::whereBetween('created_at', [Carbon::parse($dates[0]), Carbon::parse($dates[1])])->get();
+        if ($range) {
+           $dates = explode('-', $range);
+           if (array_key_exists(1, $dates)) {
+                $transactions = Transaction::whereBetween('created_at', [Carbon::parse($dates[0]), Carbon::parse($dates[1])])->get();
+           } else {
+               $transactions = Transaction::whereDate('created_at', '=' , Carbon::parse($dates[0]))->get();
+           }
         } else {
             $transactions = Transaction::whereMonth('created_at', Carbon::now()->month)->get();
         }
@@ -35,6 +39,7 @@ class Bank extends Model
                 }
             }
             $consumptions [] = compact('category', 'amount');
+            $amount = 0;
         }
 
         return $consumptions;

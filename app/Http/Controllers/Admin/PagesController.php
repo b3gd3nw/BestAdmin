@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Bank;
 use App\Models\Category;
@@ -26,11 +28,13 @@ class PagesController extends Controller
    */
   public function index()
   {
-      $bank = new BankController();
-      $consumptions = $bank->getConsumptionByMonth();
-      $budget = $bank->getBudgetByMonth();
       $bank = Bank::firstOrFail();
+
+      $consumptions = Transaction::whereMonth('created_at', Carbon::now()->month)->where('type', 'consumption')->sum('amount');
+      $budget = Category::whereMonth('created_at', Carbon::now()->month)->sum('budget');
+
       $bank_amount = $bank->amount;
+
       return view('Admin.general.home', compact('consumptions', 'budget', 'bank_amount'));
   }
 
