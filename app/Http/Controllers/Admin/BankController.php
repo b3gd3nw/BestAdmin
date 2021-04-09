@@ -65,42 +65,28 @@ class BankController extends Controller
         return redirect()->back()->withSuccess('Member was successfully updated');
     }
 
+    /**
+     * Get request and make new table view
+     *
+     * @param  Request  $request
+     * @return  \Illuminate\Http\JsonResponse
+     */
     public function getCategoriesByMonth(Request $request)
     {
-        $test = new Bank();
+
+        $bank = new Bank();
         $data = [
             'view' => View::make('Admin.tables.accounting-general-table')
-                ->with('categories', $test->getCategoriesConsumByMonth($request->date))
+                ->with('categories', $bank->getCategoriesConsumByMonth($request->date))
                 ->render()
         ];
         return response()->json($data);
 
     }
-//    public function getCategoriesConsumByMonth(Request $request)
-//    {
-//        if ($request) {
-//            dd($request);
-//        }
-//        $consumptions = [];
-//        $amount = 0;
-//        $transactions = Transaction::whereBetween('created_at', Carbon::now()->month)->get();
-//        $categories = Category::all();
-//        foreach ($categories as $category)
-//        {
-//            $concrete_trans = $transactions->where('categoryId', '=', $category->id);
-//
-//            foreach ($concrete_trans as $transaction)
-//            {
-//                if ($transaction->type == 'consumption') {
-//                    $amount = $amount + $transaction->amount;
-//                }
-//            }
-//            $consumptions [] = compact('category', 'amount');
-//        }
-//
-//        return $consumptions;
-//    }
 
+    /**
+     * @return int|mixed
+     */
     public function getConsumptionByMonth()
     {
       $consumptions = DB::table('transactions')

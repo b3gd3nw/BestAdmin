@@ -1,20 +1,10 @@
 import axios from 'axios';
 
-// const frm = document.querySelector(`#frm`);
-// if (frm) {
-//     frm.addEventListener('submit', function (e){
-//         //let bodyFormData = new FormData();
-//         axios.post('/api/transactions')
-//             .then(responce => {
-//                 document.querySelector('#agtable').innerHTML = responce.data.view;
-//             })
-//     })
-// }
 const srch = document.querySelector('#srch');
 if (srch) {
+    document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
     srch.addEventListener('click', function (e) {
-        // let target = srch.getAttribute('data-path');
-        let bodyFormData = new FormData();
+        let bodyFormData = new FormData(document.querySelector('#frm'));
         axios.post('/api/transactions', bodyFormData)
             .then(responce => {
                 document.querySelector('#agtable').innerHTML = responce.data.view;

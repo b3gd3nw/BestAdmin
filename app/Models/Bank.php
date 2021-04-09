@@ -7,12 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bank extends Model
 {
+    /**
+     * Return consumptions for a certain period
+     *
+     * @param  string  $date
+     * @return array
+     */
     public function getCategoriesConsumByMonth($date)
     {
-        $transactions = Transaction::whereMonth('created_at', Carbon::now()->month)->get();
         if ($date) {
            $dates = explode('-', $date);
-           $transactions = Transaction::whereBetween('created_at', [$dates[0], $dates[1]])->get();
+           $transactions = Transaction::whereBetween('created_at', [Carbon::parse($dates[0]), Carbon::parse($dates[1])])->get();
+        } else {
+            $transactions = Transaction::whereMonth('created_at', Carbon::now()->month)->get();
         }
         $consumptions = [];
         $amount = 0;
@@ -32,4 +39,6 @@ class Bank extends Model
 
         return $consumptions;
     }
+
+
 }

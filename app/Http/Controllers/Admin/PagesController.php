@@ -58,4 +58,5 @@ class PagesController extends Controller
     return view('Admin.accounting.categories', compact('categories'));
   }
 
+
 }

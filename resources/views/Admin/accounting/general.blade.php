@@ -35,11 +35,11 @@
   </div>
   <div class="columns">
       <div class="column is-4">
-          <form id="frm" class="v-flex-end" method="POST">
+          <form action="" id="frm" class="v-flex-end" method="POST">
               @csrf
               <div class="controll">
                   <label for="date">Filter by date</label>
-                  <input name="date" class="input" type="date" id="date" data-is-range="true" data-start-date="{{ date('m.d.y') }}" data-end-date="{{ date('m.d.y', strtotime(date('m.d.y'). ' +1 month')) }}">
+                  <input name="date" class="input" type="date" id="date" data-label-from="Click to change" data-is-range="true" data-start-date="{{ date('m.d.y') }}" data-end-date="{{ date('m.d.y', strtotime(date('m.d.y'). ' +1 month')) }}">
               </div>
               <p class="buttons">
                   <button type="button" class="button" id="srch">

@@ -27493,23 +27493,13 @@ __webpack_require__(/*! /resources/img/Background.png */ "./resources/img/Backgr
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
- // const frm = document.querySelector(`#frm`);
-// if (frm) {
-//     frm.addEventListener('submit', function (e){
-//         //let bodyFormData = new FormData();
-//         axios.post('/api/transactions')
-//             .then(responce => {
-//                 document.querySelector('#agtable').innerHTML = responce.data.view;
-//             })
-//     })
-// }
 
 var srch = document.querySelector('#srch');
 
 if (srch) {
+  document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
   srch.addEventListener('click', function (e) {
-    // let target = srch.getAttribute('data-path');
-    var bodyFormData = new FormData();
+    var bodyFormData = new FormData(document.querySelector('#frm'));
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/transactions', bodyFormData).then(function (responce) {
       document.querySelector('#agtable').innerHTML = responce.data.view;
     });
