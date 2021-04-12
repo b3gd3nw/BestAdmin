@@ -1,5 +1,7 @@
 import axios from 'axios';
 import IMask from 'imask';
+import Tagsfield from 'bulma-tagsfield';
+import { validateit } from '../validate';
 
 const srch = document.querySelector('#srch');
 if (srch) {
@@ -139,6 +141,7 @@ if (add_employee_btn) {
             .then(responce=> {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Employee';
+                 validateit();
                 var currencyMask = IMask(
                     document.getElementById('salary'),
                     {
@@ -150,6 +153,11 @@ if (add_employee_btn) {
                             }
                         }
                     });
+                var phoneMask = IMask(
+                    document.getElementById('phone'), {
+                        mask: '+{0}(000)000-00-00'
+                    });
+                document.querySelectorAll('.tagsfield').forEach(el => new Tagsfield(el))
             })
     });
 }

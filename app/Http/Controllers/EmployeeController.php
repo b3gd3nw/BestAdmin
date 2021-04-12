@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\Country;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -21,6 +22,7 @@ class EmployeeController extends Controller
         $data = [
             'view' => View::make('modals.addemployee')
                 ->with('countries', $countries)
+                ->with('tomorrow', Carbon::now()->toDateString())
                 ->render()
         ];
 
@@ -108,8 +110,11 @@ class EmployeeController extends Controller
 
     public function showSendForm()
     {
+
         $data = [
-            'view' => View::make('modals.sendform')->render()
+            'view' => View::make('modals.sendform')
+
+                ->render()
         ];
 
         return response()->json($data);
