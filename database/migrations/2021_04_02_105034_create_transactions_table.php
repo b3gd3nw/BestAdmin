@@ -17,7 +17,7 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->bigInteger('categoryId')->unsigned()->nullable();
             $table->string('type');
-            $table->decimal('amount', 6, 2);
+            $table->decimal('amount',10, 2);
             $table->timestamps();
 
             $table->foreign('categoryId')->references('id')->on('categories')->onDelete('cascade');

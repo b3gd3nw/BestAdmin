@@ -1,7 +1,9 @@
 import axios from 'axios';
 import IMask from 'imask';
-import Tagsfield from 'bulma-tagsfield';
+import bulmaTagsinput from "bulma-tagsinput/src/js";
 import { validateit } from '../validate';
+
+
 
 const srch = document.querySelector('#srch');
 if (srch) {
@@ -23,6 +25,7 @@ if (add_btn){
         axios.get(target)
             .then(responce=> {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+                validateit();
                 let currencyMask = IMask(
                     document.getElementById('budget'),
                     {
@@ -30,7 +33,7 @@ if (add_btn){
                         blocks: {
                             num: {
                                 mask: Number,
-                                thousandsSeparator: ' '
+                                thousandsSeparator: '.'
                             }
                         }
                     });
@@ -53,7 +56,7 @@ change_btn.forEach(function(elem) {
                         blocks: {
                             num: {
                                 mask: Number,
-                                thousandsSeparator: ' '
+                                thousandsSeparator: '.'
                             }
                         }
                     });
@@ -93,6 +96,7 @@ if (income_btn) {
             .then(responce=> {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Income';
+                validateit();
                 var currencyMask = IMask(
                     document.getElementById('income'),
                     {
@@ -100,7 +104,7 @@ if (income_btn) {
                         blocks: {
                             num: {
                                 mask: Number,
-                                thousandsSeparator: ' '
+                                thousandsSeparator: '.'
                             }
                         }
                     });
@@ -117,6 +121,7 @@ if (consump_btn) {
             .then(responce=> {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Consumption';
+                validateit();
                 var currencyMask = IMask(
                     document.getElementById('consumption'),
                     {
@@ -124,7 +129,7 @@ if (consump_btn) {
                         blocks: {
                             num: {
                                 mask: Number,
-                                thousandsSeparator: ' '
+                                thousandsSeparator: '.'
                             }
                         }
                     });
@@ -141,7 +146,7 @@ if (add_employee_btn) {
             .then(responce=> {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Employee';
-                 validateit();
+                validateit();
                 var currencyMask = IMask(
                     document.getElementById('salary'),
                     {
@@ -149,7 +154,7 @@ if (add_employee_btn) {
                         blocks: {
                             num: {
                                 mask: Number,
-                                thousandsSeparator: ' '
+                                thousandsSeparator: '.'
                             }
                         }
                     });
@@ -157,7 +162,7 @@ if (add_employee_btn) {
                     document.getElementById('phone'), {
                         mask: '+{0}(000)000-00-00'
                     });
-                document.querySelectorAll('.tagsfield').forEach(el => new Tagsfield(el))
+                bulmaTagsinput.attach();
             })
     });
 }
@@ -171,6 +176,7 @@ if (send_mail_btn) {
             .then(responce=> {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Invite';
+                validateit();
             })
     });
 }

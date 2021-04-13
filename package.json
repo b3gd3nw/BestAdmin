@@ -26,6 +26,7 @@
         "@fortawesome/fontawesome-free": "^5.15.3",
         "bulma-calendar": "^6.0.9",
         "bulma-tagsfield": "^0.1.3",
+        "bulma-tagsinput": "^2.0.0",
         "font-awesome": "^4.7.0",
         "imask": "^6.0.7",
         "native-daterangepicker": "^0.0.12",

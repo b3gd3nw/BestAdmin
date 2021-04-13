@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\Country;
+use App\Models\EmployeeSkill;
+use App\Models\Skill;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -47,16 +49,30 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+//       return response()->json($request);
+
         $email = DB::table('employees')->where('email', $request->email)->first();
         $request->request->add(['status' => 'pending']);
         if ($email) {
             return response()->json(['exists' => true]);
         } else {
+
+            $skill = new Skill();
+            $skills = $skill->skillFilter($request->skills);
+
+            $request->merge(['salary' => str_replace(['$',','], ['','.'], $request->salary)]);
             $employee = Employee::create(
                 $request->all()
-            );
-            setcookie('userid', $employee->id, 0, '/');
-            return response()->json(['exists' => false]);
+            )->id;
+
+            foreach ($skills as $skill)
+            {
+                EmployeeSkill::create([
+                    'employeeId' => $employee,
+                    'skillId' => $skill
+                ]);
+            }
+            return redirect()->back()->withSuccess('');
         }
     }
 

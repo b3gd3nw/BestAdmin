@@ -27174,234 +27174,554 @@ var isDate = function isDate(unknown) {
 
 /***/ }),
 
-/***/ "./node_modules/bulma-tagsfield/src/tagsfield.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/bulma-tagsfield/src/tagsfield.js ***!
-  \*******************************************************/
+/***/ "./node_modules/bulma-tagsinput/src/js/defaultOptions.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/bulma-tagsinput/src/js/defaultOptions.js ***!
+  \***************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _tagsfield_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tagsfield.scss */ "./node_modules/bulma-tagsfield/src/tagsfield.scss");
-/* harmony import */ var _tagsfield_scss__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_tagsfield_scss__WEBPACK_IMPORTED_MODULE_0__);
+const defaultOptions = {
+	disabled: false,
+	delimiter: ',',
+	allowDelete: true,
+	lowercase: false,
+	uppercase: false,
+	duplicates: true
+};
+  
+/* harmony default export */ __webpack_exports__["default"] = (defaultOptions);
+  
+
+/***/ }),
+
+/***/ "./node_modules/bulma-tagsinput/src/js/index.js":
+/*!******************************************************!*\
+  !*** ./node_modules/bulma-tagsinput/src/js/index.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _utils_events__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils/events */ "./node_modules/bulma-tagsinput/src/js/utils/events.js");
+/* harmony import */ var _defaultOptions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./defaultOptions */ "./node_modules/bulma-tagsinput/src/js/defaultOptions.js");
+/* harmony import */ var _utils_type__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/type */ "./node_modules/bulma-tagsinput/src/js/utils/type.js");
 
 
-const tagFormat = /^(?!.*(__|--|_-|-_|\s).*)[^\W_][\w\-\s]+[^\W_]$/
 
-class Tagsfield {
-  constructor(el) {
-    this.el = el
-    this.input = el.querySelector('input[type="hidden"]')
-    this.editable = el.querySelector('span[contenteditable]')
 
-    el.addEventListener('click', () => this.editable.focus())
-    this.editable.addEventListener('focus', () => el.classList.add('is-focused'))
-    this.editable.addEventListener('blur', () => el.classList.remove('is-focused'))
-    this.editable.addEventListener('keydown', this.onKeyDown.bind(this))
-    this.editable.addEventListener('paste', event => {
-        event.preventDefault()
-        const text = event.clipboardData.getData('text/plain')
-        const tmp = document.createElement('div')
-        tmp.innerHTML = text
-        document.execCommand('insertHTML', false, tmp.textContent.trim())
-    })
 
-    // Load tags from input.value
-    this.input.value.split(',').filter(v => v.length > 0).forEach(v => this.addTag(v))
+const KEY_BACKSPACE = 8,
+	KEY_TAB = 9,
+	KEY_ENTER = 13,
+	KEY_LEFT = 37,
+	KEY_RIGHT = 39,
+	KEY_DELETE = 46,
+	KEY_COMMA = 188;
+
+class bulmaTagsinput extends _utils_events__WEBPACK_IMPORTED_MODULE_0__["default"] {
+	constructor(selector, options = {}) {
+		super();
+
+		this.element = _utils_type__WEBPACK_IMPORTED_MODULE_2__["isString"](selector) ? document.querySelector(selector) : selector;
+		// An invalid selector or non-DOM node has been provided.
+		if (!this.element) {
+			throw new Error('An invalid selector or non-DOM node has been provided.');
+		}
+		this._clickEvents = ['click'];
+
+		/// Set default options and merge with instance defined
+		this.options = {
+			..._defaultOptions__WEBPACK_IMPORTED_MODULE_1__["default"],
+			...options
+		};
+
+		if (this.element.dataset.hasOwnProperty('lowercase')) {
+			this.options.lowercase = this.element.dataset('lowercase');
+		}
+		if (this.element.dataset.hasOwnProperty('uppercase')) {
+			this.options.lowercase = this.element.dataset('uppercase');
+		}
+		if (this.element.dataset.hasOwnProperty('duplicates')) {
+			this.options.lowercase = this.element.dataset('duplicates');
+		}
+
+		this.init();
+	}
+
+	/**
+   * Initiate all DOM element containing tagsinput class
+   * @method
+   * @return {Array} Array of all TagsInput instances
+   */
+	static attach(selector = 'input[type="tags"]', options = {}) {
+		let instances = new Array();
+
+		const elements = document.querySelectorAll(selector);
+		[].forEach.call(elements, element => {
+			setTimeout(() => {
+				instances.push(new bulmaTagsinput(element, options));
+			}, 100);
+		});
+		return instances;
+	}
+
+	init() {
+		if (!this.options.disabled) {
+			this.tags = [];
+			// The container will visually looks like an input
+			this.container = document.createElement('div');
+			this.container.className = 'tagsinput';
+			this.container.classList.add('field');
+			this.container.classList.add('is-grouped');
+			this.container.classList.add('is-grouped-multiline');
+			this.container.classList.add('input');
+
+			let inputType = this.element.getAttribute('type');
+			if (!inputType || inputType === 'tags') {
+				inputType = 'text';
+			}
+			// Create an invisible input element so user will be able to enter value
+			this.input = document.createElement('input');
+			this.input.setAttribute('type', inputType);
+			if (this.element.getAttribute('placeholder')) {
+				this.input.setAttribute('placeholder', this.element.getAttribute('placeholder'));
+			} else {
+				this.input.setAttribute('placeholder', 'Add a Tag');
+			}
+			this.container.appendChild(this.input);
+
+			let sib = this.element.nextSibling;
+			this.element.parentNode[sib ? 'insertBefore':'appendChild'](this.container, sib);
+			this.element.style.cssText = 'position:absolute;left:0;top:0;width:1px;height:1px;opacity:0.01;';
+			this.element.tabIndex = -1;
+
+			this.enable();
+		}
+	}
+
+	enable() {
+		if (!this.enabled && !this.options.disabled) {
+
+			this.element.addEventListener('focus', () => {
+				this.container.classList.add('is-focused');
+				this.select((Array.prototype.slice.call(this.container.querySelectorAll('.tag:not(.is-delete)'))).pop());
+			});
+
+			this.input.addEventListener('focus', () => {
+    		this.container.classList.add('is-focused');
+    			this.select((Array.prototype.slice.call(this.container.querySelectorAll('.tag:not(.is-delete)'))).pop());
+			});
+			this.input.addEventListener('blur', () => {
+				this.container.classList.remove('is-focused');
+				this.select((Array.prototype.slice.call(this.container.querySelectorAll('.tag:not(.is-delete)'))).pop());
+				this.savePartial();
+			});
+			this.input.addEventListener('keydown', (e) => {
+				let key = e.charCode || e.keyCode || e.which,
+					selectedTag,
+					activeTag = this.container.querySelector('.tag.is-active'),
+					last = (Array.prototype.slice.call(this.container.querySelectorAll('.tag:not(.is-delete)'))).pop(),
+					atStart = this.caretAtStart(this.input);
+
+				if (activeTag) {
+					selectedTag = this.container.querySelector('[data-tag="' + activeTag.innerHTML.trim() + '"]');
+				}
+				this.setInputWidth();
+
+				if (key === KEY_ENTER || key === this.options.delimiter.charCodeAt(0) || key === KEY_COMMA || key === KEY_TAB) {
+					if (!this.input.value && (key !== this.options.delimiter.charCodeAt(0) || key === KEY_COMMA)) {
+						return;
+					}
+					this.savePartial();
+				} else if (key === KEY_DELETE && selectedTag) {
+    			if (selectedTag.nextSibling) {
+						this.select(selectedTag.nextSibling.querySelector('.tag'));
+					} else if (selectedTag.previousSibling) {
+						this.select(selectedTag.previousSibling.querySelector('.tag'));
+					}
+    			this.container.removeChild(selectedTag);
+					this.tags.splice(this.tags.indexOf(selectedTag.getAttribute('data-tag')), 1);
+    			this.setInputWidth();
+    			this.save();
+				} else if (key === KEY_BACKSPACE) {
+					if (selectedTag) {
+						if (selectedTag.previousSibling) {
+    				  this.select(selectedTag.previousSibling.querySelector('.tag'));
+						} else if (selectedTag.nextSibling) {
+    				  this.select(selectedTag.nextSibling.querySelector('.tag'));
+						}
+    				this.container.removeChild(selectedTag);
+						this.tags.splice(this.tags.indexOf(selectedTag.getAttribute('data-tag')), 1);
+    				this.setInputWidth();
+    				this.save();
+    			} else if (last && atStart) {
+    				this.select(last);
+    			} else {
+    				return;
+					}
+				} else if (key === KEY_LEFT) {
+    			if (selectedTag) {
+    				if (selectedTag.previousSibling) {
+    					this.select(selectedTag.previousSibling.querySelector('.tag'));
+    				}
+    			} else if (!atStart) {
+    				return;
+    			} else {
+    				this.select(last);
+    			}
+    		}
+    		else if (key === KEY_RIGHT) {
+    			if (!selectedTag) {
+						return;
+					}
+    			this.select(selectedTag.nextSibling.querySelector('.tag'));
+    		}
+    		else {
+    			return this.select();
+				}
+
+				e.preventDefault();
+				return false;
+			});
+			this.input.addEventListener('input', () => {
+				this.element.value = this.getValue();
+				this.element.dispatchEvent(new Event('input'));
+			});
+			this.input.addEventListener('paste', () => setTimeout(savePartial, 0));
+
+			this.container.addEventListener('mousedown', (e) => { this.refocus(e); });
+			this.container.addEventListener('touchstart', (e) => { this.refocus(e); });
+
+			this.savePartial(this.element.value);
+
+			this.enabled = true;
+		}
+	}
+
+	disable() {
+		if (this.enabled && !this.options.disabled) {
+			this.reset();
+
+			this.enabled = false;
+		}
+	}
+
+	select(el) {
+		let sel = this.container.querySelector('.is-active');
+		if (sel) {
+			sel.classList.remove('is-active');
+		}
+		if (el) {
+			el.classList.add('is-active');
+		}
+	}
+
+	addTag(text) {
+		if (~text.indexOf(this.options.delimiter)) {
+			text = text.split(this.options.delimiter);
+		}
+		if (Array.isArray(text)) {
+			return text.forEach((text) => {
+				this.addTag(text);
+			});
+		}
+
+		let tag = text && text.trim();
+		if (!tag) {
+			return false;
+		}
+
+		if (this.options['lowercase'] == 'true') {
+			tag = tag.toLowerCase();
+		}
+		if (this.options['uppercase'] == 'true') {
+			tag = tag.toUpperCase();
+		}
+		if (this.options['duplicates'] || this.tags.indexOf(tag) === -1) {
+			this.tags.push(tag);
+
+			let newTagWrapper = document.createElement('div');
+			newTagWrapper.className = 'control';
+			newTagWrapper.setAttribute('data-tag', tag);
+
+			let newTag = document.createElement('div');
+			newTag.className = 'tags';
+			newTag.classList.add('has-addons');
+
+			let newTagContent = document.createElement('span');
+			newTagContent.className = 'tag';
+			newTagContent.classList.add('is-active');
+			this.select(newTagContent);
+			newTagContent.innerHTML = tag;
+
+			newTag.appendChild(newTagContent);
+			if (this.options.allowDelete) {
+				let newTagDeleteButton = document.createElement('a');
+				newTagDeleteButton.className = 'tag';
+				newTagDeleteButton.classList.add('is-delete');
+				this._clickEvents.forEach((event) => {
+					newTagDeleteButton.addEventListener(event, (e) => {
+						let selectedTag,
+							activeTag = e.target.parentNode,
+							last = (Array.prototype.slice.call(this.container.querySelectorAll('.tag'))).pop(),
+							atStart = this.caretAtStart(this.input);
+
+						if (activeTag) {
+							selectedTag = this.container.querySelector('[data-tag="' + activeTag.innerText.trim() + '"]');
+						}
+
+						if (selectedTag) {
+    				this.select(selectedTag.previousSibling);
+    				this.container.removeChild(selectedTag);
+							this.tags.splice(this.tags.indexOf(selectedTag.getAttribute('data-tag')), 1);
+    				this.setInputWidth();
+    				this.save();
+    			}
+    			else if (last && atStart) {
+    				this.select(last);
+    			}
+    			else {
+    				return;
+						}
+					});
+				});
+				newTag.appendChild(newTagDeleteButton);
+			}
+			newTagWrapper.appendChild(newTag);
+
+			this.container.insertBefore(newTagWrapper, this.input);
+		}
+	}
+
+	getValue() {
+		return this.tags.join(this.options.delimiter);
+	}
+
+	setValue(value) {
+		(Array.prototype.slice.call(this.container.querySelectorAll('.tag'))).forEach((tag) => {
+			this.tags.splice(this.tags.indexOf(tag.innerHTML), 1);
+			this.container.removeChild(tag);
+		});
+		this.savePartial(value);
+	}
+
+	setInputWidth() {
+		let last = (Array.prototype.slice.call(this.container.querySelectorAll('.control'))).pop();
+
+		if (!this.container.offsetWidth) {
+			return;
+		}
+		this.input.style.width = Math.max(this.container.offsetWidth - (last ? (last.offsetLeft + last.offsetWidth) : 30) - 30, this.container.offsetWidth / 4) + 'px';
+	}
+
+	savePartial(value) {
+		if (typeof value !== 'string' && !Array.isArray(value)) {
+			value = this.input.value;
+		}
+		if (this.addTag(value) !== false) {
+			this.input.value = '';
+			this.save();
+			this.setInputWidth();
+		}
+	}
+
+	save() {
+		this.element.value = this.tags.join(this.options.delimiter);
+		this.element.dispatchEvent(new Event('change'));
+	}
+
+	caretAtStart(el) {
+		try {
+			return el.selectionStart === 0 && el.selectionEnd === 0;
+		}
+		catch(e) {
+			return el.value === '';
+		}
+	}
+
+	refocus(e) {
+		if (e.target.classList.contains('tag')) {
+			this.select(e.target);
+		}
+		if (e.target === this.input) {
+			return this.select();
+		}
+		this.input.focus();
+		e.preventDefault();
+		return false;
+	}
+
+	reset() {
+		this.tags = [];
+	}
+
+	destroy() {
+		this.disable();
+		this.reset();
+		this.element = null;
+	}
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (bulmaTagsinput);
+
+/***/ }),
+
+/***/ "./node_modules/bulma-tagsinput/src/js/utils/events.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/bulma-tagsinput/src/js/utils/events.js ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return EventEmitter; });
+class EventEmitter {
+  constructor(listeners = []) {
+    this._listeners = new Map(listeners);
+    this._middlewares = new Map();
   }
 
-  validateTag(value, tagsValues) {
-    if (value.length > 2 &&
-        value.length <= 30 &&
-        tagsValues.indexOf(value) === -1 &&
-        tagFormat.test(value)) {
-      return true
+  listenerCount(eventName) {
+    if (!this._listeners.has(eventName)) {
+      return 0;
+    }
+
+    const eventListeners = this._listeners.get(eventName);
+    return eventListeners.length;
+  }
+
+  removeListeners(eventName = null, middleware = false) {
+    if (eventName !== null) {
+      if (Array.isArray(eventName)) {
+        name.forEach(e => this.removeListeners(e, middleware));
+      } else {
+        this._listeners.delete(eventName);
+
+        if (middleware) {
+          this.removeMiddleware(eventName);
+        }
+      }
+    } else {
+      this._listeners = new Map();
     }
   }
 
-  removeTag(tag) {
-    const values = this.input.value.split(',')
-    const index = Array.from(this.el.children).indexOf(tag)
-    values.splice(index, 1)
-    this.input.value = values.join(',')
-    this.el.removeChild(tag)
-  }
-
-  addTag(value) {
-    const tag = document.createElement('div')
-    tag.className = 'control'
-    tag.innerHTML = `<div class="tags has-addons">
-      <span class="tag is-success">${value}</span>
-      <a class="tag is-delete"></a>
-    </div>`
-    tag.querySelector('.is-delete').addEventListener('click', this.removeTag.bind(this, tag))
-    const inputs = this.el.children[this.el.children.length - 1]
-    this.el.insertBefore(tag, inputs)
-  }
-
-  onKeyDown(event) {
-    if (['Enter', ' ', ','].indexOf(event.key) >= 0) {
-      event.preventDefault()
-      const value = this.editable.textContent.trim()
-      const tagsValues = this.input.value.split(',').filter(v => v.length > 0)
-
-      if (!this.validateTag(value, tagsValues)) {
-        return
+  middleware(eventName, fn) {
+    if (Array.isArray(eventName)) {
+      name.forEach(e => this.middleware(e, fn));
+    } else {
+      if (!Array.isArray(this._middlewares.get(eventName))) {
+        this._middlewares.set(eventName, []);
       }
 
-      tagsValues.push(value)
-      this.input.value = tagsValues.join(',')
-      this.addTag(value)
-      this.editable.innerHTML = ''
-    } else if (event.key === 'Backspace' &&
-               this.editable.textContent.length === 0 &&
-               this.el.children.length > 1) {
-      const index = this.el.children.length - 2
-      const tag = this.el.children[index]
-      this.removeTag(tag)
+      (this._middlewares.get(eventName)).push(fn);
+    }
+  }
+
+  removeMiddleware(eventName = null) {
+    if (eventName !== null) {
+      if (Array.isArray(eventName)) {
+        name.forEach(e => this.removeMiddleware(e));
+      } else {
+        this._middlewares.delete(eventName);
+      }
+    } else {
+      this._middlewares = new Map();
+    }
+  }
+
+  on(name, callback, once = false) {
+    if (Array.isArray(name)) {
+      name.forEach(e => this.on(e, callback));
+    } else {
+      name = name.toString();
+      const split = name.split(/,|, | /);
+
+      if (split.length > 1) {
+        split.forEach(e => this.on(e, callback));
+      } else {
+        if (!Array.isArray(this._listeners.get(name))) {
+          this._listeners.set(name, []);
+        }
+
+        (this._listeners.get(name)).push({once: once, callback: callback});
+      }
+    }
+  }
+
+  once(name, callback) {
+    this.on(name, callback, true);
+  }
+
+  emit(name, data, silent = false) {
+    name = name.toString();
+    let listeners = this._listeners.get(name);
+    let middlewares = null;
+    let doneCount = 0;
+    let execute = silent;
+
+    if (Array.isArray(listeners)) {
+      listeners.forEach((listener, index) => {
+        // Start Middleware checks unless we're doing a silent emit
+        if (!silent) {
+          middlewares = this._middlewares.get(name);
+          // Check and execute Middleware
+          if (Array.isArray(middlewares)) {
+            middlewares.forEach(middleware => {
+              middleware(data, (newData = null) => {
+                if (newData !== null) {
+                  data = newData;
+                }
+                doneCount++;
+              }, name);
+            });
+
+            if (doneCount >= middlewares.length) {
+              execute = true;
+            }
+          } else {
+            execute = true;
+          }
+        }
+
+        // If Middleware checks have been passed, execute
+        if (execute) {
+          if (listener.once) {
+            listeners[index] = null;
+          }
+          listener.callback(data);
+        }
+      });
+
+      // Dirty way of removing used Events
+      while (listeners.indexOf(null) !== -1) {
+        listeners.splice(listeners.indexOf(null), 1);
+      }
     }
   }
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (Tagsfield);
-
 
 /***/ }),
 
-/***/ "./node_modules/bulma-tagsfield/src/tagsfield.scss":
-/*!*********************************************************!*\
-  !*** ./node_modules/bulma-tagsfield/src/tagsfield.scss ***!
-  \*********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "./node_modules/bulma-tagsinput/src/js/utils/type.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/bulma-tagsinput/src/js/utils/type.js ***!
+  \***********************************************************/
+/*! exports provided: isString, isDate */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-
-var content = __webpack_require__(/*! !../../css-loader!../../postcss-loader/src??ref--8-2!../../sass-loader/dist/cjs.js??ref--8-3!./tagsfield.scss */ "./node_modules/css-loader/index.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/bulma-tagsfield/src/tagsfield.scss");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/bulma-tagsfield/src/tagsfield.scss":
-/*!********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader!./node_modules/postcss-loader/src??ref--8-2!./node_modules/sass-loader/dist/cjs.js??ref--8-3!./node_modules/bulma-tagsfield/src/tagsfield.scss ***!
-  \********************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "/* Bulma Utilities */\n.textarea, .input {\n  -moz-appearance: none;\n  -webkit-appearance: none;\n  align-items: center;\n  border: 1px solid transparent;\n  border-radius: 4px;\n  box-shadow: none;\n  display: inline-flex;\n  font-size: 1rem;\n  height: 2.5em;\n  justify-content: flex-start;\n  line-height: 1.5;\n  padding-bottom: calc(0.5em - 1px);\n  padding-left: calc(0.75em - 1px);\n  padding-right: calc(0.75em - 1px);\n  padding-top: calc(0.5em - 1px);\n  position: relative;\n  vertical-align: top;\n}\n.textarea:focus, .input:focus, .is-focused.textarea, .is-focused.input, .textarea:active, .input:active, .is-active.textarea, .is-active.input {\n  outline: none;\n}\n[disabled].textarea, [disabled].input, fieldset[disabled] .textarea, fieldset[disabled] .input {\n  cursor: not-allowed;\n}\n\n.control.is-loading::after {\n  -webkit-animation: spinAround 500ms infinite linear;\n          animation: spinAround 500ms infinite linear;\n  border: 2px solid #dbdbdb;\n  border-radius: 290486px;\n  border-right-color: transparent;\n  border-top-color: transparent;\n  content: \"\";\n  display: block;\n  height: 1em;\n  position: relative;\n  width: 1em;\n}\n\n/* Bulma Base */\n/*! minireset.css v0.0.6 | MIT License | github.com/jgthms/minireset.css */\nhtml,\nbody,\np,\nol,\nul,\nli,\ndl,\ndt,\ndd,\nblockquote,\nfigure,\nfieldset,\nlegend,\ntextarea,\npre,\niframe,\nhr,\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  margin: 0;\n  padding: 0;\n}\n\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  font-size: 100%;\n  font-weight: normal;\n}\n\nul {\n  list-style: none;\n}\n\nbutton,\ninput,\nselect,\ntextarea {\n  margin: 0;\n}\n\nhtml {\n  box-sizing: border-box;\n}\n\n*, *::before, *::after {\n  box-sizing: inherit;\n}\n\nimg,\nvideo {\n  height: auto;\n  max-width: 100%;\n}\n\niframe {\n  border: 0;\n}\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0;\n}\n\ntd,\nth {\n  padding: 0;\n}\ntd:not([align]),\nth:not([align]) {\n  text-align: inherit;\n}\n\nhtml {\n  background-color: white;\n  font-size: 16px;\n  -moz-osx-font-smoothing: grayscale;\n  -webkit-font-smoothing: antialiased;\n  min-width: 300px;\n  overflow-x: hidden;\n  overflow-y: scroll;\n  text-rendering: optimizeLegibility;\n  -webkit-text-size-adjust: 100%;\n     -moz-text-size-adjust: 100%;\n          text-size-adjust: 100%;\n}\n\narticle,\naside,\nfigure,\nfooter,\nheader,\nhgroup,\nsection {\n  display: block;\n}\n\nbody,\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: BlinkMacSystemFont, -apple-system, \"Segoe UI\", \"Roboto\", \"Oxygen\", \"Ubuntu\", \"Cantarell\", \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", \"Helvetica\", \"Arial\", sans-serif;\n}\n\ncode,\npre {\n  -moz-osx-font-smoothing: auto;\n  -webkit-font-smoothing: auto;\n  font-family: monospace;\n}\n\nbody {\n  color: #4a4a4a;\n  font-size: 1em;\n  font-weight: 400;\n  line-height: 1.5;\n}\n\na {\n  color: #3273dc;\n  cursor: pointer;\n  text-decoration: none;\n}\na strong {\n  color: currentColor;\n}\na:hover {\n  color: #363636;\n}\n\ncode {\n  background-color: whitesmoke;\n  color: #da1039;\n  font-size: 0.875em;\n  font-weight: normal;\n  padding: 0.25em 0.5em 0.25em;\n}\n\nhr {\n  background-color: whitesmoke;\n  border: none;\n  display: block;\n  height: 2px;\n  margin: 1.5rem 0;\n}\n\nimg {\n  height: auto;\n  max-width: 100%;\n}\n\ninput[type=checkbox],\ninput[type=radio] {\n  vertical-align: baseline;\n}\n\nsmall {\n  font-size: 0.875em;\n}\n\nspan {\n  font-style: inherit;\n  font-weight: inherit;\n}\n\nstrong {\n  color: #363636;\n  font-weight: 700;\n}\n\nfieldset {\n  border: none;\n}\n\npre {\n  -webkit-overflow-scrolling: touch;\n  background-color: whitesmoke;\n  color: #4a4a4a;\n  font-size: 0.875em;\n  overflow-x: auto;\n  padding: 1.25rem 1.5rem;\n  white-space: pre;\n  word-wrap: normal;\n}\npre code {\n  background-color: transparent;\n  color: currentColor;\n  font-size: 1em;\n  padding: 0;\n}\n\ntable td,\ntable th {\n  vertical-align: top;\n}\ntable td:not([align]),\ntable th:not([align]) {\n  text-align: inherit;\n}\ntable th {\n  color: #363636;\n}\n\n@-webkit-keyframes spinAround {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(359deg);\n  }\n}\n\n@keyframes spinAround {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(359deg);\n  }\n}\n.textarea, .input {\n  background-color: white;\n  border-color: #dbdbdb;\n  border-radius: 4px;\n  color: #363636;\n}\n.textarea::-moz-placeholder, .input::-moz-placeholder {\n  color: rgba(54, 54, 54, 0.3);\n}\n.textarea::-webkit-input-placeholder, .input::-webkit-input-placeholder {\n  color: rgba(54, 54, 54, 0.3);\n}\n.textarea:-moz-placeholder, .input:-moz-placeholder {\n  color: rgba(54, 54, 54, 0.3);\n}\n.textarea:-ms-input-placeholder, .input:-ms-input-placeholder {\n  color: rgba(54, 54, 54, 0.3);\n}\n.textarea:hover, .input:hover, .is-hovered.textarea, .is-hovered.input {\n  border-color: #b5b5b5;\n}\n.textarea:focus, .input:focus, .is-focused.textarea, .is-focused.input, .textarea:active, .input:active, .is-active.textarea, .is-active.input {\n  border-color: #3273dc;\n  box-shadow: 0 0 0 0.125em rgba(50, 115, 220, 0.25);\n}\n[disabled].textarea, [disabled].input, fieldset[disabled] .textarea, fieldset[disabled] .input {\n  background-color: whitesmoke;\n  border-color: whitesmoke;\n  box-shadow: none;\n  color: #7a7a7a;\n}\n[disabled].textarea::-moz-placeholder, [disabled].input::-moz-placeholder, fieldset[disabled] .textarea::-moz-placeholder, fieldset[disabled] .input::-moz-placeholder {\n  color: rgba(122, 122, 122, 0.3);\n}\n[disabled].textarea::-webkit-input-placeholder, [disabled].input::-webkit-input-placeholder, fieldset[disabled] .textarea::-webkit-input-placeholder, fieldset[disabled] .input::-webkit-input-placeholder {\n  color: rgba(122, 122, 122, 0.3);\n}\n[disabled].textarea:-moz-placeholder, [disabled].input:-moz-placeholder, fieldset[disabled] .textarea:-moz-placeholder, fieldset[disabled] .input:-moz-placeholder {\n  color: rgba(122, 122, 122, 0.3);\n}\n[disabled].textarea:-ms-input-placeholder, [disabled].input:-ms-input-placeholder, fieldset[disabled] .textarea:-ms-input-placeholder, fieldset[disabled] .input:-ms-input-placeholder {\n  color: rgba(122, 122, 122, 0.3);\n}\n\n.label {\n  color: #363636;\n  display: block;\n  font-size: 1rem;\n  font-weight: 700;\n}\n.label:not(:last-child) {\n  margin-bottom: 0.5em;\n}\n.label.is-small {\n  font-size: 0.75rem;\n}\n.label.is-medium {\n  font-size: 1.25rem;\n}\n.label.is-large {\n  font-size: 1.5rem;\n}\n\n.help {\n  display: block;\n  font-size: 0.75rem;\n  margin-top: 0.25rem;\n}\n.help.is-white {\n  color: white;\n}\n.help.is-black {\n  color: #0a0a0a;\n}\n.help.is-light {\n  color: whitesmoke;\n}\n.help.is-dark {\n  color: #363636;\n}\n.help.is-primary {\n  color: #00d1b2;\n}\n.help.is-link {\n  color: #3273dc;\n}\n.help.is-info {\n  color: #3298dc;\n}\n.help.is-success {\n  color: #48c774;\n}\n.help.is-warning {\n  color: #ffdd57;\n}\n.help.is-danger {\n  color: #f14668;\n}\n\n.field:not(:last-child) {\n  margin-bottom: 0.75rem;\n}\n.field.has-addons {\n  display: flex;\n  justify-content: flex-start;\n}\n.field.has-addons .control:not(:last-child) {\n  margin-right: -1px;\n}\n.field.has-addons .control:not(:first-child):not(:last-child) .button,\n.field.has-addons .control:not(:first-child):not(:last-child) .input,\n.field.has-addons .control:not(:first-child):not(:last-child) .select select {\n  border-radius: 0;\n}\n.field.has-addons .control:first-child:not(:only-child) .button,\n.field.has-addons .control:first-child:not(:only-child) .input,\n.field.has-addons .control:first-child:not(:only-child) .select select {\n  border-bottom-right-radius: 0;\n  border-top-right-radius: 0;\n}\n.field.has-addons .control:last-child:not(:only-child) .button,\n.field.has-addons .control:last-child:not(:only-child) .input,\n.field.has-addons .control:last-child:not(:only-child) .select select {\n  border-bottom-left-radius: 0;\n  border-top-left-radius: 0;\n}\n.field.has-addons .control .button:not([disabled]):hover, .field.has-addons .control .button:not([disabled]).is-hovered,\n.field.has-addons .control .input:not([disabled]):hover,\n.field.has-addons .control .input:not([disabled]).is-hovered,\n.field.has-addons .control .select select:not([disabled]):hover,\n.field.has-addons .control .select select:not([disabled]).is-hovered {\n  z-index: 2;\n}\n.field.has-addons .control .button:not([disabled]):focus, .field.has-addons .control .button:not([disabled]).is-focused, .field.has-addons .control .button:not([disabled]):active, .field.has-addons .control .button:not([disabled]).is-active,\n.field.has-addons .control .input:not([disabled]):focus,\n.field.has-addons .control .input:not([disabled]).is-focused,\n.field.has-addons .control .input:not([disabled]):active,\n.field.has-addons .control .input:not([disabled]).is-active,\n.field.has-addons .control .select select:not([disabled]):focus,\n.field.has-addons .control .select select:not([disabled]).is-focused,\n.field.has-addons .control .select select:not([disabled]):active,\n.field.has-addons .control .select select:not([disabled]).is-active {\n  z-index: 3;\n}\n.field.has-addons .control .button:not([disabled]):focus:hover, .field.has-addons .control .button:not([disabled]).is-focused:hover, .field.has-addons .control .button:not([disabled]):active:hover, .field.has-addons .control .button:not([disabled]).is-active:hover,\n.field.has-addons .control .input:not([disabled]):focus:hover,\n.field.has-addons .control .input:not([disabled]).is-focused:hover,\n.field.has-addons .control .input:not([disabled]):active:hover,\n.field.has-addons .control .input:not([disabled]).is-active:hover,\n.field.has-addons .control .select select:not([disabled]):focus:hover,\n.field.has-addons .control .select select:not([disabled]).is-focused:hover,\n.field.has-addons .control .select select:not([disabled]):active:hover,\n.field.has-addons .control .select select:not([disabled]).is-active:hover {\n  z-index: 4;\n}\n.field.has-addons .control.is-expanded {\n  flex-grow: 1;\n  flex-shrink: 1;\n}\n.field.has-addons.has-addons-centered {\n  justify-content: center;\n}\n.field.has-addons.has-addons-right {\n  justify-content: flex-end;\n}\n.field.has-addons.has-addons-fullwidth .control {\n  flex-grow: 1;\n  flex-shrink: 0;\n}\n.field.is-grouped {\n  display: flex;\n  justify-content: flex-start;\n}\n.field.is-grouped > .control {\n  flex-shrink: 0;\n}\n.field.is-grouped > .control:not(:last-child) {\n  margin-bottom: 0;\n  margin-right: 0.75rem;\n}\n.field.is-grouped > .control.is-expanded {\n  flex-grow: 1;\n  flex-shrink: 1;\n}\n.field.is-grouped.is-grouped-centered {\n  justify-content: center;\n}\n.field.is-grouped.is-grouped-right {\n  justify-content: flex-end;\n}\n.field.is-grouped.is-grouped-multiline {\n  flex-wrap: wrap;\n}\n.field.is-grouped.is-grouped-multiline > .control:last-child, .field.is-grouped.is-grouped-multiline > .control:not(:last-child) {\n  margin-bottom: 0.75rem;\n}\n.field.is-grouped.is-grouped-multiline:last-child {\n  margin-bottom: -0.75rem;\n}\n.field.is-grouped.is-grouped-multiline:not(:last-child) {\n  margin-bottom: 0;\n}\n@media screen and (min-width: 769px), print {\n  .field.is-horizontal {\n    display: flex;\n  }\n}\n\n.field-label .label {\n  font-size: inherit;\n}\n@media screen and (max-width: 768px) {\n  .field-label {\n    margin-bottom: 0.5rem;\n  }\n}\n@media screen and (min-width: 769px), print {\n  .field-label {\n    flex-basis: 0;\n    flex-grow: 1;\n    flex-shrink: 0;\n    margin-right: 1.5rem;\n    text-align: right;\n  }\n  .field-label.is-small {\n    font-size: 0.75rem;\n    padding-top: 0.375em;\n  }\n  .field-label.is-normal {\n    padding-top: 0.375em;\n  }\n  .field-label.is-medium {\n    font-size: 1.25rem;\n    padding-top: 0.375em;\n  }\n  .field-label.is-large {\n    font-size: 1.5rem;\n    padding-top: 0.375em;\n  }\n}\n\n.field-body .field .field {\n  margin-bottom: 0;\n}\n@media screen and (min-width: 769px), print {\n  .field-body {\n    display: flex;\n    flex-basis: 0;\n    flex-grow: 5;\n    flex-shrink: 1;\n  }\n  .field-body .field {\n    margin-bottom: 0;\n  }\n  .field-body > .field {\n    flex-shrink: 1;\n  }\n  .field-body > .field:not(.is-narrow) {\n    flex-grow: 1;\n  }\n  .field-body > .field:not(:last-child) {\n    margin-right: 0.75rem;\n  }\n}\n\n.control {\n  box-sizing: border-box;\n  clear: both;\n  font-size: 1rem;\n  position: relative;\n  text-align: inherit;\n}\n.control.has-icons-left .input:focus ~ .icon,\n.control.has-icons-left .select:focus ~ .icon, .control.has-icons-right .input:focus ~ .icon,\n.control.has-icons-right .select:focus ~ .icon {\n  color: #4a4a4a;\n}\n.control.has-icons-left .input.is-small ~ .icon,\n.control.has-icons-left .select.is-small ~ .icon, .control.has-icons-right .input.is-small ~ .icon,\n.control.has-icons-right .select.is-small ~ .icon {\n  font-size: 0.75rem;\n}\n.control.has-icons-left .input.is-medium ~ .icon,\n.control.has-icons-left .select.is-medium ~ .icon, .control.has-icons-right .input.is-medium ~ .icon,\n.control.has-icons-right .select.is-medium ~ .icon {\n  font-size: 1.25rem;\n}\n.control.has-icons-left .input.is-large ~ .icon,\n.control.has-icons-left .select.is-large ~ .icon, .control.has-icons-right .input.is-large ~ .icon,\n.control.has-icons-right .select.is-large ~ .icon {\n  font-size: 1.5rem;\n}\n.control.has-icons-left .icon, .control.has-icons-right .icon {\n  color: #dbdbdb;\n  height: 2.5em;\n  pointer-events: none;\n  position: absolute;\n  top: 0;\n  width: 2.5em;\n  z-index: 4;\n}\n.control.has-icons-left .input,\n.control.has-icons-left .select select {\n  padding-left: 2.5em;\n}\n.control.has-icons-left .icon.is-left {\n  left: 0;\n}\n.control.has-icons-right .input,\n.control.has-icons-right .select select {\n  padding-right: 2.5em;\n}\n.control.has-icons-right .icon.is-right {\n  right: 0;\n}\n.control.is-loading::after {\n  position: absolute !important;\n  right: 0.625em;\n  top: 0.625em;\n  z-index: 4;\n}\n.control.is-loading.is-small:after {\n  font-size: 0.75rem;\n}\n.control.is-loading.is-medium:after {\n  font-size: 1.25rem;\n}\n.control.is-loading.is-large:after {\n  font-size: 1.5rem;\n}\n\n.textarea, .input {\n  box-shadow: inset 0 0.0625em 0.125em rgba(10, 10, 10, 0.05);\n  max-width: 100%;\n  width: 100%;\n}\n[readonly].textarea, [readonly].input {\n  box-shadow: none;\n}\n.is-white.textarea, .is-white.input {\n  border-color: white;\n}\n.is-white.textarea:focus, .is-white.input:focus, .is-white.is-focused.textarea, .is-white.is-focused.input, .is-white.textarea:active, .is-white.input:active, .is-white.is-active.textarea, .is-white.is-active.input {\n  box-shadow: 0 0 0 0.125em rgba(255, 255, 255, 0.25);\n}\n.is-black.textarea, .is-black.input {\n  border-color: #0a0a0a;\n}\n.is-black.textarea:focus, .is-black.input:focus, .is-black.is-focused.textarea, .is-black.is-focused.input, .is-black.textarea:active, .is-black.input:active, .is-black.is-active.textarea, .is-black.is-active.input {\n  box-shadow: 0 0 0 0.125em rgba(10, 10, 10, 0.25);\n}\n.is-light.textarea, .is-light.input {\n  border-color: whitesmoke;\n}\n.is-light.textarea:focus, .is-light.input:focus, .is-light.is-focused.textarea, .is-light.is-focused.input, .is-light.textarea:active, .is-light.input:active, .is-light.is-active.textarea, .is-light.is-active.input {\n  box-shadow: 0 0 0 0.125em rgba(245, 245, 245, 0.25);\n}\n.is-dark.textarea, .is-dark.input {\n  border-color: #363636;\n}\n.is-dark.textarea:focus, .is-dark.input:focus, .is-dark.is-focused.textarea, .is-dark.is-focused.input, .is-dark.textarea:active, .is-dark.input:active, .is-dark.is-active.textarea, .is-dark.is-active.input {\n  box-shadow: 0 0 0 0.125em rgba(54, 54, 54, 0.25);\n}\n.is-primary.textarea, .is-primary.input {\n  border-color: #00d1b2;\n}\n.is-primary.textarea:focus, .is-primary.input:focus, .is-primary.is-focused.textarea, .is-primary.is-focused.input, .is-primary.textarea:active, .is-primary.input:active, .is-primary.is-active.textarea, .is-primary.is-active.input {\n  box-shadow: 0 0 0 0.125em rgba(0, 209, 178, 0.25);\n}\n.is-link.textarea, .is-link.input {\n  border-color: #3273dc;\n}\n.is-link.textarea:focus, .is-link.input:focus, .is-link.is-focused.textarea, .is-link.is-focused.input, .is-link.textarea:active, .is-link.input:active, .is-link.is-active.textarea, .is-link.is-active.input {\n  box-shadow: 0 0 0 0.125em rgba(50, 115, 220, 0.25);\n}\n.is-info.textarea, .is-info.input {\n  border-color: #3298dc;\n}\n.is-info.textarea:focus, .is-info.input:focus, .is-info.is-focused.textarea, .is-info.is-focused.input, .is-info.textarea:active, .is-info.input:active, .is-info.is-active.textarea, .is-info.is-active.input {\n  box-shadow: 0 0 0 0.125em rgba(50, 152, 220, 0.25);\n}\n.is-success.textarea, .is-success.input {\n  border-color: #48c774;\n}\n.is-success.textarea:focus, .is-success.input:focus, .is-success.is-focused.textarea, .is-success.is-focused.input, .is-success.textarea:active, .is-success.input:active, .is-success.is-active.textarea, .is-success.is-active.input {\n  box-shadow: 0 0 0 0.125em rgba(72, 199, 116, 0.25);\n}\n.is-warning.textarea, .is-warning.input {\n  border-color: #ffdd57;\n}\n.is-warning.textarea:focus, .is-warning.input:focus, .is-warning.is-focused.textarea, .is-warning.is-focused.input, .is-warning.textarea:active, .is-warning.input:active, .is-warning.is-active.textarea, .is-warning.is-active.input {\n  box-shadow: 0 0 0 0.125em rgba(255, 221, 87, 0.25);\n}\n.is-danger.textarea, .is-danger.input {\n  border-color: #f14668;\n}\n.is-danger.textarea:focus, .is-danger.input:focus, .is-danger.is-focused.textarea, .is-danger.is-focused.input, .is-danger.textarea:active, .is-danger.input:active, .is-danger.is-active.textarea, .is-danger.is-active.input {\n  box-shadow: 0 0 0 0.125em rgba(241, 70, 104, 0.25);\n}\n.is-small.textarea, .is-small.input {\n  border-radius: 2px;\n  font-size: 0.75rem;\n}\n.is-medium.textarea, .is-medium.input {\n  font-size: 1.25rem;\n}\n.is-large.textarea, .is-large.input {\n  font-size: 1.5rem;\n}\n.is-fullwidth.textarea, .is-fullwidth.input {\n  display: block;\n  width: 100%;\n}\n.is-inline.textarea, .is-inline.input {\n  display: inline;\n  width: auto;\n}\n\n.input.is-rounded {\n  border-radius: 290486px;\n  padding-left: calc(calc(0.75em - 1px) + 0.375em);\n  padding-right: calc(calc(0.75em - 1px) + 0.375em);\n}\n.input.is-static {\n  background-color: transparent;\n  border-color: transparent;\n  box-shadow: none;\n  padding-left: 0;\n  padding-right: 0;\n}\n\n.textarea {\n  display: block;\n  max-width: 100%;\n  min-width: 100%;\n  padding: calc(0.75em - 1px);\n  resize: vertical;\n}\n.textarea:not([rows]) {\n  max-height: 40em;\n  min-height: 8em;\n}\n.textarea[rows] {\n  height: initial;\n}\n.textarea.has-fixed-size {\n  resize: none;\n}\n\n.tags {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: flex-start;\n}\n.tags .tag {\n  margin-bottom: 0.5rem;\n}\n.tags .tag:not(:last-child) {\n  margin-right: 0.5rem;\n}\n.tags:last-child {\n  margin-bottom: -0.5rem;\n}\n.tags:not(:last-child) {\n  margin-bottom: 1rem;\n}\n.tags.are-medium .tag:not(.is-normal):not(.is-large) {\n  font-size: 1rem;\n}\n.tags.are-large .tag:not(.is-normal):not(.is-medium) {\n  font-size: 1.25rem;\n}\n.tags.is-centered {\n  justify-content: center;\n}\n.tags.is-centered .tag {\n  margin-right: 0.25rem;\n  margin-left: 0.25rem;\n}\n.tags.is-right {\n  justify-content: flex-end;\n}\n.tags.is-right .tag:not(:first-child) {\n  margin-left: 0.5rem;\n}\n.tags.is-right .tag:not(:last-child) {\n  margin-right: 0;\n}\n.tags.has-addons .tag {\n  margin-right: 0;\n}\n.tags.has-addons .tag:not(:first-child) {\n  margin-left: 0;\n  border-top-left-radius: 0;\n  border-bottom-left-radius: 0;\n}\n.tags.has-addons .tag:not(:last-child) {\n  border-top-right-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.tag:not(body) {\n  align-items: center;\n  background-color: whitesmoke;\n  border-radius: 4px;\n  color: #4a4a4a;\n  display: inline-flex;\n  font-size: 0.75rem;\n  height: 2em;\n  justify-content: center;\n  line-height: 1.5;\n  padding-left: 0.75em;\n  padding-right: 0.75em;\n  white-space: nowrap;\n}\n.tag:not(body) .delete {\n  margin-left: 0.25rem;\n  margin-right: -0.375rem;\n}\n.tag:not(body).is-white {\n  background-color: white;\n  color: #0a0a0a;\n}\n.tag:not(body).is-black {\n  background-color: #0a0a0a;\n  color: white;\n}\n.tag:not(body).is-light {\n  background-color: whitesmoke;\n  color: rgba(0, 0, 0, 0.7);\n}\n.tag:not(body).is-dark {\n  background-color: #363636;\n  color: #fff;\n}\n.tag:not(body).is-primary {\n  background-color: #00d1b2;\n  color: #fff;\n}\n.tag:not(body).is-primary.is-light {\n  background-color: #ebfffc;\n  color: #00947e;\n}\n.tag:not(body).is-link {\n  background-color: #3273dc;\n  color: #fff;\n}\n.tag:not(body).is-link.is-light {\n  background-color: #eef3fc;\n  color: #2160c4;\n}\n.tag:not(body).is-info {\n  background-color: #3298dc;\n  color: #fff;\n}\n.tag:not(body).is-info.is-light {\n  background-color: #eef6fc;\n  color: #1d72aa;\n}\n.tag:not(body).is-success {\n  background-color: #48c774;\n  color: #fff;\n}\n.tag:not(body).is-success.is-light {\n  background-color: #effaf3;\n  color: #257942;\n}\n.tag:not(body).is-warning {\n  background-color: #ffdd57;\n  color: rgba(0, 0, 0, 0.7);\n}\n.tag:not(body).is-warning.is-light {\n  background-color: #fffbeb;\n  color: #947600;\n}\n.tag:not(body).is-danger {\n  background-color: #f14668;\n  color: #fff;\n}\n.tag:not(body).is-danger.is-light {\n  background-color: #feecf0;\n  color: #cc0f35;\n}\n.tag:not(body).is-normal {\n  font-size: 0.75rem;\n}\n.tag:not(body).is-medium {\n  font-size: 1rem;\n}\n.tag:not(body).is-large {\n  font-size: 1.25rem;\n}\n.tag:not(body) .icon:first-child:not(:last-child) {\n  margin-left: -0.375em;\n  margin-right: 0.1875em;\n}\n.tag:not(body) .icon:last-child:not(:first-child) {\n  margin-left: 0.1875em;\n  margin-right: -0.375em;\n}\n.tag:not(body) .icon:first-child:last-child {\n  margin-left: -0.375em;\n  margin-right: -0.375em;\n}\n.tag:not(body).is-delete {\n  margin-left: 1px;\n  padding: 0;\n  position: relative;\n  width: 2em;\n}\n.tag:not(body).is-delete::before, .tag:not(body).is-delete::after {\n  background-color: currentColor;\n  content: \"\";\n  display: block;\n  left: 50%;\n  position: absolute;\n  top: 50%;\n  transform: translateX(-50%) translateY(-50%) rotate(45deg);\n  transform-origin: center center;\n}\n.tag:not(body).is-delete::before {\n  height: 1px;\n  width: 50%;\n}\n.tag:not(body).is-delete::after {\n  height: 50%;\n  width: 1px;\n}\n.tag:not(body).is-delete:hover, .tag:not(body).is-delete:focus {\n  background-color: #e8e8e8;\n}\n.tag:not(body).is-delete:active {\n  background-color: #dbdbdb;\n}\n.tag:not(body).is-rounded {\n  border-radius: 290486px;\n}\n\na.tag:hover {\n  text-decoration: underline;\n}\n\n.tagsfield {\n  height: auto !important;\n  cursor: text;\n  padding-top: calc((0.5em - 1px) / 2) !important;\n  padding-bottom: calc((0.5em - 1px) / 2) !important;\n}\n.tagsfield > .control {\n  margin-right: calc(0.5em - 1px) !important;\n  margin-top: calc((0.5em - 1px) / 2) !important;\n  margin-bottom: calc((0.5em - 1px) / 2) !important;\n  max-width: 100%;\n}\n.tagsfield > .control .tags {\n  flex-wrap: nowrap;\n}\n.tagsfield > .control .tags .tag:first-child {\n  display: block;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  line-height: 2em;\n}\n.tagsfield > .control .tags .tag:nth-child(2) {\n  flex-shrink: 0;\n}\n.tagsfield > div:last-child {\n  flex-grow: 1;\n  max-width: 100%;\n  overflow: hidden;\n  margin: calc((0.5em - 1px) / 2) 0;\n}\n.tagsfield > div:last-child span[contenteditable] {\n  display: block;\n  width: 100%;\n}\n.tagsfield > div:first-child:nth-last-child(1) span[contenteditable]:empty:after {\n  content: attr(placeholder);\n  color: rgba(54, 54, 54, 0.3);\n}", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/lib/css-base.js":
-/*!*************************************************!*\
-  !*** ./node_modules/css-loader/lib/css-base.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isString", function() { return isString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isDate", function() { return isDate; });
+const isString = unknown => (typeof unknown === 'string' || ((!!unknown && typeof unknown === 'object') && Object.prototype.toString.call(unknown) === '[object String]'));
+const isDate = unknown => (Object.prototype.toString.call(unknown) === '[object Date]' || unknown instanceof Date) && !isNaN(unknown.valueOf());
 
 /***/ }),
 
@@ -32485,515 +32805,6 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ "./node_modules/style-loader/lib/addStyles.js":
-/*!****************************************************!*\
-  !*** ./node_modules/style-loader/lib/addStyles.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-
-var stylesInDom = {};
-
-var	memoize = function (fn) {
-	var memo;
-
-	return function () {
-		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-		return memo;
-	};
-};
-
-var isOldIE = memoize(function () {
-	// Test for IE <= 9 as proposed by Browserhacks
-	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
-	// Tests for existence of standard globals is to allow style-loader
-	// to operate correctly into non-standard environments
-	// @see https://github.com/webpack-contrib/style-loader/issues/177
-	return window && document && document.all && !window.atob;
-});
-
-var getTarget = function (target, parent) {
-  if (parent){
-    return parent.querySelector(target);
-  }
-  return document.querySelector(target);
-};
-
-var getElement = (function (fn) {
-	var memo = {};
-
-	return function(target, parent) {
-                // If passing function in options, then use it for resolve "head" element.
-                // Useful for Shadow Root style i.e
-                // {
-                //   insertInto: function () { return document.querySelector("#foo").shadowRoot }
-                // }
-                if (typeof target === 'function') {
-                        return target();
-                }
-                if (typeof memo[target] === "undefined") {
-			var styleTarget = getTarget.call(this, target, parent);
-			// Special case to return head of iframe instead of iframe itself
-			if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
-				try {
-					// This will throw an exception if access to iframe is blocked
-					// due to cross-origin restrictions
-					styleTarget = styleTarget.contentDocument.head;
-				} catch(e) {
-					styleTarget = null;
-				}
-			}
-			memo[target] = styleTarget;
-		}
-		return memo[target]
-	};
-})();
-
-var singleton = null;
-var	singletonCounter = 0;
-var	stylesInsertedAtTop = [];
-
-var	fixUrls = __webpack_require__(/*! ./urls */ "./node_modules/style-loader/lib/urls.js");
-
-module.exports = function(list, options) {
-	if (typeof DEBUG !== "undefined" && DEBUG) {
-		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-
-	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
-
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (!options.singleton && typeof options.singleton !== "boolean") options.singleton = isOldIE();
-
-	// By default, add <style> tags to the <head> element
-        if (!options.insertInto) options.insertInto = "head";
-
-	// By default, add <style> tags to the bottom of the target
-	if (!options.insertAt) options.insertAt = "bottom";
-
-	var styles = listToStyles(list, options);
-
-	addStylesToDom(styles, options);
-
-	return function update (newList) {
-		var mayRemove = [];
-
-		for (var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-
-		if(newList) {
-			var newStyles = listToStyles(newList, options);
-			addStylesToDom(newStyles, options);
-		}
-
-		for (var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-
-			if(domStyle.refs === 0) {
-				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
-
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-};
-
-function addStylesToDom (styles, options) {
-	for (var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-
-		if(domStyle) {
-			domStyle.refs++;
-
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles (list, options) {
-	var styles = [];
-	var newStyles = {};
-
-	for (var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = options.base ? item[0] + options.base : item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-
-		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
-		else newStyles[id].parts.push(part);
-	}
-
-	return styles;
-}
-
-function insertStyleElement (options, style) {
-	var target = getElement(options.insertInto)
-
-	if (!target) {
-		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
-	}
-
-	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
-
-	if (options.insertAt === "top") {
-		if (!lastStyleElementInsertedAtTop) {
-			target.insertBefore(style, target.firstChild);
-		} else if (lastStyleElementInsertedAtTop.nextSibling) {
-			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			target.appendChild(style);
-		}
-		stylesInsertedAtTop.push(style);
-	} else if (options.insertAt === "bottom") {
-		target.appendChild(style);
-	} else if (typeof options.insertAt === "object" && options.insertAt.before) {
-		var nextSibling = getElement(options.insertAt.before, target);
-		target.insertBefore(style, nextSibling);
-	} else {
-		throw new Error("[Style Loader]\n\n Invalid value for parameter 'insertAt' ('options.insertAt') found.\n Must be 'top', 'bottom', or Object.\n (https://github.com/webpack-contrib/style-loader#insertat)\n");
-	}
-}
-
-function removeStyleElement (style) {
-	if (style.parentNode === null) return false;
-	style.parentNode.removeChild(style);
-
-	var idx = stylesInsertedAtTop.indexOf(style);
-	if(idx >= 0) {
-		stylesInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement (options) {
-	var style = document.createElement("style");
-
-	if(options.attrs.type === undefined) {
-		options.attrs.type = "text/css";
-	}
-
-	if(options.attrs.nonce === undefined) {
-		var nonce = getNonce();
-		if (nonce) {
-			options.attrs.nonce = nonce;
-		}
-	}
-
-	addAttrs(style, options.attrs);
-	insertStyleElement(options, style);
-
-	return style;
-}
-
-function createLinkElement (options) {
-	var link = document.createElement("link");
-
-	if(options.attrs.type === undefined) {
-		options.attrs.type = "text/css";
-	}
-	options.attrs.rel = "stylesheet";
-
-	addAttrs(link, options.attrs);
-	insertStyleElement(options, link);
-
-	return link;
-}
-
-function addAttrs (el, attrs) {
-	Object.keys(attrs).forEach(function (key) {
-		el.setAttribute(key, attrs[key]);
-	});
-}
-
-function getNonce() {
-	if (false) {}
-
-	return __webpack_require__.nc;
-}
-
-function addStyle (obj, options) {
-	var style, update, remove, result;
-
-	// If a transform function was defined, run it on the css
-	if (options.transform && obj.css) {
-	    result = typeof options.transform === 'function'
-		 ? options.transform(obj.css) 
-		 : options.transform.default(obj.css);
-
-	    if (result) {
-	    	// If transform returns a value, use that instead of the original css.
-	    	// This allows running runtime transformations on the css.
-	    	obj.css = result;
-	    } else {
-	    	// If the transform function returns a falsy value, don't add this css.
-	    	// This allows conditional loading of css
-	    	return function() {
-	    		// noop
-	    	};
-	    }
-	}
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-
-		style = singleton || (singleton = createStyleElement(options));
-
-		update = applyToSingletonTag.bind(null, style, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
-
-	} else if (
-		obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function"
-	) {
-		style = createLinkElement(options);
-		update = updateLink.bind(null, style, options);
-		remove = function () {
-			removeStyleElement(style);
-
-			if(style.href) URL.revokeObjectURL(style.href);
-		};
-	} else {
-		style = createStyleElement(options);
-		update = applyToTag.bind(null, style);
-		remove = function () {
-			removeStyleElement(style);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle (newObj) {
-		if (newObj) {
-			if (
-				newObj.css === obj.css &&
-				newObj.media === obj.media &&
-				newObj.sourceMap === obj.sourceMap
-			) {
-				return;
-			}
-
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag (style, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (style.styleSheet) {
-		style.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = style.childNodes;
-
-		if (childNodes[index]) style.removeChild(childNodes[index]);
-
-		if (childNodes.length) {
-			style.insertBefore(cssNode, childNodes[index]);
-		} else {
-			style.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag (style, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		style.setAttribute("media", media)
-	}
-
-	if(style.styleSheet) {
-		style.styleSheet.cssText = css;
-	} else {
-		while(style.firstChild) {
-			style.removeChild(style.firstChild);
-		}
-
-		style.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink (link, options, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	/*
-		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
-		and there is no publicPath defined then lets turn convertToAbsoluteUrls
-		on by default.  Otherwise default to the convertToAbsoluteUrls option
-		directly
-	*/
-	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
-
-	if (options.convertToAbsoluteUrls || autoFixUrls) {
-		css = fixUrls(css);
-	}
-
-	if (sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = link.href;
-
-	link.href = URL.createObjectURL(blob);
-
-	if(oldSrc) URL.revokeObjectURL(oldSrc);
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/lib/urls.js":
-/*!***********************************************!*\
-  !*** ./node_modules/style-loader/lib/urls.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-
-/**
- * When source maps are enabled, `style-loader` uses a link element with a data-uri to
- * embed the css on the page. This breaks all relative urls because now they are relative to a
- * bundle instead of the current page.
- *
- * One solution is to only use full urls, but that may be impossible.
- *
- * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
- *
- * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
- *
- */
-
-module.exports = function (css) {
-  // get current location
-  var location = typeof window !== "undefined" && window.location;
-
-  if (!location) {
-    throw new Error("fixUrls requires window.location");
-  }
-
-	// blank or null?
-	if (!css || typeof css !== "string") {
-	  return css;
-  }
-
-  var baseUrl = location.protocol + "//" + location.host;
-  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
-
-	// convert each url(...)
-	/*
-	This regular expression is just a way to recursively match brackets within
-	a string.
-
-	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
-	   (  = Start a capturing group
-	     (?:  = Start a non-capturing group
-	         [^)(]  = Match anything that isn't a parentheses
-	         |  = OR
-	         \(  = Match a start parentheses
-	             (?:  = Start another non-capturing groups
-	                 [^)(]+  = Match anything that isn't a parentheses
-	                 |  = OR
-	                 \(  = Match a start parentheses
-	                     [^)(]*  = Match anything that isn't a parentheses
-	                 \)  = Match a end parentheses
-	             )  = End Group
-              *\) = Match anything and then a close parens
-          )  = Close non-capturing group
-          *  = Match anything
-       )  = Close capturing group
-	 \)  = Match a close parens
-
-	 /gi  = Get all matches, not the first.  Be case insensitive.
-	 */
-	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
-		// strip quotes (if they exist)
-		var unquotedOrigUrl = origUrl
-			.trim()
-			.replace(/^"(.*)"$/, function(o, $1){ return $1; })
-			.replace(/^'(.*)'$/, function(o, $1){ return $1; });
-
-		// already a full url? no change
-		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/|\s*$)/i.test(unquotedOrigUrl)) {
-		  return fullMatch;
-		}
-
-		// convert the url to a full url
-		var newUrl;
-
-		if (unquotedOrigUrl.indexOf("//") === 0) {
-		  	//TODO: should we add protocol?
-			newUrl = unquotedOrigUrl;
-		} else if (unquotedOrigUrl.indexOf("/") === 0) {
-			// path should be relative to the base url
-			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
-		} else {
-			// path should be relative to current directory
-			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
-		}
-
-		// send back the fixed url(...)
-		return "url(" + JSON.stringify(newUrl) + ")";
-	});
-
-	// send back the fixed css
-	return fixedCss;
-};
-
-
-/***/ }),
-
 /***/ "./resources/img/Background.png":
 /*!**************************************!*\
   !*** ./resources/img/Background.png ***!
@@ -33108,7 +32919,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var imask__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! imask */ "./node_modules/imask/esm/index.js");
-/* harmony import */ var bulma_tagsfield__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bulma-tagsfield */ "./node_modules/bulma-tagsfield/src/tagsfield.js");
+/* harmony import */ var bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bulma-tagsinput/src/js */ "./node_modules/bulma-tagsinput/src/js/index.js");
 /* harmony import */ var _validate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../validate */ "./resources/js/validate.js");
 
 
@@ -33134,12 +32945,13 @@ if (add_btn) {
     var target = add_btn.getAttribute('data-path');
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+      Object(_validate__WEBPACK_IMPORTED_MODULE_3__["validateit"])();
       var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('budget'), {
         mask: '$num',
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: ' '
+            thousandsSeparator: '.'
           }
         }
       });
@@ -33159,7 +32971,7 @@ change_btn.forEach(function (elem) {
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: ' '
+            thousandsSeparator: '.'
           }
         }
       });
@@ -33199,12 +33011,13 @@ if (income_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
       document.querySelector('#modal-title').innerHTML = 'Create New Income';
+      Object(_validate__WEBPACK_IMPORTED_MODULE_3__["validateit"])();
       var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('income'), {
         mask: '$num',
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: ' '
+            thousandsSeparator: '.'
           }
         }
       });
@@ -33221,12 +33034,13 @@ if (consump_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
       document.querySelector('#modal-title').innerHTML = 'Create New Consumption';
+      Object(_validate__WEBPACK_IMPORTED_MODULE_3__["validateit"])();
       var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('consumption'), {
         mask: '$num',
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: ' '
+            thousandsSeparator: '.'
           }
         }
       });
@@ -33249,16 +33063,14 @@ if (add_employee_btn) {
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: ' '
+            thousandsSeparator: '.'
           }
         }
       });
       var phoneMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('phone'), {
         mask: '+{0}(000)000-00-00'
       });
-      document.querySelectorAll('.tagsfield').forEach(function (el) {
-        return new bulma_tagsfield__WEBPACK_IMPORTED_MODULE_2__["default"](el);
-      });
+      bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__["default"].attach();
     });
   });
 }
@@ -33272,6 +33084,7 @@ if (send_mail_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
       document.querySelector('#modal-title').innerHTML = 'Create New Invite';
+      Object(_validate__WEBPACK_IMPORTED_MODULE_3__["validateit"])();
     });
   });
 }
@@ -33382,7 +33195,7 @@ bulmaTagsinput.attach();
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateit", function() { return validateit; });
-var require = /^$|\s+/;
+//let require = /^$|/;
 var notNum = /\d|[/?<>;:{}!@#$%^&*()+=]/;
 var notAlpha = /[^a-zA-Z\s:\u00C0-\u00FF]/g;
 var email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -33392,35 +33205,34 @@ function validateit() {
 
   if (submit_btn) {
     submit_btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      var inps = document.querySelectorAll("input, select");
+      var inps = document.querySelectorAll("input, select, .tagsinput");
       inps.forEach(function (inp) {
         var errors = [];
         inp.getAttributeNames().forEach(function (attribute) {
           switch (attribute) {
             case 'require':
-              if (require.test(inp.value)) {
-                errors.push('This field is require'); // notValid(inp, span, 'This field is require');
+              if (inp.value.length === 0) {
+                errors.push('This field is require');
               } else {
-                valid(inp, span);
+                valid(inp);
               }
 
               break;
 
             case 'notnum':
               if (notNum.test(inp.value)) {
-                errors.push('Only letters'); // notValid(inp, span, 'Only letters');
+                errors.push('Only letters');
               } else {
-                valid(inp, span);
+                valid(inp);
               }
 
               break;
 
             case 'notalpha':
               if (notAlpha.test(inp.value)) {
-                errors.push('Only num'); // notValid(inp, span, 'Only letters');
+                errors.push('Only num');
               } else {
-                valid(inp, span);
+                valid(inp);
               }
 
               break;
@@ -33429,7 +33241,7 @@ function validateit() {
               if (!email.test(inp.value)) {
                 errors.push('Incorrect email');
               } else {
-                valid(inp, span);
+                valid(inp);
               }
 
               break;
@@ -33438,7 +33250,7 @@ function validateit() {
               if (inp.value.length > 20) {
                 errors.push('Max length 20');
               } else {
-                valid(inp, span);
+                valid(inp);
               }
 
               break;
@@ -33447,7 +33259,7 @@ function validateit() {
               if (inp.value.length < 16) {
                 errors.push('Enter full number');
               } else {
-                valid(inp, span);
+                valid(inp);
               }
 
               break;
@@ -33456,7 +33268,7 @@ function validateit() {
               if (inp.value.length > 6) {
                 errors.push('Max length 6');
               } else {
-                valid(inp, span);
+                valid(inp);
               }
 
               break;
@@ -33465,15 +33277,24 @@ function validateit() {
               if (inp.value.length < 2) {
                 errors.push('This field require');
               } else {
-                valid(inp, span);
+                valid(inp);
               }
 
               break;
+
+            case 'reqtag':
+              if (inp.parentNode.querySelector('.tags') === null) {
+                errors.push('This field require');
+              } else {
+                valid(inp);
+              }
+
           }
         });
 
         if (errors.length != 0) {
           showError(errors, inp);
+          e.preventDefault();
         }
       });
     });
@@ -33481,30 +33302,27 @@ function validateit() {
 }
 
 function showError(errors, inp) {
-  inp.classList.add('is-danger');
-  var spanTag = document.createElement('span');
-  spanTag.classList.add('red');
-
-  if (!inp.parentNode.querySelector('span')) {
-    inp.parentNode.insertBefore(spanTag, inp.nextSibling);
-
-    if (errors[0] != null) {
-      spanTag.innerHTML = errors[0];
-    }
+  if (inp.parentNode.querySelector('.tagsinput')) {
+    inp.parentNode.querySelector('.tagsinput').classList.add('is-danger');
   } else {
-    if (errors[0] != null) {
-      inp.parentNode.querySelector('span').innerHTML = errors[0];
-    }
+    inp.classList.add('is-danger');
+  }
+
+  if (errors[0] != null) {
+    inp.parentNode.querySelector('.error').innerHTML = errors[0];
   }
 }
 
 function valid(inp) {
-  inp.classList.remove('is-danger');
-  inp.classList.add('is-success');
-
-  if (inp.parentNode.querySelector('span')) {
-    inp.parentNode.querySelector('span').remove();
+  if (inp.parentNode.querySelector('.tagsinput')) {
+    inp.parentNode.querySelector('.tagsinput').classList.remove('is-danger');
+    inp.parentNode.querySelector('.tagsinput').classList.add('is-success');
+  } else {
+    inp.classList.remove('is-danger');
+    inp.classList.add('is-success');
   }
+
+  inp.parentNode.querySelector('.error').innerHTML = '';
 }
 
 /***/ }),
