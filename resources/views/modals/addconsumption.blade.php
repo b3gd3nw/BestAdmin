@@ -16,12 +16,12 @@
     <div class="field">
         <label class="label">Amount</label>
         <div class="control">
-            <input name="amount" class="input" type="text" placeholder="$ 100" id="consumption">
+            <input name="amount" class="input" type="text" placeholder="$ 100" id="consumption" money max6>
+            <span class="error red fs-12"></span>
         </div>
     </div>
 
     <div class="field">
-        <a class="submit">123</a>
-        <button type="submit" class="button is-success">Save changes</button>
+        <button type="submit" class="button is-success" id="submit">Save changes</button>
     </div>
 </form>

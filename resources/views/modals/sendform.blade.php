@@ -3,11 +3,11 @@
     @method('POST')
     <div class="field">
         <p class="control">
-            <input name="email" class="input" type="email" placeholder="Email">
+            <input name="email" class="input" type="email" placeholder="Email" require email>
+            <span class="error red fs-12"></span>
         </p>
     </div>
     <div class="field">
-        <a class="submit">123</a>
-        <button type="submit" class="button is-success">Save changes</button>
+        <button type="submit" class="button is-success" id="submit">Save changes</button>
     </div>
 </form>

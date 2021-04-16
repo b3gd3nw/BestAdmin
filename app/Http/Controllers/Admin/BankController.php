@@ -45,6 +45,7 @@ class BankController extends Controller
 
     public function store_income(Request $request)
     {
+        $request->merge(['amount' => str_replace(['$',','], ['','.'], $request->amount)]);
         Transaction::create(
             array_merge($request->all(), ['type' => 'income'])
         );
@@ -56,6 +57,7 @@ class BankController extends Controller
 
     public function store_consumption(Request $request)
     {
+        $request->merge(['amount' => str_replace(['$',','], ['','.'], $request->amount)]);
         Transaction::create(
             array_merge($request->all(), ['type' => 'consumption'])
         );

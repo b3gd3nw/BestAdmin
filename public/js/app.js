@@ -27174,6 +27174,557 @@ var isDate = function isDate(unknown) {
 
 /***/ }),
 
+/***/ "./node_modules/bulma-tagsinput/src/js/defaultOptions.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/bulma-tagsinput/src/js/defaultOptions.js ***!
+  \***************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const defaultOptions = {
+	disabled: false,
+	delimiter: ',',
+	allowDelete: true,
+	lowercase: false,
+	uppercase: false,
+	duplicates: true
+};
+  
+/* harmony default export */ __webpack_exports__["default"] = (defaultOptions);
+  
+
+/***/ }),
+
+/***/ "./node_modules/bulma-tagsinput/src/js/index.js":
+/*!******************************************************!*\
+  !*** ./node_modules/bulma-tagsinput/src/js/index.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _utils_events__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils/events */ "./node_modules/bulma-tagsinput/src/js/utils/events.js");
+/* harmony import */ var _defaultOptions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./defaultOptions */ "./node_modules/bulma-tagsinput/src/js/defaultOptions.js");
+/* harmony import */ var _utils_type__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/type */ "./node_modules/bulma-tagsinput/src/js/utils/type.js");
+
+
+
+
+
+const KEY_BACKSPACE = 8,
+	KEY_TAB = 9,
+	KEY_ENTER = 13,
+	KEY_LEFT = 37,
+	KEY_RIGHT = 39,
+	KEY_DELETE = 46,
+	KEY_COMMA = 188;
+
+class bulmaTagsinput extends _utils_events__WEBPACK_IMPORTED_MODULE_0__["default"] {
+	constructor(selector, options = {}) {
+		super();
+
+		this.element = _utils_type__WEBPACK_IMPORTED_MODULE_2__["isString"](selector) ? document.querySelector(selector) : selector;
+		// An invalid selector or non-DOM node has been provided.
+		if (!this.element) {
+			throw new Error('An invalid selector or non-DOM node has been provided.');
+		}
+		this._clickEvents = ['click'];
+
+		/// Set default options and merge with instance defined
+		this.options = {
+			..._defaultOptions__WEBPACK_IMPORTED_MODULE_1__["default"],
+			...options
+		};
+
+		if (this.element.dataset.hasOwnProperty('lowercase')) {
+			this.options.lowercase = this.element.dataset('lowercase');
+		}
+		if (this.element.dataset.hasOwnProperty('uppercase')) {
+			this.options.lowercase = this.element.dataset('uppercase');
+		}
+		if (this.element.dataset.hasOwnProperty('duplicates')) {
+			this.options.lowercase = this.element.dataset('duplicates');
+		}
+
+		this.init();
+	}
+
+	/**
+   * Initiate all DOM element containing tagsinput class
+   * @method
+   * @return {Array} Array of all TagsInput instances
+   */
+	static attach(selector = 'input[type="tags"]', options = {}) {
+		let instances = new Array();
+
+		const elements = document.querySelectorAll(selector);
+		[].forEach.call(elements, element => {
+			setTimeout(() => {
+				instances.push(new bulmaTagsinput(element, options));
+			}, 100);
+		});
+		return instances;
+	}
+
+	init() {
+		if (!this.options.disabled) {
+			this.tags = [];
+			// The container will visually looks like an input
+			this.container = document.createElement('div');
+			this.container.className = 'tagsinput';
+			this.container.classList.add('field');
+			this.container.classList.add('is-grouped');
+			this.container.classList.add('is-grouped-multiline');
+			this.container.classList.add('input');
+
+			let inputType = this.element.getAttribute('type');
+			if (!inputType || inputType === 'tags') {
+				inputType = 'text';
+			}
+			// Create an invisible input element so user will be able to enter value
+			this.input = document.createElement('input');
+			this.input.setAttribute('type', inputType);
+			if (this.element.getAttribute('placeholder')) {
+				this.input.setAttribute('placeholder', this.element.getAttribute('placeholder'));
+			} else {
+				this.input.setAttribute('placeholder', 'Add a Tag');
+			}
+			this.container.appendChild(this.input);
+
+			let sib = this.element.nextSibling;
+			this.element.parentNode[sib ? 'insertBefore':'appendChild'](this.container, sib);
+			this.element.style.cssText = 'position:absolute;left:0;top:0;width:1px;height:1px;opacity:0.01;';
+			this.element.tabIndex = -1;
+
+			this.enable();
+		}
+	}
+
+	enable() {
+		if (!this.enabled && !this.options.disabled) {
+
+			this.element.addEventListener('focus', () => {
+				this.container.classList.add('is-focused');
+				this.select((Array.prototype.slice.call(this.container.querySelectorAll('.tag:not(.is-delete)'))).pop());
+			});
+
+			this.input.addEventListener('focus', () => {
+    		this.container.classList.add('is-focused');
+    			this.select((Array.prototype.slice.call(this.container.querySelectorAll('.tag:not(.is-delete)'))).pop());
+			});
+			this.input.addEventListener('blur', () => {
+				this.container.classList.remove('is-focused');
+				this.select((Array.prototype.slice.call(this.container.querySelectorAll('.tag:not(.is-delete)'))).pop());
+				this.savePartial();
+			});
+			this.input.addEventListener('keydown', (e) => {
+				let key = e.charCode || e.keyCode || e.which,
+					selectedTag,
+					activeTag = this.container.querySelector('.tag.is-active'),
+					last = (Array.prototype.slice.call(this.container.querySelectorAll('.tag:not(.is-delete)'))).pop(),
+					atStart = this.caretAtStart(this.input);
+
+				if (activeTag) {
+					selectedTag = this.container.querySelector('[data-tag="' + activeTag.innerHTML.trim() + '"]');
+				}
+				this.setInputWidth();
+
+				if (key === KEY_ENTER || key === this.options.delimiter.charCodeAt(0) || key === KEY_COMMA || key === KEY_TAB) {
+					if (!this.input.value && (key !== this.options.delimiter.charCodeAt(0) || key === KEY_COMMA)) {
+						return;
+					}
+					this.savePartial();
+				} else if (key === KEY_DELETE && selectedTag) {
+    			if (selectedTag.nextSibling) {
+						this.select(selectedTag.nextSibling.querySelector('.tag'));
+					} else if (selectedTag.previousSibling) {
+						this.select(selectedTag.previousSibling.querySelector('.tag'));
+					}
+    			this.container.removeChild(selectedTag);
+					this.tags.splice(this.tags.indexOf(selectedTag.getAttribute('data-tag')), 1);
+    			this.setInputWidth();
+    			this.save();
+				} else if (key === KEY_BACKSPACE) {
+					if (selectedTag) {
+						if (selectedTag.previousSibling) {
+    				  this.select(selectedTag.previousSibling.querySelector('.tag'));
+						} else if (selectedTag.nextSibling) {
+    				  this.select(selectedTag.nextSibling.querySelector('.tag'));
+						}
+    				this.container.removeChild(selectedTag);
+						this.tags.splice(this.tags.indexOf(selectedTag.getAttribute('data-tag')), 1);
+    				this.setInputWidth();
+    				this.save();
+    			} else if (last && atStart) {
+    				this.select(last);
+    			} else {
+    				return;
+					}
+				} else if (key === KEY_LEFT) {
+    			if (selectedTag) {
+    				if (selectedTag.previousSibling) {
+    					this.select(selectedTag.previousSibling.querySelector('.tag'));
+    				}
+    			} else if (!atStart) {
+    				return;
+    			} else {
+    				this.select(last);
+    			}
+    		}
+    		else if (key === KEY_RIGHT) {
+    			if (!selectedTag) {
+						return;
+					}
+    			this.select(selectedTag.nextSibling.querySelector('.tag'));
+    		}
+    		else {
+    			return this.select();
+				}
+
+				e.preventDefault();
+				return false;
+			});
+			this.input.addEventListener('input', () => {
+				this.element.value = this.getValue();
+				this.element.dispatchEvent(new Event('input'));
+			});
+			this.input.addEventListener('paste', () => setTimeout(savePartial, 0));
+
+			this.container.addEventListener('mousedown', (e) => { this.refocus(e); });
+			this.container.addEventListener('touchstart', (e) => { this.refocus(e); });
+
+			this.savePartial(this.element.value);
+
+			this.enabled = true;
+		}
+	}
+
+	disable() {
+		if (this.enabled && !this.options.disabled) {
+			this.reset();
+
+			this.enabled = false;
+		}
+	}
+
+	select(el) {
+		let sel = this.container.querySelector('.is-active');
+		if (sel) {
+			sel.classList.remove('is-active');
+		}
+		if (el) {
+			el.classList.add('is-active');
+		}
+	}
+
+	addTag(text) {
+		if (~text.indexOf(this.options.delimiter)) {
+			text = text.split(this.options.delimiter);
+		}
+		if (Array.isArray(text)) {
+			return text.forEach((text) => {
+				this.addTag(text);
+			});
+		}
+
+		let tag = text && text.trim();
+		if (!tag) {
+			return false;
+		}
+
+		if (this.options['lowercase'] == 'true') {
+			tag = tag.toLowerCase();
+		}
+		if (this.options['uppercase'] == 'true') {
+			tag = tag.toUpperCase();
+		}
+		if (this.options['duplicates'] || this.tags.indexOf(tag) === -1) {
+			this.tags.push(tag);
+
+			let newTagWrapper = document.createElement('div');
+			newTagWrapper.className = 'control';
+			newTagWrapper.setAttribute('data-tag', tag);
+
+			let newTag = document.createElement('div');
+			newTag.className = 'tags';
+			newTag.classList.add('has-addons');
+
+			let newTagContent = document.createElement('span');
+			newTagContent.className = 'tag';
+			newTagContent.classList.add('is-active');
+			this.select(newTagContent);
+			newTagContent.innerHTML = tag;
+
+			newTag.appendChild(newTagContent);
+			if (this.options.allowDelete) {
+				let newTagDeleteButton = document.createElement('a');
+				newTagDeleteButton.className = 'tag';
+				newTagDeleteButton.classList.add('is-delete');
+				this._clickEvents.forEach((event) => {
+					newTagDeleteButton.addEventListener(event, (e) => {
+						let selectedTag,
+							activeTag = e.target.parentNode,
+							last = (Array.prototype.slice.call(this.container.querySelectorAll('.tag'))).pop(),
+							atStart = this.caretAtStart(this.input);
+
+						if (activeTag) {
+							selectedTag = this.container.querySelector('[data-tag="' + activeTag.innerText.trim() + '"]');
+						}
+
+						if (selectedTag) {
+    				this.select(selectedTag.previousSibling);
+    				this.container.removeChild(selectedTag);
+							this.tags.splice(this.tags.indexOf(selectedTag.getAttribute('data-tag')), 1);
+    				this.setInputWidth();
+    				this.save();
+    			}
+    			else if (last && atStart) {
+    				this.select(last);
+    			}
+    			else {
+    				return;
+						}
+					});
+				});
+				newTag.appendChild(newTagDeleteButton);
+			}
+			newTagWrapper.appendChild(newTag);
+
+			this.container.insertBefore(newTagWrapper, this.input);
+		}
+	}
+
+	getValue() {
+		return this.tags.join(this.options.delimiter);
+	}
+
+	setValue(value) {
+		(Array.prototype.slice.call(this.container.querySelectorAll('.tag'))).forEach((tag) => {
+			this.tags.splice(this.tags.indexOf(tag.innerHTML), 1);
+			this.container.removeChild(tag);
+		});
+		this.savePartial(value);
+	}
+
+	setInputWidth() {
+		let last = (Array.prototype.slice.call(this.container.querySelectorAll('.control'))).pop();
+
+		if (!this.container.offsetWidth) {
+			return;
+		}
+		this.input.style.width = Math.max(this.container.offsetWidth - (last ? (last.offsetLeft + last.offsetWidth) : 30) - 30, this.container.offsetWidth / 4) + 'px';
+	}
+
+	savePartial(value) {
+		if (typeof value !== 'string' && !Array.isArray(value)) {
+			value = this.input.value;
+		}
+		if (this.addTag(value) !== false) {
+			this.input.value = '';
+			this.save();
+			this.setInputWidth();
+		}
+	}
+
+	save() {
+		this.element.value = this.tags.join(this.options.delimiter);
+		this.element.dispatchEvent(new Event('change'));
+	}
+
+	caretAtStart(el) {
+		try {
+			return el.selectionStart === 0 && el.selectionEnd === 0;
+		}
+		catch(e) {
+			return el.value === '';
+		}
+	}
+
+	refocus(e) {
+		if (e.target.classList.contains('tag')) {
+			this.select(e.target);
+		}
+		if (e.target === this.input) {
+			return this.select();
+		}
+		this.input.focus();
+		e.preventDefault();
+		return false;
+	}
+
+	reset() {
+		this.tags = [];
+	}
+
+	destroy() {
+		this.disable();
+		this.reset();
+		this.element = null;
+	}
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (bulmaTagsinput);
+
+/***/ }),
+
+/***/ "./node_modules/bulma-tagsinput/src/js/utils/events.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/bulma-tagsinput/src/js/utils/events.js ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return EventEmitter; });
+class EventEmitter {
+  constructor(listeners = []) {
+    this._listeners = new Map(listeners);
+    this._middlewares = new Map();
+  }
+
+  listenerCount(eventName) {
+    if (!this._listeners.has(eventName)) {
+      return 0;
+    }
+
+    const eventListeners = this._listeners.get(eventName);
+    return eventListeners.length;
+  }
+
+  removeListeners(eventName = null, middleware = false) {
+    if (eventName !== null) {
+      if (Array.isArray(eventName)) {
+        name.forEach(e => this.removeListeners(e, middleware));
+      } else {
+        this._listeners.delete(eventName);
+
+        if (middleware) {
+          this.removeMiddleware(eventName);
+        }
+      }
+    } else {
+      this._listeners = new Map();
+    }
+  }
+
+  middleware(eventName, fn) {
+    if (Array.isArray(eventName)) {
+      name.forEach(e => this.middleware(e, fn));
+    } else {
+      if (!Array.isArray(this._middlewares.get(eventName))) {
+        this._middlewares.set(eventName, []);
+      }
+
+      (this._middlewares.get(eventName)).push(fn);
+    }
+  }
+
+  removeMiddleware(eventName = null) {
+    if (eventName !== null) {
+      if (Array.isArray(eventName)) {
+        name.forEach(e => this.removeMiddleware(e));
+      } else {
+        this._middlewares.delete(eventName);
+      }
+    } else {
+      this._middlewares = new Map();
+    }
+  }
+
+  on(name, callback, once = false) {
+    if (Array.isArray(name)) {
+      name.forEach(e => this.on(e, callback));
+    } else {
+      name = name.toString();
+      const split = name.split(/,|, | /);
+
+      if (split.length > 1) {
+        split.forEach(e => this.on(e, callback));
+      } else {
+        if (!Array.isArray(this._listeners.get(name))) {
+          this._listeners.set(name, []);
+        }
+
+        (this._listeners.get(name)).push({once: once, callback: callback});
+      }
+    }
+  }
+
+  once(name, callback) {
+    this.on(name, callback, true);
+  }
+
+  emit(name, data, silent = false) {
+    name = name.toString();
+    let listeners = this._listeners.get(name);
+    let middlewares = null;
+    let doneCount = 0;
+    let execute = silent;
+
+    if (Array.isArray(listeners)) {
+      listeners.forEach((listener, index) => {
+        // Start Middleware checks unless we're doing a silent emit
+        if (!silent) {
+          middlewares = this._middlewares.get(name);
+          // Check and execute Middleware
+          if (Array.isArray(middlewares)) {
+            middlewares.forEach(middleware => {
+              middleware(data, (newData = null) => {
+                if (newData !== null) {
+                  data = newData;
+                }
+                doneCount++;
+              }, name);
+            });
+
+            if (doneCount >= middlewares.length) {
+              execute = true;
+            }
+          } else {
+            execute = true;
+          }
+        }
+
+        // If Middleware checks have been passed, execute
+        if (execute) {
+          if (listener.once) {
+            listeners[index] = null;
+          }
+          listener.callback(data);
+        }
+      });
+
+      // Dirty way of removing used Events
+      while (listeners.indexOf(null) !== -1) {
+        listeners.splice(listeners.indexOf(null), 1);
+      }
+    }
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/bulma-tagsinput/src/js/utils/type.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/bulma-tagsinput/src/js/utils/type.js ***!
+  \***********************************************************/
+/*! exports provided: isString, isDate */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isString", function() { return isString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isDate", function() { return isDate; });
+const isString = unknown => (typeof unknown === 'string' || ((!!unknown && typeof unknown === 'object') && Object.prototype.toString.call(unknown) === '[object String]'));
+const isDate = unknown => (Object.prototype.toString.call(unknown) === '[object Date]' || unknown instanceof Date) && !isNaN(unknown.valueOf());
+
+/***/ }),
+
 /***/ "./node_modules/font-awesome/scss/font-awesome.scss":
 /*!**********************************************************!*\
   !*** ./node_modules/font-awesome/scss/font-awesome.scss ***!
@@ -32342,7 +32893,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-__webpack_require__(/*! ./validator */ "./resources/js/validator.js");
+__webpack_require__(/*! ./validate */ "./resources/js/validate.js");
 
 __webpack_require__(/*! ./bulma-extensions */ "./resources/js/bulma-extensions.js");
 
@@ -32368,6 +32919,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var imask__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! imask */ "./node_modules/imask/esm/index.js");
+/* harmony import */ var bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bulma-tagsinput/src/js */ "./node_modules/bulma-tagsinput/src/js/index.js");
+/* harmony import */ var _validate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../validate */ "./resources/js/validate.js");
+
+
 
 
 var srch = document.querySelector('#srch');
@@ -32390,12 +32945,13 @@ if (add_btn) {
     var target = add_btn.getAttribute('data-path');
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+      Object(_validate__WEBPACK_IMPORTED_MODULE_3__["validateit"])();
       var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('budget'), {
         mask: '$num',
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: ' '
+            thousandsSeparator: '.'
           }
         }
       });
@@ -32415,7 +32971,7 @@ change_btn.forEach(function (elem) {
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: ' '
+            thousandsSeparator: '.'
           }
         }
       });
@@ -32455,12 +33011,13 @@ if (income_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
       document.querySelector('#modal-title').innerHTML = 'Create New Income';
+      Object(_validate__WEBPACK_IMPORTED_MODULE_3__["validateit"])();
       var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('income'), {
         mask: '$num',
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: ' '
+            thousandsSeparator: '.'
           }
         }
       });
@@ -32477,12 +33034,13 @@ if (consump_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
       document.querySelector('#modal-title').innerHTML = 'Create New Consumption';
+      Object(_validate__WEBPACK_IMPORTED_MODULE_3__["validateit"])();
       var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('consumption'), {
         mask: '$num',
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: ' '
+            thousandsSeparator: '.'
           }
         }
       });
@@ -32499,15 +33057,20 @@ if (add_employee_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
       document.querySelector('#modal-title').innerHTML = 'Create New Employee';
+      Object(_validate__WEBPACK_IMPORTED_MODULE_3__["validateit"])();
       var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('salary'), {
         mask: '$num',
         blocks: {
           num: {
             mask: Number,
-            thousandsSeparator: ' '
+            thousandsSeparator: '.'
           }
         }
       });
+      var phoneMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('phone'), {
+        mask: '+{0}(000)000-00-00'
+      });
+      bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__["default"].attach();
     });
   });
 }
@@ -32521,6 +33084,7 @@ if (send_mail_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
       document.querySelector('#modal-title').innerHTML = 'Create New Invite';
+      Object(_validate__WEBPACK_IMPORTED_MODULE_3__["validateit"])();
     });
   });
 }
@@ -32587,17 +33151,6 @@ if (clear_btn) {
 
 /***/ }),
 
-/***/ "./resources/js/assets/main.js":
-/*!*************************************!*\
-  !*** ./resources/js/assets/main.js ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-
 /***/ "./resources/js/bulma-extensions.js":
 /*!******************************************!*\
   !*** ./resources/js/bulma-extensions.js ***!
@@ -32632,30 +33185,144 @@ bulmaTagsinput.attach();
 
 /***/ }),
 
-/***/ "./resources/js/validator.js":
-/*!***********************************!*\
-  !*** ./resources/js/validator.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/***/ "./resources/js/validate.js":
+/*!**********************************!*\
+  !*** ./resources/js/validate.js ***!
+  \**********************************/
+/*! exports provided: validateit */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-function validix(id) {
-  var submit = document.querySelector('#submit');
-  submit.addEventListener('click', function () {
-    console.log(123);
-    var form = document.querySelector(id);
-    var fields = form.querySelectorAll("input[type=text]");
-    fields.forEach(function (field) {
-      var attrs = field.attributes;
-      attrs.forEach(function (atr) {
-        switch (atr) {
-          case 'required':
-            console.log(1);
-            break;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateit", function() { return validateit; });
+//let require = /^$|/;
+var notNum = /\d|[/?<>;:{}!@#$%^&*()+=]/;
+var notAlpha = /[^a-zA-Z\s:\u00C0-\u00FF]/g;
+var email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function validateit() {
+  var submit_btn = document.querySelector('#submit');
+  var span = document.querySelector('.span');
+
+  if (submit_btn) {
+    submit_btn.addEventListener('click', function (e) {
+      var inps = document.querySelectorAll("input, select, .tagsinput");
+      inps.forEach(function (inp) {
+        var errors = [];
+        inp.getAttributeNames().forEach(function (attribute) {
+          switch (attribute) {
+            case 'require':
+              if (inp.value.length === 0) {
+                errors.push('This field is require');
+              } else {
+                valid(inp);
+              }
+
+              break;
+
+            case 'notnum':
+              if (notNum.test(inp.value)) {
+                errors.push('Only letters');
+              } else {
+                valid(inp);
+              }
+
+              break;
+
+            case 'notalpha':
+              if (notAlpha.test(inp.value)) {
+                errors.push('Only num');
+              } else {
+                valid(inp);
+              }
+
+              break;
+
+            case 'email':
+              if (!email.test(inp.value)) {
+                errors.push('Incorrect email');
+              } else {
+                valid(inp);
+              }
+
+              break;
+
+            case 'max20':
+              if (inp.value.length > 20) {
+                errors.push('Max length 20');
+              } else {
+                valid(inp);
+              }
+
+              break;
+
+            case 'min16':
+              if (inp.value.length < 16) {
+                errors.push('Enter full number');
+              } else {
+                valid(inp);
+              }
+
+              break;
+
+            case 'max6':
+              if (inp.value.length > 6) {
+                errors.push('Max length 6');
+              } else {
+                valid(inp);
+              }
+
+              break;
+
+            case 'money':
+              if (inp.value.length < 2) {
+                errors.push('This field require');
+              } else {
+                valid(inp);
+              }
+
+              break;
+
+            case 'reqtag':
+              if (inp.parentNode.querySelector('.tags') === null) {
+                errors.push('This field require');
+              } else {
+                valid(inp);
+              }
+
+          }
+        });
+
+        if (errors.length != 0) {
+          showError(errors, inp);
+          e.preventDefault();
         }
       });
     });
-  });
+  }
+}
+
+function showError(errors, inp) {
+  if (inp.parentNode.querySelector('.tagsinput')) {
+    inp.parentNode.querySelector('.tagsinput').classList.add('is-danger');
+  } else {
+    inp.classList.add('is-danger');
+  }
+
+  if (errors[0] != null) {
+    inp.parentNode.querySelector('.error').innerHTML = errors[0];
+  }
+}
+
+function valid(inp) {
+  if (inp.parentNode.querySelector('.tagsinput')) {
+    inp.parentNode.querySelector('.tagsinput').classList.remove('is-danger');
+    inp.parentNode.querySelector('.tagsinput').classList.add('is-success');
+  } else {
+    inp.classList.remove('is-danger');
+    inp.classList.add('is-success');
+  }
+
+  inp.parentNode.querySelector('.error').innerHTML = '';
 }
 
 /***/ }),
@@ -32672,15 +33339,14 @@ function validix(id) {
 /***/ }),
 
 /***/ 0:
-/*!*****************************************************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/assets/admin.js ./resources/js/assets/main.js ./resources/sass/app.scss ./node_modules/font-awesome/scss/font-awesome.scss ***!
-  \*****************************************************************************************************************************************************************************/
+/*!***********************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/assets/admin.js ./resources/sass/app.scss ./node_modules/font-awesome/scss/font-awesome.scss ***!
+  \***********************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! /home/developer/www/w/BestAdmin/resources/js/app.js */"./resources/js/app.js");
 __webpack_require__(/*! /home/developer/www/w/BestAdmin/resources/js/assets/admin.js */"./resources/js/assets/admin.js");
-__webpack_require__(/*! /home/developer/www/w/BestAdmin/resources/js/assets/main.js */"./resources/js/assets/main.js");
 __webpack_require__(/*! /home/developer/www/w/BestAdmin/resources/sass/app.scss */"./resources/sass/app.scss");
 module.exports = __webpack_require__(/*! /home/developer/www/w/BestAdmin/node_modules/font-awesome/scss/font-awesome.scss */"./node_modules/font-awesome/scss/font-awesome.scss");
 

@@ -18,7 +18,6 @@ class Employee extends Model
         'email',
         'position',
         'salary',
-        'skills',
         'status',
 
     ];
@@ -26,5 +25,10 @@ class Employee extends Model
     public function country()
     {
         return $this->belongsTo(Country::class, 'countryId');
+    }
+
+    public function employeeskill()
+    {
+        return $this->morphToMany(EmployeeSkill::class, 'taggable');
     }
 }

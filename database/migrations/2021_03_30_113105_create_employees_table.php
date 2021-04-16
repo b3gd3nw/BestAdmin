@@ -22,8 +22,7 @@ class CreateEmployeesTable extends Migration
             $table->string('position')->nullable();
             $table->string('phone');
             $table->string('email')->unique();
-            $table->decimal('salary', 6, 2);
-            $table->string('skills');
+            $table->decimal('salary',10, 2);
             $table->string('status');
             $table->softDeletes();
             $table->timestamps();
