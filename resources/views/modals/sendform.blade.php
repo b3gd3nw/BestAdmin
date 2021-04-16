@@ -1,4 +1,4 @@
-<form id="form" method="POST" action="{{ route('employee.store') }}" enctype="multipart/form-data" novalidate>
+<form id="form" method="POST" action="{{ route('sendmail') }}" enctype="multipart/form-data" novalidate>
     @csrf
     @method('POST')
     <div class="field">

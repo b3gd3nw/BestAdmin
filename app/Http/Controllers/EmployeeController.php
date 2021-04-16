@@ -6,9 +6,11 @@ use App\Models\Employee;
 use App\Models\Country;
 use App\Models\EmployeeSkill;
 use App\Models\Skill;
+use App\Models\Token;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 
 class EmployeeController extends Controller
@@ -146,5 +148,25 @@ class EmployeeController extends Controller
                 ->render()
         ];
         return response()->json($data);
+    }
+
+    public function sendMail()
+    {
+        $token = sha1(uniqid($_POST['email'], true));
+        $email = $_POST['email'];
+
+        Token::create([
+            'token' => $token,
+            'email' => $email
+        ]);
+
+        $url = 'http://127.0.0.1:8000/register/' . $token;
+        Mail::send(['text' => 'url'], ['url' => $url], function ($m) use ($url)
+        {
+            $m->from('hello@app.com', 'Your Application');
+
+            $m->to($_POST['email'], '')->subject('Hello employee, fill in the form.');
+        });
+        return redirect()->back();
     }
 }

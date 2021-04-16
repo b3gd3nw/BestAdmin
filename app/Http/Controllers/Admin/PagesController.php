@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Employee;
+use App\Models\Token;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,8 +19,19 @@ class PagesController extends Controller
       return view('Public.main');
   }
 
-  public function register() {
-      return view('Public.register');
+  public function register($token) {
+
+      if ($token = Token::where('token', '=', $token)->first())
+      {
+          if ($token->created_at->diffInMinutes(Carbon::now()) > 15)
+          {
+              return view('Public.error');
+          }
+          $countries = Country::all();
+          return view('Public.register', compact('countries'));
+      } else {
+          return view('Public.error');
+      }
   }
 
   /**

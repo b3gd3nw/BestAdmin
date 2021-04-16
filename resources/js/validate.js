@@ -6,10 +6,15 @@ let email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function validateit() {
     let submit_btn = document.querySelector('#submit');
     let span = document.querySelector('.span');
+    let calendar = document.querySelector('.datetimepicker-dummy-input');
+    if (calendar) {
+        calendar.setAttribute('require', '');
+    }
     if(submit_btn) {
         submit_btn.addEventListener('click', function (e){
-            let inps = document.querySelectorAll("input, select, .tagsinput");
+            let inps = document.querySelectorAll("input[class=input], select, .tagsinput, .datetimepicker-dummy-input");
             inps.forEach(inp => {
+                console.log(inp);
                 let errors = [];
                 inp.getAttributeNames().forEach(attribute => {
                     switch (attribute) {
@@ -64,20 +69,21 @@ export function validateit() {
                             break;
                         case 'money':
                             if (inp.value.length < 2) {
-                                errors.push('This field require');
+                                errors.push('This field is require');
                             } else {
                                 valid(inp);
                             }
                             break;
                         case 'reqtag':
                             if (inp.parentNode.querySelector('.tags') === null) {
-                                errors.push('This field require');
+                                errors.push('This field is require');
                             } else {
                                 valid(inp);
                             }
                     }
                });
                if (errors.length != 0) {
+                   console.log(errors.length);
                    showError(errors, inp);
                    e.preventDefault();
                }
@@ -92,19 +98,29 @@ function showError(errors, inp) {
     } else {
         inp.classList.add('is-danger');
     }
+
     if (errors[0] != null) {
-        inp.parentNode.querySelector('.error').innerHTML = errors[0];
+        let parent = inp;
+        while (!parent.classList.contains('control'))
+        {
+            parent = parent.parentNode;
+        }
+        parent.querySelector('.error').innerHTML = errors[0];
     }
 }
 
 function valid(inp) {
-    if (inp.parentNode.querySelector('.tagsinput')) {
-        inp.parentNode.querySelector('.tagsinput').classList.remove('is-danger');
-        inp.parentNode.querySelector('.tagsinput').classList.add('is-success');
-    } else {
-        inp.classList.remove('is-danger');
-        inp.classList.add('is-success');
+    if (!inp.classList.contains('datetimepicker-dummy-input'))
+    {
+        if (inp.parentNode.querySelector('.tagsinput')) {
+            inp.parentNode.querySelector('.tagsinput').classList.remove('is-danger');
+            inp.parentNode.querySelector('.tagsinput').classList.add('is-success');
+        } else {
+            inp.classList.remove('is-danger');
+            inp.classList.add('is-success');
+        }
+        inp.parentNode.querySelector('.error').innerHTML = '';
     }
-    inp.parentNode.querySelector('.error').innerHTML = '';
+
 
 }

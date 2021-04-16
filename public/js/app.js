@@ -32925,6 +32925,26 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var sbmt = document.querySelector('#submit');
+
+if (sbmt) {
+  document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
+  var phoneMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('phone'), {
+    mask: '+{0}(000)000-00-00'
+  });
+  var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('salary'), {
+    mask: '$num',
+    blocks: {
+      num: {
+        mask: Number,
+        thousandsSeparator: '.'
+      }
+    }
+  });
+  Object(_validate__WEBPACK_IMPORTED_MODULE_3__["validateit"])();
+  sbmt.addEventListener('click', function (e) {});
+}
+
 var srch = document.querySelector('#srch');
 
 if (srch) {
@@ -33202,11 +33222,17 @@ var email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function validateit() {
   var submit_btn = document.querySelector('#submit');
   var span = document.querySelector('.span');
+  var calendar = document.querySelector('.datetimepicker-dummy-input');
+
+  if (calendar) {
+    calendar.setAttribute('require', '');
+  }
 
   if (submit_btn) {
     submit_btn.addEventListener('click', function (e) {
-      var inps = document.querySelectorAll("input, select, .tagsinput");
+      var inps = document.querySelectorAll("input[class=input], select, .tagsinput, .datetimepicker-dummy-input");
       inps.forEach(function (inp) {
+        console.log(inp);
         var errors = [];
         inp.getAttributeNames().forEach(function (attribute) {
           switch (attribute) {
@@ -33275,7 +33301,7 @@ function validateit() {
 
             case 'money':
               if (inp.value.length < 2) {
-                errors.push('This field require');
+                errors.push('This field is require');
               } else {
                 valid(inp);
               }
@@ -33284,7 +33310,7 @@ function validateit() {
 
             case 'reqtag':
               if (inp.parentNode.querySelector('.tags') === null) {
-                errors.push('This field require');
+                errors.push('This field is require');
               } else {
                 valid(inp);
               }
@@ -33293,6 +33319,7 @@ function validateit() {
         });
 
         if (errors.length != 0) {
+          console.log(errors.length);
           showError(errors, inp);
           e.preventDefault();
         }
@@ -33309,20 +33336,28 @@ function showError(errors, inp) {
   }
 
   if (errors[0] != null) {
-    inp.parentNode.querySelector('.error').innerHTML = errors[0];
+    var parent = inp;
+
+    while (!parent.classList.contains('control')) {
+      parent = parent.parentNode;
+    }
+
+    parent.querySelector('.error').innerHTML = errors[0];
   }
 }
 
 function valid(inp) {
-  if (inp.parentNode.querySelector('.tagsinput')) {
-    inp.parentNode.querySelector('.tagsinput').classList.remove('is-danger');
-    inp.parentNode.querySelector('.tagsinput').classList.add('is-success');
-  } else {
-    inp.classList.remove('is-danger');
-    inp.classList.add('is-success');
-  }
+  if (!inp.classList.contains('datetimepicker-dummy-input')) {
+    if (inp.parentNode.querySelector('.tagsinput')) {
+      inp.parentNode.querySelector('.tagsinput').classList.remove('is-danger');
+      inp.parentNode.querySelector('.tagsinput').classList.add('is-success');
+    } else {
+      inp.classList.remove('is-danger');
+      inp.classList.add('is-success');
+    }
 
-  inp.parentNode.querySelector('.error').innerHTML = '';
+    inp.parentNode.querySelector('.error').innerHTML = '';
+  }
 }
 
 /***/ }),
