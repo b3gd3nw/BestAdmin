@@ -5,6 +5,30 @@ import { validateit } from '../validate';
 
 
 
+const sbmt = document.querySelector('#submit');
+if (sbmt) {
+    document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
+    var phoneMask = IMask(
+        document.getElementById('phone'), {
+            mask: '+{0}(000)000-00-00'
+        });
+    let currencyMask = IMask(
+        document.getElementById('salary'),
+        {
+            mask: '$num',
+            blocks: {
+                num: {
+                    mask: Number,
+                    thousandsSeparator: '.'
+                }
+            }
+        });
+    validateit()
+    sbmt.addEventListener('click', function (e) {
+
+    });
+}
+
 const srch = document.querySelector('#srch');
 if (srch) {
     document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');

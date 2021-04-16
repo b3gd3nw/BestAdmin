@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BankController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\Admin\PagesController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 // - User routes -
 Route::get('/', [PagesController::class, 'main']);
-Route::get('/register', [PagesController::class, 'register']);
+Route::get('/register/{token}', [PagesController::class, 'register']);
 // - Admin routes -
 Route::prefix('/admin')->group(function (){
     Auth::routes();
@@ -39,6 +40,7 @@ Route::prefix('/api')->group(function (){
     Route::resource('employee', EmployeeController::class);
     Route::get('send-form', [App\Http\Controllers\EmployeeController::class, 'showSendForm'])->name('showSendForm');
     Route::get('filterby/{filter?}', [App\Http\Controllers\EmployeeController::class, 'filterBy'])->name('filterBy');
+    Route::post('sendmail', [App\Http\Controllers\EmployeeController::class, 'sendMail'])->name('sendmail');
     Route::get('income', [BankController::class, 'getIncomePage'])->name('income');
     Route::get('consumption', [BankController::class, 'getConsumptionPage'])->name('consumption');
     Route::post('addincome', [BankController::class, 'store_income'])->name('storeIncome');
