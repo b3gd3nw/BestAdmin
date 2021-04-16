@@ -3,6 +3,12 @@
 @section('title', 'Accounting-Categories')
 
 @section('content')
+    @if (Session::has('success'))
+        <div class="notification is-success">
+            <button class="delete"></button>
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="modal" id="modal">
         <div class="modal-background"></div>
         <div class="modal-card">

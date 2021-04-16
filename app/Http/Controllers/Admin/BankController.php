@@ -52,7 +52,7 @@ class BankController extends Controller
         $balance = Bank::firstOrFail();
         $balance->amount = $balance->amount + $request->amount;
         $balance->save();
-        return redirect()->back()->withSuccess('Member was successfully updated');
+        return redirect()->back()->withSuccess('Income was successfully added!');
     }
 
     public function store_consumption(Request $request)
@@ -64,7 +64,7 @@ class BankController extends Controller
         $balance = Bank::firstOrFail();
         $balance->amount = $balance->amount - $request->amount;
         $balance->save();
-        return redirect()->back()->withSuccess('Member was successfully updated');
+        return redirect()->back()->withSuccess('Consumption was successfully added!');
     }
 
     /**

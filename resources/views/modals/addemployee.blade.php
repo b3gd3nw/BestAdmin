@@ -15,7 +15,7 @@
     </div>
     <div class="field">
         <p class="control">
-            <input name="birthdate" class="input" type="date" placeholder="Birthday" max="{{ $tomorrow }}" onkeydown="return false" require>
+            <input name="birthdate" class="input" type="date" placeholder="Birthday" max="{{ $today }}" onkeydown="return false" require>
             <span class="error red fs-12"></span>
         </p>
     </div>

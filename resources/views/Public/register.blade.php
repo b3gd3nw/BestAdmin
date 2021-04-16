@@ -5,9 +5,17 @@
 @section('content')
   <div class="body-bg">
     <div class="container">
+      @if (Session::has('error'))
+        <div class="notification is-warning">
+          <button class="delete"></button>
+          {{ session('error') }}
+        </div>
+      @endif
       <div class="card my-1">
         <div class="card-content text-center fantom-card text-glow">
           <form id="form" class="" action="{{ route('employee.store') }}" method="post" enctype="multipart/form-data" novalidate>
+            @csrf
+            @method('POST')
             <p class="title color-black">
               Fill the form
             </p>
@@ -25,7 +33,7 @@
             </div>
             <div class="field">
               <p class="control">
-                <input name="birthdate" class="" type="date" placeholder="Birthday">
+                <input name="birthdate" class="calendar" placeholder="Birthday">
                 <span class="error red fs-12"></span>
               </p>
             </div>
@@ -66,7 +74,7 @@
             </div>
             <div class="field">
               <p class="control">
-                <input name="skills" class="input" type="text" placeholder="Skills" reqtag>
+                <input name="skills" id="tags" class="input" type="tags" placeholder="Your skills" reqtag>
                 <span class="error red fs-12"></span>
               </p>
             </div>
