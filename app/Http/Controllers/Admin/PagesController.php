@@ -21,14 +21,15 @@ class PagesController extends Controller
 
   public function register($token) {
 
+      $today = Carbon::now()->toDateString();
       if ($token = Token::where('token', '=', $token)->first())
       {
-          if ($token->created_at->diffInMinutes(Carbon::now()) > 15)
+          if ($token->created_at->diffInMinutes(Carbon::now()) > 1210)
           {
               return view('Public.error');
           }
           $countries = Country::all();
-          return view('Public.register', compact('countries'));
+          return view('Public.register', compact('countries', 'today'));
       } else {
           return view('Public.error');
       }

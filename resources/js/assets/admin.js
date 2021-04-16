@@ -1,13 +1,22 @@
 import axios from 'axios';
 import IMask from 'imask';
 import bulmaTagsinput from "bulma-tagsinput/src/js";
+import bulmaCalendar from "bulma-calendar";
 import { validateit } from '../validate';
 
+document.addEventListener('DOMContentLoaded', () => {
+    (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+        const $notification = $delete.parentNode;
 
+        $delete.addEventListener('click', () => {
+            $notification.parentNode.removeChild($notification);
+        });
+    });
+});
 
 const sbmt = document.querySelector('#submit');
 if (sbmt) {
-    document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
+    // document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
     var phoneMask = IMask(
         document.getElementById('phone'), {
             mask: '+{0}(000)000-00-00'
@@ -23,10 +32,12 @@ if (sbmt) {
                 }
             }
         });
-    validateit()
-    sbmt.addEventListener('click', function (e) {
-
+    bulmaCalendar.attach('.calendar', {
+        dateFormat: 'YYYY/MM/DD',
+        type: 'date',
+        maxDate: new Date(),
     });
+    validateit()
 }
 
 const srch = document.querySelector('#srch');

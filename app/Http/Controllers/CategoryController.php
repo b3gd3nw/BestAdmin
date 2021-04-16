@@ -44,7 +44,7 @@ class CategoryController extends Controller
         Category::create(
             $request->all()
         );
-        return redirect()->back()->withSuccess('Member was successfully updated');
+        return redirect()->back()->withSuccess('Category was successfully added!');
     }
 
     /**
@@ -74,7 +74,7 @@ class CategoryController extends Controller
                 ->render()
         ];
 
-        return response()->json($data, 200);
+        return response()->json($data);
     }
 
     /**
@@ -89,7 +89,7 @@ class CategoryController extends Controller
         $data = $request->except(['_method', '_token']);
         Category::where('id', $id)->update($data);
 
-        return redirect()->back()->withSuccess('Member was successfully updated');
+        return redirect()->back()->withSuccess('Category was successfully updated!');
     }
 
     /**
@@ -102,7 +102,7 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        return redirect()->back();
+        return redirect()->back()->withSuccess('Category was successfully deleted!');
     }
 
     //--------dev-----------dev-------------dev----------dev---
