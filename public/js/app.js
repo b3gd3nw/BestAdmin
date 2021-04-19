@@ -27391,6 +27391,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+bulma_calendar__WEBPACK_IMPORTED_MODULE_3___default.a.attach('.range-calendar', {
+  dateFormat: 'YYYY/MM/DD',
+  type: 'date',
+  isRange: 'true',
+  labelFrom: 'Click to change date'
+});
 var sbmt = document.querySelector('#submit');
 
 if (sbmt) {
@@ -27418,7 +27424,7 @@ if (sbmt) {
 var srch = document.querySelector('#srch');
 
 if (srch) {
-  document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
+  // document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
   srch.addEventListener('click', function (e) {
     var bodyFormData = new FormData(document.querySelector('#frm'));
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/transactions', bodyFormData).then(function (responce) {
@@ -27621,23 +27627,7 @@ if (clear_btn) {
   clear_btn.addEventListener('click', function (e) {
     window.location.reload();
   });
-} // let submit = document.querySelector('.submit');
-// submit.addEventListener('click', function (){
-//     console.log(123);
-//     let form = document.querySelector('#form');
-//     let fields = form.querySelectorAll("input[type=text]");
-//     fields.forEach(function(field) {
-//         let attrs = field.attributes;
-//         attrs.forEach(function (atr) {
-//             switch (atr)
-//             {
-//                 case 'required':
-//                     console.log(1);
-//                     break;
-//             }
-//         });
-//     });
-// })
+}
 
 /***/ }),
 
@@ -27952,10 +27942,10 @@ function valid(inp) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/developer/github/BestAdmin/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /home/developer/github/BestAdmin/resources/js/assets/admin.js */"./resources/js/assets/admin.js");
-__webpack_require__(/*! /home/developer/github/BestAdmin/resources/sass/app.scss */"./resources/sass/app.scss");
-module.exports = __webpack_require__(/*! /home/developer/github/BestAdmin/node_modules/font-awesome/scss/font-awesome.scss */"./node_modules/font-awesome/scss/font-awesome.scss");
+__webpack_require__(/*! /home/developer/giter/BestAdmin/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /home/developer/giter/BestAdmin/resources/js/assets/admin.js */"./resources/js/assets/admin.js");
+__webpack_require__(/*! /home/developer/giter/BestAdmin/resources/sass/app.scss */"./resources/sass/app.scss");
+module.exports = __webpack_require__(/*! /home/developer/giter/BestAdmin/node_modules/font-awesome/scss/font-awesome.scss */"./node_modules/font-awesome/scss/font-awesome.scss");
 
 
 /***/ })

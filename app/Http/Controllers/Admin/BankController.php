@@ -79,7 +79,7 @@ class BankController extends Controller
         $bank = new Bank();
         $data = [
             'view' => View::make('Admin.tables.accounting-general-table')
-                ->with('categories', $bank->getCategoriesConsumByMonth($request->date))
+                ->with('categories', $bank->getCategoriesConsumByMonth($request->birthdate))
                 ->render()
         ];
         return response()->json($data);
