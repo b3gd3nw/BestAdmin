@@ -27391,6 +27391,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__["default"].attach();
 bulma_calendar__WEBPACK_IMPORTED_MODULE_3___default.a.attach('.range-calendar', {
   dateFormat: 'YYYY/MM/DD',
   type: 'date',

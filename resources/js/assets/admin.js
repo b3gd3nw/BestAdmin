@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+bulmaTagsinput.attach();
+
 bulmaCalendar.attach('.range-calendar', {
     dateFormat: 'YYYY/MM/DD',
     type: 'date',
