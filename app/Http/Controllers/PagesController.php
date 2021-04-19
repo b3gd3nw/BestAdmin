@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
@@ -34,7 +34,7 @@ class PagesController extends Controller
     {
         $today = Carbon::now()->toDateString();
         if ($token = Token::where('token', '=', $token)->first()) {
-            if ($token->created_at->diffInMinutes(Carbon::now()) > 1210) {
+            if ($token->created_at->diffInMinutes(Carbon::now()) > 15) {
                 $token->delete();
                 return view('Public.error');
             }

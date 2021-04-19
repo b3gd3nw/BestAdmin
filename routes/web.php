@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\BankController;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\CountryController;
-use App\Http\Controllers\Admin\PagesController;
+use App\Http\Controllers\PagesController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -47,5 +47,4 @@ Route::prefix('/api')->group(function (){
     Route::post('addconsumption', [BankController::class, 'store_consumption'])->name('storeConsumption');
     Route::post('transactions', [BankController::class, 'getCategoriesByMonth'])->name('getTransByMonth');
     Route::get('consbymonth', [BankController::class, 'getConsumptionByMonth'])->name('getConsByMonth');
-    Route::get('getcsrf', [App\Http\Controllers\CategoryController::class, 'getCsrf']);
 });
