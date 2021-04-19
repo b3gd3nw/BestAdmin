@@ -21145,7 +21145,7 @@ a.has-text-danger-dark:focus {
   overflow-y: auto;
 }
 
-/* Указываем box sizing */
+/* Specifying box sizing */
 
 *,
 *::before,
@@ -21153,18 +21153,18 @@ a.has-text-danger-dark:focus {
   box-sizing: border-box;
 }
 
-html {
-  height: 100%;
-}
-
-/* Убираем внутренние отступы */
+/* Removing internal padding */
 
 ul[class],
 ol[class] {
   padding: 0;
 }
 
-/* Убираем внешние отступы */
+html {
+  height: 100%;
+}
+
+/* Removing margins */
 
 body,
 h1,
@@ -21183,7 +21183,7 @@ dd {
   margin: 0;
 }
 
-/* Выставляем основные настройки по-умолчанию для body */
+/* We set the basic default settings for the body */
 
 body {
   scroll-behavior: smooth;
@@ -21191,34 +21191,34 @@ body {
   line-height: 1.5;
 }
 
-/* Удаляем стандартную стилизацию для всех ul и il, у которых есть атрибут class*/
+/* Remove the default styling for all ul and il that have a class attribute */
 
 ul[class],
 ol[class] {
   list-style: none;
 }
 
-/* Элементы a, у которых нет класса, сбрасываем до дефолтных стилей */
+/* Elements a that do not have a class are reset to default styles */
 
 a:not([class]) {
   -webkit-text-decoration-skip: ink;
           text-decoration-skip-ink: auto;
 }
 
-/* Упрощаем работу с изображениями */
+/* Making it easier to work with images */
 
 img {
   max-width: 100%;
   display: block;
 }
 
-/* Указываем понятную периодичность в потоке данных у article*/
+/* We indicate a clear frequency in the data flow for article */
 
 article > * + * {
   margin-top: 1em;
 }
 
-/* Наследуем шрифты для инпутов и кнопок */
+/* Inheriting fonts for inputs and buttons */
 
 input,
 button,
@@ -21227,7 +21227,7 @@ select {
   font: inherit;
 }
 
-/* Удаляем все анимации и переходы для людей, которые предпочитай их не использовать */
+/* Remove all animations and transitions for people who prefer not to use them */
 
 @media (prefers-reduced-motion: reduce) {
   * {
