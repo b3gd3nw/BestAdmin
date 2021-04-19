@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class CountryController extends Controller
 {
+    /**
+     * Gets all countries from db and returns them.
+     *
+     * @return  \Illuminate\Http\JsonResponse
+     */
     public function fetchAll()
     {
         $countries = Country::all();

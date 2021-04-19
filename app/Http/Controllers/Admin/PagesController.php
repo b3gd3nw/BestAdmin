@@ -14,70 +14,90 @@ use App\Models\Category;
 
 class PagesController extends Controller
 {
+    /**
+     * Returns main page view.
+     *
+     * @return  \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function main()
+    {
+        return view('Public.main');
+    }
 
-  public function main() {
-      return view('Public.main');
-  }
+    /**
+     * Check token and return error or register view.
+     *
+     * @param  String  $token
+     * @return  \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function register($token)
+    {
+        $today = Carbon::now()->toDateString();
+        if ($token = Token::where('token', '=', $token)->first()) {
+            if ($token->created_at->diffInMinutes(Carbon::now()) > 1210) {
+                $token->delete();
+                return view('Public.error');
+            }
+            $countries = Country::all();
+            return view('Public.register', compact('countries', 'today'));
+        } else {
+            return view('Public.error');
+        }
+    }
 
-  public function register($token) {
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $bank = Bank::firstOrFail();
 
-      $today = Carbon::now()->toDateString();
-      if ($token = Token::where('token', '=', $token)->first())
-      {
-          if ($token->created_at->diffInMinutes(Carbon::now()) > 1210)
-          {
-              return view('Public.error');
-          }
-          $countries = Country::all();
-          return view('Public.register', compact('countries', 'today'));
-      } else {
-          return view('Public.error');
-      }
-  }
+        $employes = Employee::orderBy('id')->withTrashed()->get();
+        $consumptions = Transaction::whereMonth('created_at', Carbon::now()->month)->where('type', 'consumption')->sum('amount');
+        $budget = Category::whereMonth('created_at', Carbon::now()->month)->sum('budget');
 
-  /**
-   * Show the application dashboard.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function index()
-  {
-      $bank = Bank::firstOrFail();
+        $bank_amount = $bank->amount;
 
-      $employes = Employee::orderBy('id')->withTrashed()->get();
-      $consumptions = Transaction::whereMonth('created_at', Carbon::now()->month)->where('type', 'consumption')->sum('amount');
-      $budget = Category::whereMonth('created_at', Carbon::now()->month)->sum('budget');
+        return view('Admin.general.home', compact('consumptions', 'budget', 'bank_amount', 'employes'));
+    }
 
-      $bank_amount = $bank->amount;
+    /**
+     * Receives employes from database and return view with them.
+     *
+     * @return  \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function employee()
+    {
+        $employes = Employee::orderBy('id')->withTrashed()->get();
+        return view('Admin.general.employee', compact('employes'));
+    }
 
-      return view('Admin.general.home', compact('consumptions', 'budget', 'bank_amount', 'employes'));
-  }
+    /**
+     * Receives consumptions, bank, transactions, categories from database and return view with them.
+     *
+     * @return  \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function accounting_general()
+    {
+        $bank = new Bank();
+        $consumptions = $bank->getCategoriesConsumByMonth(null);
+        $categories = Category::all();
+        $transactions = Transaction::orderBy('created_at')->get();
+        $bank = Bank::firstOrFail();
+        $bank_amount = $bank->amount;
+        return view('Admin.accounting.general', compact('consumptions', 'bank_amount', 'transactions', 'categories'));
+    }
 
-  // Show employee page
-  public function employee()
-  {
-      $employes = Employee::orderBy('id')->withTrashed()->get();
-      return view('Admin.general.employee', compact('employes'));
-  }
-
-  // Show accounting>general page
-  public function accounting_general()
-  {
-    $bank = new Bank();
-    $consumptions = $bank->getCategoriesConsumByMonth(null);
-    $categories = Category::all();
-    $transactions = Transaction::orderBy('created_at')->get();
-    $bank = Bank::firstOrFail();
-    $bank_amount = $bank->amount;
-    return view('Admin.accounting.general', compact('consumptions', 'bank_amount', 'transactions', 'categories'));
-  }
-
-  // Show accounting>categories page
-  public function accounting_categories()
-  {
-    $categories = Category::orderBy('created_at', 'desc')->get();
-    return view('Admin.accounting.categories', compact('categories'));
-  }
-
-
+    /**
+     * Receives categories and return categories view.
+     *
+     * @return  \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function accounting_categories()
+    {
+        $categories = Category::orderBy('created_at', 'desc')->get();
+        return view('Admin.accounting.categories', compact('categories'));
+    }
 }

@@ -56,7 +56,6 @@ class EmployeeController extends Controller
         if ($email) {
             return redirect()->back()->withError('Email already in use');
         } else {
-
             $skill = new Skill();
             $skills = $skill->skillFilter($request->skills);
 
@@ -65,8 +64,7 @@ class EmployeeController extends Controller
                 $request->all()
             )->id;
 
-            foreach ($skills as $skillId)
-            {
+            foreach ($skills as $skillId) {
                 EmployeeSkill::create(compact('employeeId', 'skillId'));
             }
             return redirect()->back()->withSuccess('Employee was successfully added!');
@@ -121,18 +119,27 @@ class EmployeeController extends Controller
         return redirect()->back()->withSuccess('Delete Success!');
     }
 
+    /**
+     * Makes modal view and return them in json.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function showSendForm()
     {
-
         $data = [
             'view' => View::make('modals.sendform')
-
                 ->render()
         ];
 
         return response()->json($data);
     }
 
+    /**
+     * Gets status and make table view by parameter;
+     *
+     * @param  String  $status
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function filterBy($status)
     {
         $employes = DB::table('employees')->where('status', $status)->get();
@@ -145,13 +152,20 @@ class EmployeeController extends Controller
         return response()->json($data);
     }
 
+    /**
+     * Checks email, generate token and sand mail into email
+     *
+     * @return mixed
+     */
     public function sendMail()
     {
+        // Check email in db
         $email = DB::table('employees')->where('email', $_POST['email'])->first();
         if ($email) {
             return redirect()->back()->withError('Email already in use');
         }
 
+        // Generate token
         $token = sha1(uniqid($_POST['email'], true));
         $email = $_POST['email'];
 
@@ -160,13 +174,16 @@ class EmployeeController extends Controller
             'email' => $email
         ]);
 
+        // Assemble url
         $url = 'http://' . $_SERVER['HTTP_HOST'] . '/register/' . $token;
-        Mail::send(['text' => 'url'], ['url' => $url], function ($m) use ($url)
-        {
+
+        // Send email
+        Mail::send(['text' => 'url'], ['url' => $url], function ($m) use ($url) {
             $m->from('hello@app.com', 'Your Application');
 
             $m->to($_POST['email'], '')->subject('Hello employee, fill in the form.');
         });
+
         return redirect()->back()->withSuccess('Message sent successfully!');
     }
 }

@@ -104,10 +104,4 @@ class CategoryController extends Controller
 
         return redirect()->back()->withSuccess('Category was successfully deleted!');
     }
-
-    //--------dev-----------dev-------------dev----------dev---
-    public function getCsrf()
-    {
-        return csrf_token();
-    }
 }
