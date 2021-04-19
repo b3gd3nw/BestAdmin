@@ -14,6 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+bulmaCalendar.attach('.range-calendar', {
+    dateFormat: 'YYYY/MM/DD',
+    type: 'date',
+    isRange: 'true',
+    labelFrom: 'Click to change date',
+});
+
 const sbmt = document.querySelector('#submit');
 if (sbmt) {
     // document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
@@ -42,7 +49,7 @@ if (sbmt) {
 
 const srch = document.querySelector('#srch');
 if (srch) {
-    document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
+    // document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
     srch.addEventListener('click', function (e) {
         let bodyFormData = new FormData(document.querySelector('#frm'));
         axios.post('/api/transactions', bodyFormData)
@@ -258,22 +265,3 @@ if (clear_btn){
         window.location.reload();
     });
 }
-// let submit = document.querySelector('.submit');
-// submit.addEventListener('click', function (){
-//     console.log(123);
-//     let form = document.querySelector('#form');
-//     let fields = form.querySelectorAll("input[type=text]");
-//     fields.forEach(function(field) {
-//         let attrs = field.attributes;
-//         attrs.forEach(function (atr) {
-//             switch (atr)
-//             {
-//                 case 'required':
-//                     console.log(1);
-//                     break;
-//             }
-//         });
-//     });
-// })
-
-
