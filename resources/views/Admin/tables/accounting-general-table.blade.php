@@ -4,7 +4,6 @@
             <th>{{ $category['category']['id'] }}</th>
             <td>{{ $category['category']['name'] }}</td>
             <td>$ {{ $category['amount'] }}</td>
-            <td>21.21.21</td>
         </tr>
     @else
         <tr>
