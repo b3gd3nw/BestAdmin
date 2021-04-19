@@ -19,13 +19,15 @@
    ### Endpoints
 
    | point  | value |
-         | ------------- | ------------- |
+   | ------------- | ------------- |
    | / | Welcome page  |
    | /admin | Admin panel  |
    | /register/{token} | Employee register page |
-
+   
+   ***
+   
    | Admin login  | Admin password |
-                    | ------------- | ------------- |
+   | ------------- | ------------- |
    | admin@gmail.com | admin  |
 
     ****
