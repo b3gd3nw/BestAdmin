@@ -23,7 +23,6 @@ bulmaCalendar.attach('.range-calendar', {
 
 const sbmt = document.querySelector('#submit');
 if (sbmt) {
-    // document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
     var phoneMask = IMask(
         document.getElementById('phone'), {
             mask: '+{0}(000)000-00-00'
@@ -49,7 +48,6 @@ if (sbmt) {
 
 const srch = document.querySelector('#srch');
 if (srch) {
-    // document.querySelector('.datetimepicker-clear-button').setAttribute('type', 'button');
     srch.addEventListener('click', function (e) {
         let bodyFormData = new FormData(document.querySelector('#frm'));
         axios.post('/api/transactions', bodyFormData)
@@ -117,9 +115,6 @@ if (close_btn) {
 const delete_btns = document.querySelectorAll('.delete-ctg');
 delete_btns.forEach(function(elem) {
     elem.addEventListener('click', function(e) {
-        if (e.target.classList.contains('delete-ctg')) {
-            console.log(123);
-        }
         let res = confirm('Confirm Action');
         if (!res) {
             return false;
