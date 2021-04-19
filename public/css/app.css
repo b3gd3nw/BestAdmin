@@ -6681,16 +6681,6 @@ table th {
   color: #363636;
 }
 
-@-webkit-keyframes spinAround {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(359deg);
-  }
-}
-
 @keyframes spinAround {
   from {
     transform: rotate(0deg);
@@ -21143,6 +21133,46 @@ a.has-text-danger-dark:focus {
   width: 22rem;
   max-width: 95vw;
   overflow-y: auto;
+}
+
+@-webkit-keyframes spinAround {
+  from {
+    transform: rotate(0);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes spinAround {
+  from {
+    transform: rotate(0);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.tagsinput {
+  height: auto !important;
+}
+
+.tagsinput .control {
+  margin-bottom: 0.1em !important;
+  margin-top: 0.1em !important;
+}
+
+.tagsinput input {
+  border: none;
+  margin-bottom: 0.1em !important;
+  margin-top: 0.1em !important;
+}
+
+.tagsinput .tag.is-active {
+  background-color: #00d1b2;
+  color: #fff;
 }
 
 /* Specifying box sizing */
