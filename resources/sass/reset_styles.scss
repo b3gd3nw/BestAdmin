@@ -11,6 +11,10 @@ ol[class] {
     padding: 0;
 }
 
+html {
+    height: 100%;
+}
+
 /* Removing margins */
 body,
 h1,
@@ -31,7 +35,6 @@ dd {
 
 /* We set the basic default settings for the body */
 body {
-    min-height: 100vh;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
     line-height: 1.5;
