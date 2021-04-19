@@ -8,7 +8,7 @@
     - Nodejs
     - npm
 2. Установка:
-    1. Создаем базу данных в MySQL. Заходим в консоль MySQl -  create database Users_db.
+    1. Создаем базу данных в MySQL. Заходим в консоль MySQl -  create database DB_NAME.
     2. Устанавливаем все зависимости npm install && composer install
     3. Собираем проект npm run prod
     4. Создаем файл в проекте .env по примеру .env.example. Настраиваем подключение к БД MySQL и подключение к Mailgun.
