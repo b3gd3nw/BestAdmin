@@ -8,6 +8,16 @@
 		z-index: 4444;
 }
 
+.is-align-center {
+  display: flex;
+  align-items: center;
+}
+
+.is-justify-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .hero {
   position: relative;
   top: 40%;
@@ -19,8 +29,4 @@
     font-weight: 100;
     font-size: 20px;
   }
-}
-
-.my-1 {
-  margin: 50px 0;
 }

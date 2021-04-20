@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 // - User routes -
 Route::get('/', [PagesController::class, 'main']);
-Route::get('/register/{token}', [PagesController::class, 'register']);
+Route::get('/register', [PagesController::class, 'register']);
 // - Admin routes -
 Route::prefix('/admin')->group(function (){
     Auth::routes();
