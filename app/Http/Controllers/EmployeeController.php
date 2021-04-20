@@ -59,7 +59,7 @@ class EmployeeController extends Controller
             $skill = new Skill();
             $skills = $skill->skillFilter($request->skills);
 
-            $request->merge(['salary' => str_replace(['$',','], ['','.'], $request->salary)]);
+            $request->merge(['salary' => str_replace(['$', '.', ','], ['','', '.'], $request->salary)]);
             $employeeId = Employee::create(
                 $request->all()
             )->id;

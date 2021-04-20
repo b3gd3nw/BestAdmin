@@ -26,7 +26,7 @@
         <div class="card margin-auto">
           <div class="card-content text-center">
             <p class="title color-black">
-              $ {{ $bank_amount }}
+              $ {{ number_format($bank_amount, 2,  ',', '.') }}
             </p>
             <p class="subtitle color-black">
               Balance
@@ -72,13 +72,13 @@
                   <tr style="box-shadow: 0 0 5px red">
                       <th>{{ $consumption['category']['id'] }}</th>
                       <td>{{ $consumption['category']['name'] }}</td>
-                      <td>$ {{ $consumption['amount'] }}</td>
+                      <td>$ {{ number_format($consumption['amount'], 2,  ',', '.') }}</td>
                   </tr>
               @else
                   <tr>
                       <th>{{ $consumption['category']['id'] }}</th>
                       <td>{{ $consumption['category']['name'] }}</td>
-                      <td>$ {{ $consumption['amount'] }}</td>
+                      <td>$ {{ number_format($consumption['amount'], 2, ',', '.') }}</td>
                   </tr>
               @endif
           @endforeach
@@ -105,12 +105,12 @@
 
                                 @case('income')
                                 <td class="green">{{ $transaction['type'] }}</td>
-                                <td>$ +{{ $transaction['amount'] }}</td>
+                                <td>$ +{{ number_format($transaction['amount'], 2, ',', '.') }}</td>
                                 @break
 
                                 @case('consumption')
                                 <td class="red">{{ $transaction['type'] }}</td>
-                                <td>$ -{{ $transaction['amount'] }}</td>
+                                <td>$ -{{ number_format($transaction['amount'], 2, ',', '.') }}</td>
                                 @break
 
                             @endswitch

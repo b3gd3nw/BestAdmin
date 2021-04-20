@@ -60,8 +60,8 @@ export function validateit() {
                             }
                             break;
                         case 'max6':
-                            if (inp.value.length > 6) {
-                                errors.push('Max length 6');
+                            if (inp.value.length > 12) {
+                                errors.push('Max length 12');
                             } else {
                                 valid(inp);
                             }

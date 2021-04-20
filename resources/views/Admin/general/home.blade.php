@@ -8,7 +8,7 @@
                 <div class="card has-background-primary hoverable">
                     <div class="card-content">
                         <p class="title" id="balance">
-                            $ {{ $bank_amount }}
+                            $ {{ number_format($bank_amount, 2,  ',', '.') }}
                         </p>
                         <p class="subtitle">
                             Current balance
@@ -20,7 +20,7 @@
                 <div class="card has-background-link">
                     <div class="card-content">
                         <p class="title">
-                            $ {{ $budget }}
+                            $ {{ number_format($budget, 2,  ',', '.') }}
                         </p>
                         <p class="subtitle">
                             Monthly budget
@@ -32,7 +32,7 @@
                 <div class="card has-background-danger">
                     <div class="card-content">
                         <p class="title">
-                            $ {{ $consumptions }}
+                            $ {{ number_format($consumptions, 2,  ',', '.') }}
                         </p>
                         <p class="subtitle">
                             Current expenses per month
