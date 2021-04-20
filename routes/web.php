@@ -3,8 +3,10 @@
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\PagesController;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +32,8 @@ Route::prefix('/admin')->group(function (){
         Route::get('/employes', [PagesController::class, 'employee'])->name('employeeAdmin');
         Route::get('/accounting/general', [PagesController::class, 'accounting_general'])->name('generalAdmin');
         Route::get('/accounting/categories', [PagesController::class, 'accounting_categories'])->name('categoriesAdmin');
+//        Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
     });
 });
 // - Api routes -

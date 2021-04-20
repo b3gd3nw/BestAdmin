@@ -27392,6 +27392,16 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__["default"].attach();
+var logout = document.querySelector('#logout');
+
+if (logout) {
+  logout.addEventListener('click', function (e) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/admin/logout').then(function (responce) {
+      location.reload();
+    });
+  });
+}
+
 bulma_calendar__WEBPACK_IMPORTED_MODULE_3___default.a.attach('.range-calendar', {
   dateFormat: 'YYYY/MM/DD',
   type: 'date',
