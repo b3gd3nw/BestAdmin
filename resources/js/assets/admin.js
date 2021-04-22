@@ -16,6 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 bulmaTagsinput.attach();
 
+const logout = document.querySelector('#logout');
+if (logout) {
+    logout.addEventListener('click', function (e) {
+        axios.post('/admin/logout').then(responce => {
+            location.reload();
+        });
+    });
+}
+
 bulmaCalendar.attach('.range-calendar', {
     dateFormat: 'YYYY/MM/DD',
     type: 'date',

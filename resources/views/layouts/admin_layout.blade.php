@@ -27,7 +27,7 @@
                                     Admin
                                 </a>
                                 <div class="navbar-dropdown is-hoverable">
-                                    <a class="navbar-item">
+                                    <a class="navbar-item" id="logout">
                                         Logout
                                     </a>
                                 </div>
