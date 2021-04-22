@@ -30,15 +30,16 @@ class PagesController extends Controller
      * @param  String  $token
      * @return  \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function register($token)
+    public function register()
     {
         $today = Carbon::now()->toDateString();
-        if ($token = Token::where('token', '=', $token)->first()) {
+        if ($token = Token::where('token', '=', $_GET['token'])->first()) {
             if ($token->created_at->diffInMinutes(Carbon::now()) > 15) {
                 $token->delete();
                 return view('Public.error');
             }
             $countries = Country::all();
+            setcookie('token', $_GET['token'], 0, '/');
             return view('Public.register', compact('countries', 'today'));
         } else {
             return view('Public.error');

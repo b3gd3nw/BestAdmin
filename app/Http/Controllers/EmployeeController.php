@@ -67,7 +67,12 @@ class EmployeeController extends Controller
             foreach ($skills as $skillId) {
                 EmployeeSkill::create(compact('employeeId', 'skillId'));
             }
-            return redirect()->back()->withSuccess('Employee was successfully added!');
+
+            $token = Token::where('token', '=', $_COOKIE['token'])->first();
+            if ($token)
+                $token->delete();
+
+            return redirect('/')->withSuccess('Employee was successfully added!');
         }
     }
 
@@ -175,7 +180,7 @@ class EmployeeController extends Controller
         ]);
 
         // Assemble url
-        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/register/' . $token;
+        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/register/?token=' . $token;
 
         // Send email
         Mail::send(['text' => 'url'], ['url' => $url], function ($m) use ($url) {

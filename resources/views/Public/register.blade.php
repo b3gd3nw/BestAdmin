@@ -3,7 +3,7 @@
 @section('title', 'Step One')
 
 @section('content')
-  <div class="body-bg">
+  <div class="body-bg is-align-center">
     <div class="container">
       @if (Session::has('error'))
         <div class="notification is-warning">
@@ -12,11 +12,11 @@
         </div>
       @endif
       <div class="card my-1">
-        <div class="card-content text-center fantom-card text-glow">
+        <div class="card-content fantom-card text-glow">
           <form id="form" class="" action="{{ route('employee.store') }}" method="post" enctype="multipart/form-data" novalidate>
             @csrf
             @method('POST')
-            <p class="title color-black">
+            <p class="title color-black has-text-centered">
               Fill the form
             </p>
             <div class="field">
@@ -78,7 +78,11 @@
                 <span class="error red fs-12"></span>
               </p>
             </div>
-            <button class="button is-primary" id="submit">Register</button>
+            <div class="field">
+              <p class="control is-justify-end">
+                <button class="button is-primary" id="submit">Register</button>
+              </p>
+            </div>
           </form>
         </div>
       </div>
