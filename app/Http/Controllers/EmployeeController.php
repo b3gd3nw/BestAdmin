@@ -51,9 +51,8 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        $email = DB::table('employees')->where('email', $request->email)->first();
         $request->request->add(['status' => 'pending']);
-        if ($email) {
+        if (DB::table('employees')->where('email', $request->email)->first()) {
             return redirect()->back()->withError('Email already in use');
         } else {
             $skill = new Skill();
@@ -70,9 +69,15 @@ class EmployeeController extends Controller
 
             $token = Token::where('token', '=', $_COOKIE['token'])->first();
             if ($token)
+            {
                 $token->delete();
+                return redirect('/')->withSuccess('Employee was successfully added!');
+            } else {
+                return redirect()->back()->withSuccess('Employee was successfully added!');
+            }
 
-            return redirect('/')->withSuccess('Employee was successfully added!');
+
+
         }
     }
 
