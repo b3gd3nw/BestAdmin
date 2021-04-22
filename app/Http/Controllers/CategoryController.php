@@ -40,11 +40,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->merge(['budget' => str_replace(['$', '.', ','], ['','', '.'], $request->budget)]);
-        Category::create(
-            $request->all()
-        );
-        return redirect()->back()->withSuccess('Category was successfully added!');
+        if (Category::where('name', '=', $request->name)){
+            return redirect()->back()->withError('Category exists!');
+        } else {
+            $request->merge(['budget' => str_replace(['$', '.', ','], ['','', '.'], $request->budget)]);
+            Category::create(
+                $request->all()
+            );
+            return redirect()->back()->withSuccess('Category was successfully added!');
+        }
     }
 
     /**
