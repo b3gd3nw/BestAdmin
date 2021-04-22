@@ -183,21 +183,24 @@ class EmployeeController extends Controller
         $token = sha1(uniqid($_POST['email'], true));
         $email = $_POST['email'];
 
-        Token::create([
-            'token' => $token,
-            'email' => $email
-        ]);
-
         // Assemble url
         $url = 'http://' . $_SERVER['HTTP_HOST'] . '/register/?token=' . $token;
 
         // Send email
-        Mail::send(['text' => 'url'], ['url' => $url], function ($m) use ($url) {
-            $m->from('hello@app.com', 'Your Application');
+        try{
+            Mail::send(['text' => 'url'], ['url' => $url], function ($m) use ($url) {
+                $m->from('hello@app.com', 'Your Application');
 
-            $m->to($_POST['email'], '')->subject('Hello employee, fill in the form.');
-        });
+                $m->to($_POST['email'], '')->subject('Hello employee, fill in the form.');
+            });
 
-        return redirect()->back()->withSuccess('Message sent successfully!');
+            Token::create([
+                'token' => $token,
+                'email' => $email
+            ]);
+            return redirect()->back()->withSuccess('Message sent successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->withError($e->getMessage());
+        }
     }
 }
