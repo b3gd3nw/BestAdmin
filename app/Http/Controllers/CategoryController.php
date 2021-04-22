@@ -40,7 +40,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->merge(['budget' => str_replace(['$',','], ['','.'], $request->budget)]);
+        $request->merge(['budget' => str_replace(['$', '.', ','], ['','', '.'], $request->budget)]);
         Category::create(
             $request->all()
         );
@@ -86,6 +86,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->merge(['budget' => str_replace(['$', '.', ','], ['','', '.'], $request->budget)]);
         $data = $request->except(['_method', '_token']);
         Category::where('id', $id)->update($data);
 

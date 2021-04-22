@@ -27,7 +27,7 @@
         <div class="card">
           <div class="card-content text-center">
             <p class="title color-black">
-              $ {{ $category['budget'] }}
+              $ {{ number_format($category['budget'], 2,  ',', '.') }}
             </p>
             <p class="subtitle color-black">
               {{ $category['name'] }}
