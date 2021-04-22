@@ -1,27 +1,6 @@
-.d-flex {
-  display: flex;
-}
-
-.v-flex-end {
-  display: flex;
-  align-items: flex-end;
-}
-
 .fantom-card {
   padding: 49px;
   cursor: pointer;
-}
-
-.fs-12 {
-  font-size: 12px;
-}
-
-.has-background-none {
-    background: none;
-}
-
-.color-black {
-  color: #000 !important;
 }
 
 .text-glow {/*Definig font could be useful!*/
@@ -36,37 +15,9 @@
     outline: 0 none;
 }
 
-.has-background-mint-dark {
-    background: #e0e0e0;
-}
-
-.has-background-gray-light {
-    background: #c4c4c4;
-}
-
-.full-height {
-    min-height: 93.7vh;
-}
-
 .wrapper {
     padding: 10px;
     overflow: hidden;
-}
-
-.margin-auto {
-  margin: 0 auto;
-}
-
-.flex-wrap {
-    flex-wrap: wrap;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.opacity-3 {
-    opacity: 0.3;
 }
 
 .menu-list {
