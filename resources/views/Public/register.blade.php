@@ -74,7 +74,7 @@
             </div>
             <div class="field">
               <p class="control">
-                <input name="skills" id="tags" class="input" type="tags" placeholder="Your skills" reqtag>
+                <input name="skills" id="tags" class="input" type="tags" placeholder="Your skills" reqtag taglength>
                 <span class="error red fs-12"></span>
               </p>
             </div>

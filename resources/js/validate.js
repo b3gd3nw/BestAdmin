@@ -79,6 +79,21 @@ export function validateit() {
                             } else {
                                 valid(inp);
                             }
+                            break;
+                        case 'taglength':
+                            let childs = inp.nextSibling.childNodes;
+                            let i = 0;
+                            childs.forEach(child => {
+                                if (child.classList.contains('control'))
+                                {
+                                    i++;
+                                    if (child.getAttribute('data-tag').length > 15)
+                                    {
+                                        errors.push(`Too long tag №${i}`);
+                                    }
+                                }
+                            })
+                            break;
                     }
                 });
                 if (errors.length != 0) {
