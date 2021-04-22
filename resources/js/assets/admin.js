@@ -111,6 +111,7 @@ change_btn.forEach(function(elem) {
                             }
                         }
                     });
+                validateit();
             })
     });
 });
