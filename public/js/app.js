@@ -27745,6 +27745,21 @@ function validateit() {
                 valid(inp);
               }
 
+              break;
+
+            case 'taglength':
+              var childs = inp.nextSibling.childNodes;
+              var i = 0;
+              childs.forEach(function (child) {
+                if (child.classList.contains('control')) {
+                  i++;
+
+                  if (child.getAttribute('data-tag').length > 15) {
+                    errors.push("Too long tag \u2116".concat(i));
+                  }
+                }
+              });
+              break;
           }
         });
 
