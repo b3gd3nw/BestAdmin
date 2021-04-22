@@ -27480,6 +27480,7 @@ change_btn.forEach(function (elem) {
           }
         }
       });
+      Object(_validate__WEBPACK_IMPORTED_MODULE_4__["validateit"])();
     });
   });
 });
