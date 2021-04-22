@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Employee;
+use App\Models\EmployeeSkill;
+use App\Models\Skill;
 use App\Models\Token;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -54,14 +56,15 @@ class PagesController extends Controller
     public function index()
     {
         $bank = Bank::firstOrFail();
-
+        $skills = Skill::all();
+        $employee_skills = EmployeeSkill::all();
         $employes = Employee::orderBy('id')->withTrashed()->get();
         $consumptions = Transaction::whereMonth('created_at', Carbon::now()->month)->where('type', 'consumption')->sum('amount');
         $budget = Category::whereMonth('created_at', Carbon::now()->month)->sum('budget');
 
         $bank_amount = $bank->amount;
 
-        return view('Admin.general.home', compact('consumptions', 'budget', 'bank_amount', 'employes'));
+        return view('Admin.general.home', compact('consumptions', 'budget', 'bank_amount', 'employes', 'skills', 'employee_skills'));
     }
 
     /**
@@ -71,8 +74,10 @@ class PagesController extends Controller
      */
     public function employee()
     {
+        $skills = Skill::all();
+        $employee_skills = EmployeeSkill::all();
         $employes = Employee::orderBy('id')->withTrashed()->get();
-        return view('Admin.general.employee', compact('employes'));
+        return view('Admin.general.employee', compact('employes', 'employee_skills', 'skills'));
     }
 
     /**

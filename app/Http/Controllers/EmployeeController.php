@@ -147,11 +147,15 @@ class EmployeeController extends Controller
      */
     public function filterBy($status)
     {
+        $skills = Skill::all();
+        $employee_skills = EmployeeSkill::all();
         $employes = DB::table('employees')->where('status', $status)->get();
 
         $data = [
             'view' => View::make('Admin.tables.filtered-table')
                 ->with('employes', $employes)
+                ->with('employee_skills', $employee_skills)
+                ->with('skills', $skills)
                 ->render()
         ];
         return response()->json($data);
