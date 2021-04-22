@@ -8,6 +8,11 @@
             <button class="delete"></button>
             {{ session('success') }}
         </div>
+    @elseif (Session::has('error'))
+        <div class="notification is-warning">
+            <button class="delete"></button>
+            {{ session('error') }}
+        </div>
     @endif
     <div class="modal" id="modal">
         <div class="modal-background"></div>
