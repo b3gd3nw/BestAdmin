@@ -40,7 +40,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        if (Category::where('name', '=', $request->name)){
+        if (Category::where('name', '=', $request->name)->first()){
             return redirect()->back()->withError('Category exists!');
         } else {
             $request->merge(['budget' => str_replace(['$', '.', ','], ['','', '.'], $request->budget)]);
