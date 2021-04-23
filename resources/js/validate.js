@@ -53,14 +53,14 @@ export function validateit() {
                             }
                             break;
                         case 'min16':
-                            if (inp.value.length < 16) {
+                            if (inp.value.length < 12) {
                                 errors.push('Enter full number');
                             } else {
                                 valid(inp);
                             }
                             break;
                         case 'max6':
-                            if (inp.value.length > 12) {
+                            if (inp.value.length > 13) {
                                 errors.push('Max length 12');
                             } else {
                                 valid(inp);

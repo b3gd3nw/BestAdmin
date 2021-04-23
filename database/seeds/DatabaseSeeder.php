@@ -220,7 +220,7 @@ class DatabaseSeeder extends Seeder
 
         Bank::create([
            'name' => 'main',
-            'amount' => 1
+            'amount' => 0
         ]);
 
         $user = User::create([
