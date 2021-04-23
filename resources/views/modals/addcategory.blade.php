@@ -11,7 +11,7 @@
     <div class="field">
         <label class="label">Budget</label>
         <div class="control">
-            <input name="budget" class="input" type="text" placeholder="$ 100" id="budget" money max6>
+            <input name="budget" class="input" type="text" placeholder="$ 100" id="budget" max6>
             <span class="error red fs-12"></span>
         </div>
     </div>
