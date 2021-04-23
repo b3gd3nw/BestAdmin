@@ -32,11 +32,17 @@
         <div class="card">
           <div class="card-content text-center">
             <p class="title color-black">
-              $ {{ number_format($category['budget'], 2,  ',', '.') }}
-            </p>
-            <p class="subtitle color-black">
               {{ $category['name'] }}
             </p>
+              @if(number_format($category['budget'], 2,  ',', '.') != 0)
+                <p class="subtitle color-black">
+                  $ {{ number_format($category['budget'], 2,  ',', '.') }}
+                </p>
+              @else
+                  <p class="subtitle color-black">
+                      &#160;
+                  </p>
+              @endif
           </div>
           <footer class="card-footer">
             <a data-path="{{ route('category.edit', $category['id']) }}" class="card-footer-item text-glow color-black changeCard">Change budget</a>
