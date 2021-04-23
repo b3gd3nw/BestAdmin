@@ -15,14 +15,14 @@
                     <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
                         <div class="navbar-brand">
                             <a class="navbar-item is--brand">
-                                <img class="navbar-brand-logo" src="/images/admin-logo-v2.png" alt="">
+                                <img class="navbar-brand-logo" src="{{ asset('/images/admin-logo-v2.png') }}" alt="">
                             </a>
                         </div>
                         <div class="navbar-menu navbar-end">
                             <div class="navbar-item has-dropdown is-hoverable">
                                 <a class="navbar-link">
                                     <figure class="image is-32x32" style="margin-right: 0.5em">
-                                        <img src="/images/admin-photo.png" alt="">
+                                        <img src="{{ asset('/images/admin-photo.png') }}" alt="">
                                     </figure>
                                     Admin
                                 </a>
