@@ -27577,6 +27577,35 @@ if (add_employee_btn) {
   });
 }
 
+var edit_employee_btns = document.querySelectorAll('.edit_employee');
+
+if (edit_employee_btns) {
+  edit_employee_btns.forEach(function (edit_employee_btn) {
+    edit_employee_btn.addEventListener('click', function (e) {
+      document.querySelector('#modal').classList.add('is-active');
+      var target = edit_employee_btn.getAttribute('data-path');
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
+        document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+        document.querySelector('#modal-title').innerHTML = 'Edit Employee';
+        Object(_validate__WEBPACK_IMPORTED_MODULE_4__["validateit"])();
+        bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__["default"].attach();
+        var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('salary'), {
+          mask: '$num',
+          blocks: {
+            num: {
+              mask: Number,
+              thousandsSeparator: '.'
+            }
+          }
+        });
+        var phoneMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('phone'), {
+          mask: '+{0}0000000000000'
+        });
+      });
+    });
+  });
+}
+
 var send_mail_btn = document.querySelector('#send_mail');
 
 if (send_mail_btn) {

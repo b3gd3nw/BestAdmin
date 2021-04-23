@@ -80,6 +80,7 @@
                     <th>Skills</th>
                     <th>Status</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody id="tbody">
@@ -127,6 +128,13 @@
                                     </button>
                                 </form>
                                 @endif
+                            </td>
+                            <td>
+                                <button data-path="{{ route('employee.edit', $employee['id']) }}" type="button" class="button is-warning is-rounded is-small edit_employee" id="edit_employee">
+                                    <i class="fas fa-edit">
+                                    </i>
+                                    Edit
+                                </button>
                             </td>
                         </tr>
                 @endforeach

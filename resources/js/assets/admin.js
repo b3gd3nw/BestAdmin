@@ -216,6 +216,38 @@ if (add_employee_btn) {
     });
 }
 
+const edit_employee_btns = document.querySelectorAll('.edit_employee');
+if (edit_employee_btns) {
+    edit_employee_btns.forEach(edit_employee_btn =>{
+        edit_employee_btn.addEventListener('click', function(e) {
+            document.querySelector('#modal').classList.add('is-active');
+            let target = edit_employee_btn.getAttribute('data-path');
+            axios.get(target)
+                .then(responce=> {
+                    document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+                    document.querySelector('#modal-title').innerHTML = 'Edit Employee';
+                    validateit();
+                    bulmaTagsinput.attach();
+                    var currencyMask = IMask(
+                        document.getElementById('salary'),
+                        {
+                            mask: '$num',
+                            blocks: {
+                                num: {
+                                    mask: Number,
+                                    thousandsSeparator: '.'
+                                }
+                            }
+                        });
+                    var phoneMask = IMask(
+                        document.getElementById('phone'), {
+                            mask: '+{0}0000000000000'
+                        });
+                })
+        });
+    })
+}
+
 const send_mail_btn = document.querySelector('#send_mail');
 if (send_mail_btn) {
     send_mail_btn.addEventListener('click', function(e) {

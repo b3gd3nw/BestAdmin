@@ -67,9 +67,9 @@ class EmployeeController extends Controller
                 EmployeeSkill::create(compact('employeeId', 'skillId'));
             }
 
-            $token = Token::where('token', '=', $_COOKIE['token'])->first();
-            if ($token)
+            if (isset($_COOKIE['token']))
             {
+                $token = Token::where('token', '=', $_COOKIE['token'])->first();
                 $token->delete();
                 return redirect('/')->withSuccess('Employee was successfully added!');
             } else {
@@ -100,7 +100,27 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        //
+        foreach (EmployeeSkill::where('employeeId', '=', $employee->id)->get() as $skill_id)
+        {
+            foreach (Skill::all() as $skill_name)
+            {
+                if ($skill_id['skillId'] === $skill_name['id'])
+                {
+                    $skills [] = $skill_name['name'];
+                }
+            }
+        }
+        $countries = Country::all();
+        $data = [
+            'view' => View::make('modals.editemployee')
+                ->with('skills', $skills)
+                ->with('employee', $employee)
+                ->with('today', Carbon::now()->toDateString())
+                ->with('countries', $countries)
+                ->render()
+        ];
+
+        return response()->json($data);
     }
 
     /**
@@ -112,7 +132,19 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-        //
+        if (DB::table('employees')->where('email', $request->email)->first() && $request->email != $employee->email) {
+            return redirect()->back()->withError('Email already in use');
+        } else {
+            $skill = new Skill();
+            $skill->editSkills($request->skills, EmployeeSkill::where('employeeId', '=', $employee->id)->get());
+
+
+            $request->merge(['salary' => str_replace(['$', '.', ','], ['', '', '.'], $request->salary)]);
+            $data = $request->except('_method');
+            $employee->update($data);
+
+            return redirect()->back()->withSuccess('Employee edit successfully!');
+        }
     }
 
     /**
