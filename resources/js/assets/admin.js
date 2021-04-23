@@ -36,7 +36,7 @@ const sbmt = document.querySelector('#submit');
 if (sbmt) {
     var phoneMask = IMask(
         document.getElementById('phone'), {
-            mask: '+{0}(000)000-00-00'
+            mask: '+{0}00000000000'
         });
     let currencyMask = IMask(
         document.getElementById('salary'),
@@ -209,7 +209,7 @@ if (add_employee_btn) {
                     });
                 var phoneMask = IMask(
                     document.getElementById('phone'), {
-                        mask: '+{0}(000)000-00-00'
+                        mask: '+{0}00000000000'
                     });
                 bulmaTagsinput.attach();
             })

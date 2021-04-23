@@ -27412,7 +27412,7 @@ var sbmt = document.querySelector('#submit');
 
 if (sbmt) {
   var phoneMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('phone'), {
-    mask: '+{0}(000)000-00-00'
+    mask: '+{0}00000000000'
   });
   var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('salary'), {
     mask: '$num',
@@ -27570,7 +27570,7 @@ if (add_employee_btn) {
         }
       });
       var phoneMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('phone'), {
-        mask: '+{0}(000)000-00-00'
+        mask: '+{0}00000000000'
       });
       bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__["default"].attach();
     });
@@ -27713,7 +27713,7 @@ function validateit() {
               break;
 
             case 'min16':
-              if (inp.value.length < 16) {
+              if (inp.value.length < 12) {
                 errors.push('Enter full number');
               } else {
                 valid(inp);
@@ -27722,7 +27722,7 @@ function validateit() {
               break;
 
             case 'max6':
-              if (inp.value.length > 12) {
+              if (inp.value.length > 13) {
                 errors.push('Max length 12');
               } else {
                 valid(inp);
