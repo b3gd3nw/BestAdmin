@@ -71,7 +71,7 @@ class EmployeeController extends Controller
             {
                 $token = Token::where('token', '=', $_COOKIE['token'])->first();
                 $token->delete();
-                return redirect('/')->withSuccess('Employee was successfully added!');
+                return redirect('/main')->withSuccess('Employee was successfully added!');
             } else {
                 return redirect()->back()->withSuccess('Employee was successfully added!');
             }
@@ -131,7 +131,7 @@ class EmployeeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Employee  $employee
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
