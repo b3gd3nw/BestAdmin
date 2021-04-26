@@ -32,24 +32,6 @@ class Skill extends Model
         return $skills_id;
     }
 
-    public function editSkills($skills, $avalible)
-    {
-        $skills_id = [];
-        foreach (explode(',', $skills) as $skill) {
-            if ($tmp = Skill::where('name', '=', $skill)->first()) {
-                $skills_id [] = $tmp->id;
-            } else {
-                $skills_id [] = Skill::create(['name' => $skill])->id;
-            }
-        }
-        foreach ($avalible as $a_skill) {
-            if ($skill != $a_skill['name'])
-            {
-                EmployeeSkill::where('id', '=', $a_skill['id'])->delete();
-            }
-        }
-    }
-
     public function employeeskill()
     {
         return $this->morphToMany(EmployeeSkill::class, 'taggable');
