@@ -3,24 +3,28 @@
     @method('POST')
     <div class="field">
         <p class="control">
-            <input name="firstname" class="input" type="text" placeholder="First Name" require notnum max20>
+            <label for="firstname">First Name</label>
+            <input name="firstname" class="input" type="text" require notnum max20>
             <span class="error red fs-12"></span>
         </p>
     </div>
     <div class="field">
         <p class="control">
-            <input name="lastname" class="input" type="text" placeholder="Last Name" require notnum max20>
+            <label for="lastname">Last Name</label>
+            <input name="lastname" class="input" type="text" require notnum max20>
             <span class="error red fs-12"></span>
         </p>
     </div>
     <div class="field">
         <p class="control">
-            <input name="birthdate" class="input" type="date" placeholder="Birthday" max="{{ $today }}" onkeydown="return false" require>
+            <label for="birthdate">Birth Date</label>
+            <input name="birthdate" class="input" type="date" max="{{ $today }}" onkeydown="return false" require>
             <span class="error red fs-12"></span>
         </p>
     </div>
     <div class="field">
         <div class="control">
+            <label for="countryId">Country</label>
             <select name="countryId" class="input" id="" require>
                 <option disabled selected value> -- select a country -- </option>
                 @foreach($countries as $country)
@@ -32,31 +36,36 @@
     </div>
     <div class="field">
         <p class="control">
-            <input name="position" class="input" type="text" placeholder="Position" require>
+            <label for="position">Position</label>
+            <input name="position" class="input" type="text" require>
             <span class="error red fs-12"></span>
         </p>
     </div>
     <div class="field">
         <p class="control">
-            <input name="email" class="input" type="email" placeholder="Email" require email>
+            <label for="email">Email</label>
+            <input name="email" class="input" type="email" require email>
             <span class="error red fs-12"></span>
         </p>
     </div>
     <div class="field">
         <p class="control">
-            <input name="phone" class="input" type="text" placeholder="Phone" id="phone" require min16>
+            <label for="phone">Phone</label>
+            <input name="phone" class="input" type="text" id="phone" require min16>
             <span class="error red fs-12"></span>
         </p>
     </div>
     <div class="field">
         <p class="control">
-            <input name="salary" class="input" type="text" placeholder="Salary" id="salary" money max6>
+            <label for="salary">Salary</label>
+            <input name="salary" class="input" type="text" id="salary" money max6>
             <span class="error red fs-12"></span>
         </p>
     </div>
     <div class="field">
         <p class="control">
-            <input name="skills" id="tags" class="input" type="tags" placeholder="Your skills" reqtag taglength>
+            <label for="skills">Skills</label>
+            <input name="skills" id="tags" class="input" type="tags" reqtag taglength>
             <span class="error red fs-12"></span>
         </p>
     </div>
