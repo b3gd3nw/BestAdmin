@@ -12,7 +12,7 @@
         </div>
       @endif
       <div class="card my-1">
-        <div class="card-content fantom-card text-glow">
+        <div class="card-content fantom-card">
           <form id="form" class="" action="{{ route('employee.store') }}" method="post" enctype="multipart/form-data" novalidate>
             @csrf
             @method('POST')
@@ -74,7 +74,7 @@
             </div>
             <div class="field">
               <p class="control">
-                <input name="skills" id="tags" class="input" type="tags" placeholder="Your skills" reqtag taglength>
+                <input name="skills" id="tags" class="input" type="tags" placeholder="Your skills" reqtag taglength nodup>
                 <span class="error red fs-12"></span>
               </p>
             </div>
