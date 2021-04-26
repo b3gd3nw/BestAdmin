@@ -26,6 +26,7 @@ Route::get('/', function (){
     return \redirect('/admin');
 });
 Route::get('/register', [PagesController::class, 'register']);
+Route::get('/main', [PagesController::class, 'main']);
 // - Admin routes -
 Route::prefix('/admin')->group(function (){
     Auth::routes();
