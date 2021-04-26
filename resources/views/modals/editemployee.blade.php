@@ -60,7 +60,31 @@
     </div>
     <div class="field">
         <p class="control">
-            <input name="skills" id="tags" class="input" type="tags" placeholder="Your skills" value="@foreach($skills as $skill){{ $skill . ',' }} @endforeach" reqtag taglength>
+            <input name="skills" id="tags" class="input" type="tags" placeholder="Your skills" value="@foreach($skills as $skill){{ $skill . ',' }} @endforeach" reqtag taglength nodup>
+            <span class="error red fs-12"></span>
+        </p>
+    </div>
+    <div class="field">
+        <p class="control">
+            <select name="status" class="input" id="" require>
+                @switch($employee['status'])
+                    @case('active')
+                    <option value="Active" selected>Active</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Inactive">Inactive</option>
+                    @break
+                    @case('pending')
+                    <option value="Active">Active</option>
+                    <option value="Pending" selected>Pending</option>
+                    <option value="Inactive">Inactive</option>
+                    @break
+                    @case('inactive')
+                    <option value="Active">Active</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Inactive" selected>Inactive</option>
+                    @break
+                @endswitch
+            </select>
             <span class="error red fs-12"></span>
         </p>
     </div>

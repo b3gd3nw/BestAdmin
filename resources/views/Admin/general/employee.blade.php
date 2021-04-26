@@ -127,6 +127,12 @@
                                         Delete
                                     </button>
                                 </form>
+                                @else
+                                    <button type="submit" class="button is-danger is-rounded is-small" disabled>
+                                        <i class="fas fa-trash">
+                                        </i>
+                                        Delete
+                                    </button>
                                 @endif
                             </td>
                             <td>

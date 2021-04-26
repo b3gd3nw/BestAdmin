@@ -94,6 +94,16 @@ export function validateit() {
                                 }
                             })
                             break;
+                        case 'nodup':
+                           let skills = document.querySelector('#tags').value.split(',');
+                           if(checkIfDuplicateExists(skills))
+                           {
+                               errors.push('Each skill must be entered once!');
+                           } else
+                           {
+                               valid(inp);
+                           }
+                            break;
                     }
                 });
                 if (errors.length != 0) {
@@ -135,4 +145,8 @@ function valid(inp) {
         parent = parent.parentNode;
     }
     parent.querySelector('.error').innerHTML = '';
+}
+
+function checkIfDuplicateExists(w){
+    return new Set(w).size !== w.length
 }

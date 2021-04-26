@@ -41,7 +41,20 @@
                         Delete
                     </button>
                 </form>
+            @else
+                <button type="submit" class="button is-danger is-rounded is-small" disabled>
+                    <i class="fas fa-trash">
+                    </i>
+                    Delete
+                </button>
             @endif
+        </td>
+        <td>
+            <button data-path="{{ route('employee.edit', $employee->id) }}" type="button" class="button is-warning is-rounded is-small edit_employee" id="edit_employee">
+                <i class="fas fa-edit">
+                </i>
+                Edit
+            </button>
         </td>
     </tr>
 @endforeach

@@ -95,11 +95,15 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Employee  $employee
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Employee $employee)
+    public function edit($id)
     {
+        $employee = Employee::withTrashed()
+            ->where('id', $id)
+            ->firstOrFail();
+
         foreach (EmployeeSkill::where('employeeId', '=', $employee->id)->get() as $skill_id)
         {
             foreach (Skill::all() as $skill_name)
@@ -130,15 +134,55 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, $id)
     {
+        $employee = Employee::withTrashed()
+            ->where('id', $id)
+            ->firstOrFail();
+
         if (DB::table('employees')->where('email', $request->email)->first() && $request->email != $employee->email) {
             return redirect()->back()->withError('Email already in use');
         } else {
             $skill = new Skill();
-            $skill->editSkills($request->skills, EmployeeSkill::where('employeeId', '=', $employee->id)->get());
+            $skills = $skill->skillFilter($request->skills);
+            $employee_skills = EmployeeSkill::where('employeeId', '=', $employee->id)->get('skillId');
+            $skills_id = [];
+            foreach ($employee_skills as $skill) {
+                $skills_id [] = $skill->skillId;
+            }
+            // Checking which skills need to be removed or add
+            if ($to_remove = array_diff($skills_id, $skills))
+            {
+                foreach ($to_remove as $item) {
+                    EmployeeSkill::where([
+                        ['employeeId', '=', $employee->id],
+                        ['skillId', '=', $item]
+                    ])->delete();
+                }
+            }elseif ($to_add = array_diff($skills, $skills_id))
+            {
+                foreach ($to_add as $item) {
+                    EmployeeSkill::create([
+                        'employeeId' => $employee->id,
+                        'skillId' => $item
+                    ]);
 
-
+                }
+            }
+            if ($employee->status === 'inactive')
+            {
+                if ($request->status === 'active' or $request->status === 'pending')
+                {
+                    $employee->restore();
+                }
+            }else
+            {
+                if ($request->status === 'inactive')
+                {
+                    $employee->delete();
+                }
+            }
+            $request->merge(['status' => mb_strtolower($request->status)]);
             $request->merge(['salary' => str_replace(['$', '.', ','], ['', '', '.'], $request->salary)]);
             $data = $request->except('_method');
             $employee->update($data);
