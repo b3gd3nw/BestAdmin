@@ -27383,6 +27383,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+init_edit();
 document.addEventListener('DOMContentLoaded', function () {
   (document.querySelectorAll('.notification .delete') || []).forEach(function ($delete) {
     var $notification = $delete.parentNode;
@@ -27577,6 +27578,37 @@ if (add_employee_btn) {
   });
 }
 
+function init_edit() {
+  var edit_employee_btns = document.querySelectorAll('.edit_employee');
+
+  if (edit_employee_btns) {
+    edit_employee_btns.forEach(function (edit_employee_btn) {
+      edit_employee_btn.addEventListener('click', function (e) {
+        document.querySelector('#modal').classList.add('is-active');
+        var target = edit_employee_btn.getAttribute('data-path');
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
+          document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+          document.querySelector('#modal-title').innerHTML = 'Edit Employee';
+          Object(_validate__WEBPACK_IMPORTED_MODULE_4__["validateit"])();
+          bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__["default"].attach();
+          var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('salary'), {
+            mask: '$num',
+            blocks: {
+              num: {
+                mask: Number,
+                thousandsSeparator: '.'
+              }
+            }
+          });
+          var phoneMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('phone'), {
+            mask: '+{0}0000000000000'
+          });
+        });
+      });
+    });
+  }
+}
+
 var send_mail_btn = document.querySelector('#send_mail');
 
 if (send_mail_btn) {
@@ -27599,6 +27631,7 @@ if (active_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('#tbody').innerHTML = responce.data.view;
       document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="green">active</span>';
+      init_edit();
     });
   });
 }
@@ -27611,6 +27644,7 @@ if (pending_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('#tbody').innerHTML = responce.data.view;
       document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="orange">pending</span>';
+      init_edit();
     });
   });
 }
@@ -27623,6 +27657,7 @@ if (inactive_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('#tbody').innerHTML = responce.data.view;
       document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="red">inactive</span>';
+      init_edit();
     });
   });
 }
@@ -27761,6 +27796,17 @@ function validateit() {
                 }
               });
               break;
+
+            case 'nodup':
+              var skills = document.querySelector('#tags').value.split(',');
+
+              if (checkIfDuplicateExists(skills)) {
+                errors.push('Each skill must be entered once!');
+              } else {
+                valid(inp);
+              }
+
+              break;
           }
         });
 
@@ -27807,6 +27853,10 @@ function valid(inp) {
   }
 
   parent.querySelector('.error').innerHTML = '';
+}
+
+function checkIfDuplicateExists(w) {
+  return new Set(w).size !== w.length;
 }
 
 /***/ }),

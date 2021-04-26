@@ -4,6 +4,8 @@ import bulmaTagsinput from "bulma-tagsinput/src/js";
 import bulmaCalendar from "bulma-calendar";
 import { validateit } from '../validate';
 
+init_edit();
+
 document.addEventListener('DOMContentLoaded', () => {
     (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
         const $notification = $delete.parentNode;
@@ -216,6 +218,42 @@ if (add_employee_btn) {
     });
 }
 
+function init_edit()
+{
+    const edit_employee_btns = document.querySelectorAll('.edit_employee');
+    if (edit_employee_btns) {
+        edit_employee_btns.forEach(edit_employee_btn =>{
+            edit_employee_btn.addEventListener('click', function(e) {
+                document.querySelector('#modal').classList.add('is-active');
+                let target = edit_employee_btn.getAttribute('data-path');
+                axios.get(target)
+                    .then(responce=> {
+                        document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+                        document.querySelector('#modal-title').innerHTML = 'Edit Employee';
+                        validateit();
+                        bulmaTagsinput.attach();
+                        var currencyMask = IMask(
+                            document.getElementById('salary'),
+                            {
+                                mask: '$num',
+                                blocks: {
+                                    num: {
+                                        mask: Number,
+                                        thousandsSeparator: '.'
+                                    }
+                                }
+                            });
+                        var phoneMask = IMask(
+                            document.getElementById('phone'), {
+                                mask: '+{0}0000000000000'
+                            });
+                    })
+            });
+        })
+    }
+}
+
+
 const send_mail_btn = document.querySelector('#send_mail');
 if (send_mail_btn) {
     send_mail_btn.addEventListener('click', function(e) {
@@ -238,6 +276,7 @@ if (active_btn){
             .then(responce=> {
                 document.querySelector('#tbody').innerHTML = responce.data.view;
                 document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="green">active</span>';
+                init_edit();
             })
     });
 }
@@ -250,6 +289,7 @@ if (pending_btn){
             .then(responce=> {
                 document.querySelector('#tbody').innerHTML = responce.data.view;
                 document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="orange">pending</span>';
+                init_edit();
             })
     });
 }
@@ -262,6 +302,7 @@ if (inactive_btn){
             .then(responce=> {
                 document.querySelector('#tbody').innerHTML = responce.data.view;
                 document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="red">inactive</span>';
+                init_edit();
             })
     });
 }
