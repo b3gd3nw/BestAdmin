@@ -27879,10 +27879,10 @@ function checkIfDuplicateExists(w) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/developer/www/ww/BestAdmin/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /home/developer/www/ww/BestAdmin/resources/js/assets/admin.js */"./resources/js/assets/admin.js");
-__webpack_require__(/*! /home/developer/www/ww/BestAdmin/resources/sass/app.scss */"./resources/sass/app.scss");
-module.exports = __webpack_require__(/*! /home/developer/www/ww/BestAdmin/node_modules/font-awesome/scss/font-awesome.scss */"./node_modules/font-awesome/scss/font-awesome.scss");
+__webpack_require__(/*! /home/developer/giter/BestAdmin/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /home/developer/giter/BestAdmin/resources/js/assets/admin.js */"./resources/js/assets/admin.js");
+__webpack_require__(/*! /home/developer/giter/BestAdmin/resources/sass/app.scss */"./resources/sass/app.scss");
+module.exports = __webpack_require__(/*! /home/developer/giter/BestAdmin/node_modules/font-awesome/scss/font-awesome.scss */"./node_modules/font-awesome/scss/font-awesome.scss");
 
 
 /***/ })
