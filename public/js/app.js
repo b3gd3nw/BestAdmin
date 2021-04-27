@@ -27560,7 +27560,6 @@ if (add_employee_btn) {
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
       document.querySelector('#modal-title').innerHTML = 'Create New Employee';
-      Object(_validate__WEBPACK_IMPORTED_MODULE_4__["validateit"])();
       var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('salary'), {
         mask: '$num',
         blocks: {
@@ -27573,7 +27572,14 @@ if (add_employee_btn) {
       var phoneMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('phone'), {
         mask: '+{0}0000000000000'
       });
+      bulma_calendar__WEBPACK_IMPORTED_MODULE_3___default.a.attach('.calendar', {
+        dateFormat: 'YYYY/MM/DD',
+        displayMode: 'dialog',
+        type: 'date',
+        maxDate: new Date()
+      });
       bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__["default"].attach();
+      Object(_validate__WEBPACK_IMPORTED_MODULE_4__["validateit"])();
     });
   });
 }
@@ -27589,7 +27595,6 @@ function init_edit() {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
           document.querySelector('.modal-card-body').innerHTML = responce.data.view;
           document.querySelector('#modal-title').innerHTML = 'Edit Employee';
-          Object(_validate__WEBPACK_IMPORTED_MODULE_4__["validateit"])();
           bulma_tagsinput_src_js__WEBPACK_IMPORTED_MODULE_2__["default"].attach();
           var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('salary'), {
             mask: '$num',
@@ -27600,9 +27605,16 @@ function init_edit() {
               }
             }
           });
+          bulma_calendar__WEBPACK_IMPORTED_MODULE_3___default.a.attach('.calendar', {
+            dateFormat: 'YYYY/MM/DD',
+            displayMode: 'dialog',
+            type: 'date',
+            maxDate: new Date()
+          });
           var phoneMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('phone'), {
             mask: '+{0}0000000000000'
           });
+          Object(_validate__WEBPACK_IMPORTED_MODULE_4__["validateit"])();
         });
       });
     });
@@ -27682,7 +27694,6 @@ if (clear_btn) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateit", function() { return validateit; });
-//let require = /^$|/;
 var notNum = /\d|[/?<>;:{}!@#$%^&*()+=]/;
 var notAlpha = /[^a-zA-Z\s:\u00C0-\u00FF]/g;
 var email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27757,8 +27768,8 @@ function validateit() {
               break;
 
             case 'max6':
-              if (inp.value.length > 15) {
-                errors.push('Max length 14');
+              if (inp.value.length > 9) {
+                errors.push('Too large amount');
               } else {
                 valid(inp);
               }

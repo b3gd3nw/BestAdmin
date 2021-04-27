@@ -17,9 +17,8 @@
     </div>
     <div class="field">
         <p class="control">
-            <label for="birthdate">Birth Date</label>
-            <input name="birthdate" class="input" type="date" max="{{ $today }}" value="{{ $employee['birthdate'] }}" onkeydown="return false" require>
-            <span class="error red fs-12"></span>
+          <input name="birthdate" class="calendar" value="{{ $employee['birthdate'] }}">
+          <span class="error red fs-12"></span>
         </p>
     </div>
     <div class="field">

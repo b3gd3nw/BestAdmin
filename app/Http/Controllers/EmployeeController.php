@@ -71,6 +71,8 @@ class EmployeeController extends Controller
             {
                 $token = Token::where('token', '=', $_COOKIE['token'])->first();
                 $token->delete();
+                unset($_COOKIE['token']);
+                setcookie('token', null, -1, '/');
                 return redirect('/main')->withSuccess('Employee was successfully added!');
             } else {
                 return redirect()->back()->withSuccess('Employee was successfully added!');
@@ -194,7 +196,7 @@ class EmployeeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Employee  $employee
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

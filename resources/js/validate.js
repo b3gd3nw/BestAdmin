@@ -1,4 +1,3 @@
-//let require = /^$|/;
 let notNum = /\d|[/?<>;:{}!@#$%^&*()+=]/;
 let notAlpha = /[^a-zA-Z\s:\u00C0-\u00FF]/g;
 let email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -9,8 +8,8 @@ export function validateit() {
     if (calendar) {
         calendar.setAttribute('require', '');
     }
-    if(submit_btn) {
-        submit_btn.addEventListener('click', function (e){
+    if (submit_btn) {
+        submit_btn.addEventListener('click', function(e) {
             let form = document.querySelector('#form');
             let inps = form.querySelectorAll("input, select, .tagsinput, .datetimepicker-dummy-input");
             inps.forEach(inp => {
@@ -60,8 +59,8 @@ export function validateit() {
                             }
                             break;
                         case 'max6':
-                            if (inp.value.length > 15) {
-                                errors.push('Max length 14');
+                            if (inp.value.length > 9) {
+                                errors.push('Too large amount');
                             } else {
                                 valid(inp);
                             }
@@ -84,25 +83,21 @@ export function validateit() {
                             let childs = inp.nextSibling.childNodes;
                             let i = 0;
                             childs.forEach(child => {
-                                if (child.classList.contains('control'))
-                                {
+                                if (child.classList.contains('control')) {
                                     i++;
-                                    if (child.getAttribute('data-tag').length > 15)
-                                    {
+                                    if (child.getAttribute('data-tag').length > 15) {
                                         errors.push(`Too long tag №${i}`);
                                     }
                                 }
                             })
                             break;
                         case 'nodup':
-                           let skills = document.querySelector('#tags').value.split(',');
-                           if(checkIfDuplicateExists(skills))
-                           {
-                               errors.push('Each skill must be entered once!');
-                           } else
-                           {
-                               valid(inp);
-                           }
+                            let skills = document.querySelector('#tags').value.split(',');
+                            if (checkIfDuplicateExists(skills)) {
+                                errors.push('Each skill must be entered once!');
+                            } else {
+                                valid(inp);
+                            }
                             break;
                     }
                 });
@@ -123,8 +118,7 @@ function showError(errors, inp) {
     }
     if (errors[0] != null) {
         let parent = inp;
-        while (!parent.classList.contains('control'))
-        {
+        while (!parent.classList.contains('control')) {
             parent = parent.parentNode;
         }
         parent.querySelector('.error').innerHTML = errors[0];
@@ -140,13 +134,12 @@ function valid(inp) {
         inp.classList.add('is-success');
     }
     let parent = inp;
-    while (!parent.classList.contains('control'))
-    {
+    while (!parent.classList.contains('control')) {
         parent = parent.parentNode;
     }
     parent.querySelector('.error').innerHTML = '';
 }
 
-function checkIfDuplicateExists(w){
+function checkIfDuplicateExists(w) {
     return new Set(w).size !== w.length
 }

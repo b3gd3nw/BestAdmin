@@ -20,7 +20,7 @@ bulmaTagsinput.attach();
 
 const logout = document.querySelector('#logout');
 if (logout) {
-    logout.addEventListener('click', function (e) {
+    logout.addEventListener('click', function(e) {
         axios.post('/admin/logout').then(responce => {
             location.reload();
         });
@@ -41,8 +41,7 @@ if (sbmt) {
             mask: '+{0}0000000000000'
         });
     let currencyMask = IMask(
-        document.getElementById('salary'),
-        {
+        document.getElementById('salary'), {
             mask: '$num',
             blocks: {
                 num: {
@@ -61,7 +60,7 @@ if (sbmt) {
 
 const srch = document.querySelector('#srch');
 if (srch) {
-    srch.addEventListener('click', function (e) {
+    srch.addEventListener('click', function(e) {
         let bodyFormData = new FormData(document.querySelector('#frm'));
         axios.post('/api/transactions', bodyFormData)
             .then(responce => {
@@ -71,17 +70,16 @@ if (srch) {
 }
 
 const add_btn = document.querySelector('#addCard');
-if (add_btn){
+if (add_btn) {
     add_btn.addEventListener('click', function(e) {
         document.querySelector('#modal').classList.add('is-active');
         let target = add_btn.getAttribute('data-path');
         axios.get(target)
-            .then(responce=> {
+            .then(responce => {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 validateit();
                 let currencyMask = IMask(
-                    document.getElementById('budget'),
-                    {
+                    document.getElementById('budget'), {
                         mask: '$num',
                         blocks: {
                             num: {
@@ -96,15 +94,14 @@ if (add_btn){
 
 const change_btn = document.querySelectorAll('.changeCard');
 change_btn.forEach(function(elem) {
-    elem.addEventListener('click', function (e) {
+    elem.addEventListener('click', function(e) {
         document.querySelector('#modal').classList.add('is-active');
         let target = elem.getAttribute('data-path');
         axios.get(target)
             .then(responce => {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 var currencyMask = IMask(
-                    document.getElementById('budget'),
-                    {
+                    document.getElementById('budget'), {
                         mask: '$num',
                         blocks: {
                             num: {
@@ -140,17 +137,16 @@ delete_btns.forEach(function(elem) {
 
 const income_btn = document.querySelector('#income');
 if (income_btn) {
-    income_btn.addEventListener('click', function (e) {
+    income_btn.addEventListener('click', function(e) {
         document.querySelector('#modal').classList.add('is-active');
         let target = income_btn.getAttribute('data-path');
         axios.get(target)
-            .then(responce=> {
+            .then(responce => {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Income';
                 validateit();
                 var currencyMask = IMask(
-                    document.getElementById('income'),
-                    {
+                    document.getElementById('income'), {
                         mask: '$num',
                         blocks: {
                             num: {
@@ -165,17 +161,16 @@ if (income_btn) {
 
 const consump_btn = document.querySelector('#consumption');
 if (consump_btn) {
-    consump_btn.addEventListener('click', function (e) {
+    consump_btn.addEventListener('click', function(e) {
         document.querySelector('#modal').classList.add('is-active');
         let target = consump_btn.getAttribute('data-path');
         axios.get(target)
-            .then(responce=> {
+            .then(responce => {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Consumption';
                 validateit();
                 var currencyMask = IMask(
-                    document.getElementById('consumption'),
-                    {
+                    document.getElementById('consumption'), {
                         mask: '$num',
                         blocks: {
                             num: {
@@ -194,13 +189,11 @@ if (add_employee_btn) {
         document.querySelector('#modal').classList.add('is-active');
         let target = add_employee_btn.getAttribute('data-path');
         axios.get(target)
-            .then(responce=> {
+            .then(responce => {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Employee';
-                validateit();
                 var currencyMask = IMask(
-                    document.getElementById('salary'),
-                    {
+                    document.getElementById('salary'), {
                         mask: '$num',
                         blocks: {
                             num: {
@@ -213,28 +206,32 @@ if (add_employee_btn) {
                     document.getElementById('phone'), {
                         mask: '+{0}0000000000000'
                     });
+                bulmaCalendar.attach('.calendar', {
+                    dateFormat: 'YYYY/MM/DD',
+                    displayMode: 'dialog',
+                    type: 'date',
+                    maxDate: new Date(),
+                });
                 bulmaTagsinput.attach();
+                validateit();
             })
     });
 }
 
-function init_edit()
-{
+function init_edit() {
     const edit_employee_btns = document.querySelectorAll('.edit_employee');
     if (edit_employee_btns) {
-        edit_employee_btns.forEach(edit_employee_btn =>{
+        edit_employee_btns.forEach(edit_employee_btn => {
             edit_employee_btn.addEventListener('click', function(e) {
                 document.querySelector('#modal').classList.add('is-active');
                 let target = edit_employee_btn.getAttribute('data-path');
                 axios.get(target)
-                    .then(responce=> {
+                    .then(responce => {
                         document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                         document.querySelector('#modal-title').innerHTML = 'Edit Employee';
-                        validateit();
                         bulmaTagsinput.attach();
                         var currencyMask = IMask(
-                            document.getElementById('salary'),
-                            {
+                            document.getElementById('salary'), {
                                 mask: '$num',
                                 blocks: {
                                     num: {
@@ -243,10 +240,17 @@ function init_edit()
                                     }
                                 }
                             });
+                        bulmaCalendar.attach('.calendar', {
+                            dateFormat: 'YYYY/MM/DD',
+                            displayMode: 'dialog',
+                            type: 'date',
+                            maxDate: new Date(),
+                        });
                         var phoneMask = IMask(
                             document.getElementById('phone'), {
                                 mask: '+{0}0000000000000'
                             });
+                        validateit();
                     })
             });
         })
@@ -260,7 +264,7 @@ if (send_mail_btn) {
         document.querySelector('#modal').classList.add('is-active');
         let target = send_mail_btn.getAttribute('data-path');
         axios.get(target)
-            .then(responce=> {
+            .then(responce => {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
                 document.querySelector('#modal-title').innerHTML = 'Create New Invite';
                 validateit();
@@ -269,11 +273,11 @@ if (send_mail_btn) {
 }
 
 const active_btn = document.querySelector('#filter_active');
-if (active_btn){
+if (active_btn) {
     active_btn.addEventListener('click', function(e) {
         let target = active_btn.getAttribute('data-path');
         axios.get(target)
-            .then(responce=> {
+            .then(responce => {
                 document.querySelector('#tbody').innerHTML = responce.data.view;
                 document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="green">active</span>';
                 init_edit();
@@ -282,11 +286,11 @@ if (active_btn){
 }
 
 const pending_btn = document.querySelector('#filter_pending');
-if (pending_btn){
+if (pending_btn) {
     pending_btn.addEventListener('click', function(e) {
         let target = pending_btn.getAttribute('data-path');
         axios.get(target)
-            .then(responce=> {
+            .then(responce => {
                 document.querySelector('#tbody').innerHTML = responce.data.view;
                 document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="orange">pending</span>';
                 init_edit();
@@ -295,11 +299,11 @@ if (pending_btn){
 }
 
 const inactive_btn = document.querySelector('#filter_inactive');
-if (inactive_btn){
+if (inactive_btn) {
     inactive_btn.addEventListener('click', function(e) {
         let target = inactive_btn.getAttribute('data-path');
         axios.get(target)
-            .then(responce=> {
+            .then(responce => {
                 document.querySelector('#tbody').innerHTML = responce.data.view;
                 document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="red">inactive</span>';
                 init_edit();
@@ -308,7 +312,7 @@ if (inactive_btn){
 }
 
 const clear_btn = document.querySelector('#clr');
-if (clear_btn){
+if (clear_btn) {
     clear_btn.addEventListener('click', function(e) {
         window.location.reload();
     });
