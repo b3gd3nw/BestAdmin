@@ -114,15 +114,19 @@
                                 @break
 
                             @endswitch
-                            @foreach($categories as $category)
-                                @if($category['id'] === $transaction['categoryId'])
-                                    <td>{{ $category['name'] }}</td>
-                                    @break
-                                @else
-                                    <td>Without category</td>
-                                    @break
-                                @endif
-                            @endforeach
+                            @if($categories && $categories->count())
+                              @foreach($categories as $category)
+                                  @if($category['id'] === $transaction['categoryId'])
+                                      <td>{{ $category['name'] }}</td>
+                                      @break
+                                  @else
+                                      <td>Without category</td>
+                                      @break
+                                  @endif
+                              @endforeach
+                            @else
+                              <td>Without category</td>
+                            @endif
                             <td>{{ $transaction['created_at'] }}</td>
                         </tr>
                 @endforeach
