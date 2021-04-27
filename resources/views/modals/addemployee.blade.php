@@ -65,7 +65,7 @@
     <div class="field">
         <p class="control">
             <label for="skills">Skills</label>
-            <input name="skills" id="tags" class="input" type="tags" reqtag taglength>
+            <input name="skills" id="tags" class="input" type="tags" reqtag taglength nodub>
             <span class="error red fs-12"></span>
         </p>
     </div>
