@@ -197,8 +197,11 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Employee $employee)
+    public function destroy($id)
     {
+        $employee = Employee::withTrashed()
+            ->where('id', $id)
+            ->firstOrFail();
         $employee->status = 'inactive';
         $employee->save();
         $employee->delete();
