@@ -161,7 +161,8 @@ class EmployeeController extends Controller
                         ['skillId', '=', $item]
                     ])->delete();
                 }
-            }elseif ($to_add = array_diff($skills, $skills_id))
+            }
+            if ($to_add = array_diff($skills, $skills_id))
             {
                 foreach ($to_add as $item) {
                     EmployeeSkill::create([
