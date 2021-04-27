@@ -14,7 +14,7 @@
                 <div class="hero-head">
                     <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
                         <div class="navbar-brand">
-                            <a class="navbar-item is--brand">
+                            <a href="{{ route('homeAdmin') }}" class="navbar-item is--brand">
                                 <img class="navbar-brand-logo" src="{{ asset('/images/admin-logo-v2.png') }}" alt="">
                             </a>
                         </div>
