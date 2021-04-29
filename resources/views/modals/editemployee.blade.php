@@ -26,10 +26,7 @@
             <label for="countryId">Country</label>
             <select name="countryId" class="input" id="" require>
                 @foreach($countries as $country)
-                    <option value="{{ $country['id'] }}"
-                            @if($country['id'] == $employee['countyId'])
-                            selected
-                            @endif>
+                    <option value="{{ $country['id'] }}" @if($country['id'] == $employee['countryId']) selected @endif>
                         {{ $country['name'] }}
                     </option>
                 @endforeach
