@@ -44,7 +44,7 @@
     <div class="field">
         <p class="control">
             <label for="email">Email</label>
-            <input name="email" class="input" type="email" value="{{ $employee['email'] }}" require email>
+            <input name="email" class="input" type="email" value="{{ $employee['email'] }}" require email unique>
             <span class="error red fs-12"></span>
         </p>
     </div>

@@ -285,4 +285,14 @@ class EmployeeController extends Controller
             return redirect()->back()->withError($e->getMessage());
         }
     }
+
+    public function uniqMail(Request $request)
+    {
+        if (Employee::where('email', '=' , $request->input('email'))->first())
+        {
+            return response()->json(['exists' => true]);
+        } else {
+            return response()->json(['exists' => false]);
+        }
+    }
 }

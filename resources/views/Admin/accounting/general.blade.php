@@ -58,7 +58,7 @@
   </div>
   <div class="columns">
     <div class="column is-full">
-      <table class="table">
+      <table class="table text-left">
         <thead>
           <tr>
             <th>#</th>
@@ -89,7 +89,7 @@
     <div class="columns">
         <div class="column is-full">
             <h1 class="title">All transactions</h1>
-            <table class="table">
+            <table class="table text-left">
                 <thead>
                 <tr>
                     <th>Type</th>

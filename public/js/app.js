@@ -27694,6 +27694,9 @@ if (clear_btn) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "validateit", function() { return validateit; });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
 var notNum = /\d|[/?<>;:{}!@#$%^&*()+=]/;
 var notAlpha = /[^a-zA-Z\s:\u00C0-\u00FF]/g;
 var email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27707,6 +27710,7 @@ function validateit() {
 
   if (submit_btn) {
     submit_btn.addEventListener('click', function (e) {
+      e.preventDefault();
       var form = document.querySelector('#form');
       var inps = form.querySelectorAll("input, select, .tagsinput, .datetimepicker-dummy-input");
       inps.forEach(function (inp) {
@@ -27818,6 +27822,27 @@ function validateit() {
               }
 
               break;
+
+            case 'unique':
+              var mail = inp.value;
+              var response = check(mail);
+              Promise.resolve(response).then(function (value) {
+                if (value['data']['exists'] === true) {
+                  errors.push('Email already in use!');
+                } else {
+                  valid(inp);
+                }
+              }); // let formData = new FormData();
+              // formData.append('email', mail);
+              // Axios.post('/api/email-check', formData).then(response => {
+              //     if (response['data']['exists'] === true) {
+              //         errors.push('Email already in use!');
+              //     } else {
+              //         valid(inp);
+              //     }
+              // });
+
+              break;
           }
         });
 
@@ -27869,6 +27894,132 @@ function valid(inp) {
 function checkIfDuplicateExists(w) {
   return new Set(w).size !== w.length;
 }
+
+var promiseFunction = new Promise(function (resolve, reject) {
+  var errors = [];
+  inp.getAttributeNames().forEach(function (attribute) {
+    switch (attribute) {
+      case 'require':
+        if (inp.value.length === 0) {
+          errors.push('This field is require');
+        } else {
+          valid(inp);
+        }
+
+        break;
+
+      case 'notnum':
+        if (notNum.test(inp.value)) {
+          errors.push('Only letters');
+        } else {
+          valid(inp);
+        }
+
+        break;
+
+      case 'notalpha':
+        if (notAlpha.test(inp.value)) {
+          errors.push('Only num');
+        } else {
+          valid(inp);
+        }
+
+        break;
+
+      case 'email':
+        if (!email.test(inp.value)) {
+          errors.push('Incorrect email');
+        } else {
+          valid(inp);
+        }
+
+        break;
+
+      case 'max20':
+        if (inp.value.length > 20) {
+          errors.push('Max length 20');
+        } else {
+          valid(inp);
+        }
+
+        break;
+
+      case 'min16':
+        if (inp.value.length < 12) {
+          errors.push('Enter full number');
+        } else {
+          valid(inp);
+        }
+
+        break;
+
+      case 'max6':
+        if (inp.value.length > 9) {
+          errors.push('Too large amount');
+        } else {
+          valid(inp);
+        }
+
+        break;
+
+      case 'money':
+        if (inp.value.length < 2) {
+          errors.push('This field require');
+        } else {
+          valid(inp);
+        }
+
+        break;
+
+      case 'reqtag':
+        if (inp.parentNode.querySelector('.tags') === null) {
+          errors.push('This field require');
+        } else {
+          valid(inp);
+        }
+
+        break;
+
+      case 'taglength':
+        var childs = inp.nextSibling.childNodes;
+        var i = 0;
+        childs.forEach(function (child) {
+          if (child.classList.contains('control')) {
+            i++;
+
+            if (child.getAttribute('data-tag').length > 15) {
+              errors.push("Too long tag \u2116".concat(i));
+            }
+          }
+        });
+        break;
+
+      case 'nodup':
+        var skills = document.querySelector('#tags').value.split(',');
+
+        if (checkIfDuplicateExists(skills)) {
+          errors.push('Each skill must be entered once!');
+        } else {
+          valid(inp);
+        }
+
+        break;
+
+      case 'unique':
+        var mail = inp.value;
+        var formData = new FormData();
+        formData.append('email', mail);
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/email-check', formData).then(function (response) {
+          if (response['data']['exists'] === true) {
+            errors.push('Email already in use!');
+          } else {
+            valid(inp);
+          }
+        });
+        break;
+    }
+  });
+});
 
 /***/ }),
 

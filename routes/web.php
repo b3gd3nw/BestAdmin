@@ -46,6 +46,7 @@ Route::prefix('/api')->group(function (){
     Route::get('bank', [CountryController::class, 'getAmount'])->name('bank');
     Route::resource('category', CategoryController::class);
     Route::resource('employee', EmployeeController::class);
+    Route::post('email-check', [App\Http\Controllers\EmployeeController::class, 'uniqMail'])->name('check_mail');
     Route::get('send-form', [App\Http\Controllers\EmployeeController::class, 'showSendForm'])->name('showSendForm');
     Route::get('filterby/{filter?}', [App\Http\Controllers\EmployeeController::class, 'filterBy'])->name('filterBy');
     Route::post('sendmail', [App\Http\Controllers\EmployeeController::class, 'sendMail'])->name('sendmail');
