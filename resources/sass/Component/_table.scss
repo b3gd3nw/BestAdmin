@@ -1,0 +1,25 @@
+table {
+    thead {
+        tr {
+            border-bottom: 2px solid #dbdbdb;
+            th {
+                border: 1px solid #dbdbdb;
+                border-width: 1px 1px 1px;
+            }
+        }
+    }
+}
+
+.content {
+    table {
+        th,
+        td {
+            border-width: 1px 1px 1px !important;
+        }
+        thead {
+            th {
+                border-width: 1px 1px 1px !important;
+            }
+        }
+    }
+}

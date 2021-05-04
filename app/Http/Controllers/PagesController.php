@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Bank;
 use App\Models\Category;
+use Illuminate\Support\Facades\View;
 
 class PagesController extends Controller
 {
@@ -105,5 +106,22 @@ class PagesController extends Controller
     {
         $categories = Category::orderBy('created_at', 'desc')->get();
         return view('Admin.accounting.categories', compact('categories'));
+    }
+
+    public function orderBy(Request $request)
+    {
+        $skills = Skill::all();
+        $employee_skills = EmployeeSkill::all();
+        $employes = Employee::orderBy($request->get('order'), $request->get('by'))->withTrashed()->get();
+
+        $data = [
+            'view' => View::make('Admin.tables.sorted-dashboard-table')
+                ->with('employes', $employes)
+                ->with('employee_skills', $employee_skills)
+                ->with('skills', $skills)
+                ->render()
+        ];
+        // dd($data);
+        return response()->json($data);
     }
 }

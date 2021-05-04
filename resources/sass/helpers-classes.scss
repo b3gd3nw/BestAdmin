@@ -11,6 +11,16 @@
     font-size: 12px;
 }
 
+.d-flex-between-center {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.has-border {
+    border: 1px solid black;
+}
+
 .has-background-none {
     background: none;
 }
@@ -47,6 +57,10 @@
     text-align: left;
 }
 
+.text-right {
+    text-align: right;
+}
+
 .opacity-3 {
     opacity: 0.3;
 }
@@ -59,4 +73,8 @@
 .is-justify-end {
     display: flex;
     justify-content: flex-end;
+}
+
+.is-hoverable {
+    cursor: pointer;
 }

@@ -28457,6 +28457,40 @@ if (clear_btn) {
 
 /***/ }),
 
+/***/ "./resources/js/assets/sort.js":
+/*!*************************************!*\
+  !*** ./resources/js/assets/sort.js ***!
+  \*************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+var columns = document.querySelectorAll('.order');
+var option = 'desc';
+
+if (columns) {
+  columns.forEach(function (column) {
+    column.addEventListener('click', function (e) {
+      var colId = column.id;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/orderby/?order=".concat(colId, "&by=").concat(option)).then(function (response) {
+        document.querySelector('#tbody').innerHTML = response.data.view;
+
+        if (option === "asc") {
+          option = 'desc';
+        } else {
+          option = 'asc';
+        }
+      });
+    });
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/validate.js":
 /*!**********************************!*\
   !*** ./resources/js/validate.js ***!
@@ -28737,14 +28771,15 @@ function _mailCheck() {
 /***/ }),
 
 /***/ 0:
-/*!***********************************************************************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/js/assets/admin.js ./resources/sass/app.scss ./node_modules/font-awesome/scss/font-awesome.scss ***!
-  \***********************************************************************************************************************************************/
+/*!*****************************************************************************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/js/assets/admin.js ./resources/js/assets/sort.js ./resources/sass/app.scss ./node_modules/font-awesome/scss/font-awesome.scss ***!
+  \*****************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! /home/developer/giter/BestAdmin/resources/js/app.js */"./resources/js/app.js");
 __webpack_require__(/*! /home/developer/giter/BestAdmin/resources/js/assets/admin.js */"./resources/js/assets/admin.js");
+__webpack_require__(/*! /home/developer/giter/BestAdmin/resources/js/assets/sort.js */"./resources/js/assets/sort.js");
 __webpack_require__(/*! /home/developer/giter/BestAdmin/resources/sass/app.scss */"./resources/sass/app.scss");
 module.exports = __webpack_require__(/*! /home/developer/giter/BestAdmin/node_modules/font-awesome/scss/font-awesome.scss */"./node_modules/font-awesome/scss/font-awesome.scss");
 

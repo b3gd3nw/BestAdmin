@@ -42,6 +42,7 @@ Route::prefix('/admin')->group(function (){
 });
 // - Api routes -
 Route::prefix('/api')->group(function (){
+    Route::get('orderby', [App\Http\Controllers\PagesController::class, 'orderBy']);
     Route::get('countries', [CountryController::class, 'fetchAll'])->name('countries');
     Route::get('bank', [CountryController::class, 'getAmount'])->name('bank');
     Route::resource('category', CategoryController::class);

@@ -79,7 +79,7 @@
                     <th>Email</th>
                     <th>Skills</th>
                     <th>Status</th>
-                    <th></th>
+                    <th>Actions</th>
                     <th></th>
                 </tr>
                 </thead>
