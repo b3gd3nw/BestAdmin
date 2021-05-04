@@ -52,34 +52,27 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $request->request->add(['status' => 'pending']);
-        if (DB::table('employees')->where('email', $request->email)->first()) {
-            return redirect()->back()->withError('Email already in use');
+        $skill = new Skill();
+        $skills = $skill->skillFilter($request->skills);
+
+        $request->merge(['salary' => str_replace(['$', '.', ','], ['','', '.'], $request->salary)]);
+        $employeeId = Employee::create(
+            $request->all()
+        )->id;
+
+        foreach ($skills as $skillId) {
+            EmployeeSkill::create(compact('employeeId', 'skillId'));
+        }
+
+        if (isset($_COOKIE['token']))
+        {
+            $token = Token::where('token', '=', $_COOKIE['token'])->first();
+            $token->delete();
+            unset($_COOKIE['token']);
+            setcookie('token', null, -1, '/');
+            return redirect('/main')->withSuccess('Employee was successfully added!');
         } else {
-            $skill = new Skill();
-            $skills = $skill->skillFilter($request->skills);
-
-            $request->merge(['salary' => str_replace(['$', '.', ','], ['','', '.'], $request->salary)]);
-            $employeeId = Employee::create(
-                $request->all()
-            )->id;
-
-            foreach ($skills as $skillId) {
-                EmployeeSkill::create(compact('employeeId', 'skillId'));
-            }
-
-            if (isset($_COOKIE['token']))
-            {
-                $token = Token::where('token', '=', $_COOKIE['token'])->first();
-                $token->delete();
-                unset($_COOKIE['token']);
-                setcookie('token', null, -1, '/');
-                return redirect('/main')->withSuccess('Employee was successfully added!');
-            } else {
-                return redirect()->back()->withSuccess('Employee was successfully added!');
-            }
-
-
-
+            return redirect()->back()->withSuccess('Employee was successfully added!');
         }
     }
 
