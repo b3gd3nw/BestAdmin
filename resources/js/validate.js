@@ -15,11 +15,13 @@ export function validateit() {
     }
     if (submit_btn) {
         let mail = form.querySelector('input[name="email"]');
-        mail.addEventListener('change', function(e) {
-            mailCheck(mail).then(data => {
-                is_exist = data;
+        if (mail) {
+            mail.addEventListener('change', function(e) {
+                mailCheck(mail).then(data => {
+                    is_exist = data;
+                })
             })
-        })
+        }
         submit_btn.addEventListener('click', function(e) {
             var counter = 0;
             let form = document.querySelector('#form');

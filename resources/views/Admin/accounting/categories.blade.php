@@ -58,13 +58,13 @@
             </div>
         @endforeach
         <div class="column is-one-third mt-1">
-            <div data-path="{{ route('category.index') }}" class="card has-background-none has-hoverable" id="addCard">
-                <div class="card-content text-center fantom-card text-glow">
-                    <p class="title color-black opacity-3">
-                        Add
+            <div data-path="{{ route('category.index') }}" class="card has-background-aqua has-hoverable" id="addCard">
+                <div class="card-content text-center fantom-card">
+                    <p class="title">
+                        <i class="fas fa-plus"></i>
                     </p>
-                    <p class="subtitle color-black opacity-3">
-                        Category
+                    <p class="subtitle">
+                        Add Category
                     </p>
                 </div>
             </div>

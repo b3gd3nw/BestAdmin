@@ -21362,6 +21362,10 @@ body .content .columns .column .pl-1 {
   background: none;
 }
 
+.has-background-aqua {
+  background: #84baec;
+}
+
 .has-background-mint-dark {
   background: #e0e0e0;
 }
