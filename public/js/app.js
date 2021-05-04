@@ -28222,6 +28222,7 @@ if (add_btn) {
     var target = add_btn.getAttribute('data-path');
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+      document.querySelector('#modal-title').innerHTML = 'Create New Category';
       Object(_validate__WEBPACK_IMPORTED_MODULE_4__["validateit"])();
       var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('budget'), {
         mask: '$num',
@@ -28243,6 +28244,7 @@ change_btn.forEach(function (elem) {
     var target = elem.getAttribute('data-path');
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
       document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+      document.querySelector('#modal-title').innerHTML = 'Change Budget';
       var currencyMask = Object(imask__WEBPACK_IMPORTED_MODULE_1__["default"])(document.getElementById('budget'), {
         mask: '$num',
         blocks: {
