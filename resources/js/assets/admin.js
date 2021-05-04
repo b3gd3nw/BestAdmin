@@ -77,6 +77,7 @@ if (add_btn) {
         axios.get(target)
             .then(responce => {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+                document.querySelector('#modal-title').innerHTML = 'Create New Category';
                 validateit();
                 let currencyMask = IMask(
                     document.getElementById('budget'), {
@@ -100,6 +101,7 @@ change_btn.forEach(function(elem) {
         axios.get(target)
             .then(responce => {
                 document.querySelector('.modal-card-body').innerHTML = responce.data.view;
+                document.querySelector('#modal-title').innerHTML = 'Change Budget';
                 var currencyMask = IMask(
                     document.getElementById('budget'), {
                         mask: '$num',
