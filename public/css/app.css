@@ -21386,6 +21386,10 @@ body .content .columns .column .pl-1 {
   text-align: center;
 }
 
+.text-left {
+  text-align: left;
+}
+
 .opacity-3 {
   opacity: 0.3;
 }

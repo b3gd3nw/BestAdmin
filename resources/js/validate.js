@@ -1,15 +1,27 @@
+import Axios from "axios";
+
 let notNum = /\d|[/?<>;:{}!@#$%^&*()+=]/;
 let notAlpha = /[^a-zA-Z\s:\u00C0-\u00FF]/g;
 let email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+
+
 export function validateit() {
+    let is_exist = false;
     let submit_btn = document.querySelector('#submit');
     let calendar = document.querySelector('.datetimepicker-dummy-input');
     if (calendar) {
         calendar.setAttribute('require', '');
     }
     if (submit_btn) {
+        let mail = form.querySelector('input[name="email"]');
+        mail.addEventListener('change', function(e) {
+            mailCheck(mail).then(data => {
+                is_exist = data;
+            })
+        })
         submit_btn.addEventListener('click', function(e) {
+            var counter = 0;
             let form = document.querySelector('#form');
             let inps = form.querySelectorAll("input, select, .tagsinput, .datetimepicker-dummy-input");
             inps.forEach(inp => {
@@ -19,6 +31,7 @@ export function validateit() {
                         case 'require':
                             if (inp.value.length === 0) {
                                 errors.push('This field is require');
+                                counter++;
                             } else {
                                 valid(inp);
                             }
@@ -26,6 +39,7 @@ export function validateit() {
                         case 'notnum':
                             if (notNum.test(inp.value)) {
                                 errors.push('Only letters');
+                                counter++;
                             } else {
                                 valid(inp);
                             }
@@ -33,6 +47,7 @@ export function validateit() {
                         case 'notalpha':
                             if (notAlpha.test(inp.value)) {
                                 errors.push('Only num');
+                                counter++;
                             } else {
                                 valid(inp);
                             }
@@ -40,6 +55,7 @@ export function validateit() {
                         case 'email':
                             if (!email.test(inp.value)) {
                                 errors.push('Incorrect email');
+                                counter++;
                             } else {
                                 valid(inp);
                             }
@@ -47,6 +63,7 @@ export function validateit() {
                         case 'max20':
                             if (inp.value.length > 20) {
                                 errors.push('Max length 20');
+                                counter++;
                             } else {
                                 valid(inp);
                             }
@@ -54,6 +71,7 @@ export function validateit() {
                         case 'min16':
                             if (inp.value.length < 12) {
                                 errors.push('Enter full number');
+                                counter++;
                             } else {
                                 valid(inp);
                             }
@@ -61,6 +79,7 @@ export function validateit() {
                         case 'max6':
                             if (inp.value.length > 9) {
                                 errors.push('Too large amount');
+                                counter++;
                             } else {
                                 valid(inp);
                             }
@@ -68,6 +87,7 @@ export function validateit() {
                         case 'money':
                             if (inp.value.length < 2) {
                                 errors.push('This field require');
+                                counter++;
                             } else {
                                 valid(inp);
                             }
@@ -75,6 +95,7 @@ export function validateit() {
                         case 'reqtag':
                             if (inp.parentNode.querySelector('.tags') === null) {
                                 errors.push('This field require');
+                                counter++;
                             } else {
                                 valid(inp);
                             }
@@ -87,6 +108,7 @@ export function validateit() {
                                     i++;
                                     if (child.getAttribute('data-tag').length > 15) {
                                         errors.push(`Too long tag №${i}`);
+                                        counter++;
                                     }
                                 }
                             })
@@ -95,15 +117,23 @@ export function validateit() {
                             let skills = document.querySelector('#tags').value.split(',');
                             if (checkIfDuplicateExists(skills)) {
                                 errors.push('Each skill must be entered once!');
+                                counter++;
                             } else {
                                 valid(inp);
                             }
                             break;
+                        case 'unique':
+                            if (is_exist === true) {
+                                errors.push('Email already in use!');
+                                counter++;
+                            } else {
+                                valid(inp);
+                            }
                     }
                 });
                 if (errors.length != 0) {
-                    showError(errors, inp);
                     e.preventDefault();
+                    showError(errors, inp);
                 }
             });
         });
@@ -142,4 +172,20 @@ function valid(inp) {
 
 function checkIfDuplicateExists(w) {
     return new Set(w).size !== w.length
+}
+
+function makeRequest(mail) {
+    return new Promise(function(resolve) {
+        let formData = new FormData();
+        formData.append('email', mail.value);
+        Axios.post('/api/email-check', formData)
+            .then(response => {
+                let is_exist = response['data']['exists'];
+                resolve(is_exist)
+            })
+    });
+}
+
+async function mailCheck(mail) {
+    return await makeRequest(mail);
 }

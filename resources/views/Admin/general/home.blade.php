@@ -44,7 +44,7 @@
         <div class="columns">
             <div class="column is-full">
                 <h1 class="title">Employes</h1>
-                <table class="table">
+                <table class="table text-left">
                     <thead>
                     <tr>
                         <th>#</th>
