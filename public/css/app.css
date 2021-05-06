@@ -17,11 +17,6 @@ table thead tr th {
   border-width: 1px 1px 1px;
 }
 
-.content table th,
-.content table td {
-  border-width: 1px 1px 1px !important;
-}
-
 .content table thead th {
   border-width: 1px 1px 1px !important;
 }
@@ -21378,6 +21373,11 @@ body .content .columns .column .pl-1 {
 
 .fs-12 {
   font-size: 12px;
+}
+
+.d-flex-center {
+  display: flex;
+  justify-content: center;
 }
 
 .d-flex-between-center {

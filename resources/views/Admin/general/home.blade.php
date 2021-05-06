@@ -117,6 +117,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                <div class="d-flex-center">{{ $employes->links() }}</div>
             </div>
         </div>
 @endsection
