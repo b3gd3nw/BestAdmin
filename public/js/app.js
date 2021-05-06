@@ -28476,7 +28476,9 @@ if (columns) {
   columns.forEach(function (column) {
     column.addEventListener('click', function (e) {
       var colId = column.id;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/orderby/?order=".concat(colId, "&by=").concat(option)).then(function (response) {
+      var parentNode = this.parentNode.parentNode.parentNode;
+      var table = parentNode.id;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/orderby/?order=".concat(colId, "&by=").concat(option, "&in=").concat(table)).then(function (response) {
         document.querySelector('#tbody').innerHTML = response.data.view;
 
         if (option === "asc") {

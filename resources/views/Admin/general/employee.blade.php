@@ -70,17 +70,41 @@
     </div>
     <div class="columns">
         <div class="column is-full">
-            <table class="table text-left">
+            <table class="table text-left" id="employee-table">
                 <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Email</th>
+                    <th class="is-hoverable order" id="id">
+                        <div class="columns">
+                            <div class="column">#</div>
+                            <div class="column text-right"> <i class="fas fa-sort"></i></div>
+                        </div>
+                    </th>
+                    <th class="is-hoverable order" id="firstname">
+                        <div class="columns">
+                            <div class="column">Name</div>
+                            <div class="column text-right"> <i class="fas fa-sort"></i></div>
+                        </div>
+                    </th>
+                    <th class="is-hoverable order" id="position">
+                        <div class="columns">
+                            <div class="column">Position</div>
+                            <div class="column text-right"> <i class="fas fa-sort"></i></div>
+                        </div>
+                    </th>
+                    <th class="is-hoverable order" id="email">
+                        <div class="columns">
+                            <div class="column">Email</div>
+                            <div class="column text-right"> <i class="fas fa-sort"></i></div>
+                        </div>
+                    </th>
                     <th>Skills</th>
-                    <th>Status</th>
+                    <th class="is-hoverable order" id="status">
+                        <div class="columns">
+                            <div class="column">Status</div>
+                            <div class="column text-right"> <i class="fas fa-sort"></i></div>
+                        </div>
+                    </th>
                     <th>Actions</th>
-                    <th></th>
                 </tr>
                 </thead>
                 <tbody id="tbody">
@@ -116,7 +140,7 @@
                                 @break
 
                             @endswitch
-                            <td>
+                            <td class="d-flex">
                                 @if($employee['status'] != 'inactive')
                                 <form action="{{ route('employee.destroy', $employee['id'])  }}" method="POST">
                                     @csrf
@@ -134,8 +158,6 @@
                                         Delete
                                     </button>
                                 @endif
-                            </td>
-                            <td>
                                 <button data-path="{{ route('employee.edit', $employee['id']) }}" type="button" class="button is-warning is-rounded is-small edit_employee" id="edit_employee">
                                     <i class="fas fa-edit">
                                     </i>

@@ -44,7 +44,7 @@
         <div class="columns">
             <div class="column is-full">
                 <h1 class="title">Employes</h1>
-                <table class="table text-left">
+                <table class="table text-left" id="dashboard-table">
                     <thead>
                     <tr>
                         <th class="is-hoverable order" id="id">

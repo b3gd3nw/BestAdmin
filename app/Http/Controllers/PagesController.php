@@ -113,9 +113,9 @@ class PagesController extends Controller
         $skills = Skill::all();
         $employee_skills = EmployeeSkill::all();
         $employes = Employee::orderBy($request->get('order'), $request->get('by'))->withTrashed()->get();
-
+        
         $data = [
-            'view' => View::make('Admin.tables.sorted-dashboard-table')
+            'view' => View::make('Admin.tables.sorted-' . $request->get('in'))
                 ->with('employes', $employes)
                 ->with('employee_skills', $employee_skills)
                 ->with('skills', $skills)
