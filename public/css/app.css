@@ -1,5 +1,9 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);@charset "UTF-8";
 
+.card .category-type {
+  margin: 0 5px;
+}
+
 .dropdown-menu.dropdown-content.dropdown-itema {
   text-decoration: none;
 }
@@ -21289,7 +21293,7 @@ select {
 }
 
 .fantom-card {
-  padding: 49px;
+  padding: 68px;
   cursor: pointer;
 }
 

@@ -30,6 +30,12 @@
         @foreach ($categories as $category)
             <div class="column is-one-third mt-1">
                 <div class="card">
+                    @if ($category['type'] === 'income')
+                        <p class="category-type green">{{ $category['type'] }}</p>
+                    @else
+                        <p class="category-type red">{{ $category['type'] }}</p>
+                    @endif
+                    
                     <div class="card-content text-center">
                         <p class="title color-black">
                             {{ $category['name'] }}

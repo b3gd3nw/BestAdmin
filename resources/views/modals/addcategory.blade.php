@@ -16,6 +16,17 @@
         </div>
     </div>
     <div class="field">
+        <p class="control">
+            <label class="label" for="type">Type</label>
+            <select name="type" class="input" id="" require>
+                <option disabled selected value> -- select a type -- </option>
+                <option value="income">Income</option>
+                <option value="consumption">Consumption</option>
+            </select>
+            <span class="error red fs-12"></span>
+        </p>
+    </div>
+    <div class="field">
         <button type="submit" class="button is-success" id="submit">Save changes</button>
     </div>
 </form>
