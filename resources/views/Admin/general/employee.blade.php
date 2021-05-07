@@ -73,20 +73,20 @@
             <table class="table text-left" id="employee-table">
                 <thead>
                 <tr>
-                    <th class="is-hoverable">
+                    <th>
                         @sortablelink('id', '#', ['page' => $employes->currentPage()])
                     </th>
-                    <th class="is-hoverable">
+                    <th>
                         @sortablelink('firstname', 'Name', ['page' => $employes->currentPage()])
                     </th>
-                    <th class="is-hoverable">
+                    <th>
                         @sortablelink('position', 'Position', ['page' => $employes->currentPage()])
                     </th>
-                    <th class="is-hoverable">
+                    <th>
                         @sortablelink('email', 'Email', ['page' => $employes->currentPage()])
                     </th>
                     <th>Skills</th>
-                    <th class="is-hoverable">
+                    <th>
                         @sortablelink('status', 'Status', ['page' => $employes->currentPage()])
                     </th>
                     <th>Actions</th>
