@@ -135,12 +135,12 @@
                                       <td>{{ $category['name'] }}</td>
                                       @break
                                   @else
-                                      <td>Without category</td>
+                                      <td>-</td>
                                       @break
                                   @endif
                               @endforeach
                             @else
-                              <td>Without category</td>
+                              <td>-</td>
                             @endif
                             <td>{{ $transaction['created_at'] }}</td>
                         </tr>
