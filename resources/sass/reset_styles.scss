@@ -1,11 +1,14 @@
 /* Specifying box sizing */
+
 *,
 *::before,
 *::after {
     box-sizing: border-box;
 }
 
+
 /* Removing internal padding */
+
 ul[class],
 ol[class] {
     padding: 0;
@@ -15,7 +18,9 @@ html {
     height: 100%;
 }
 
+
 /* Removing margins */
+
 body,
 h1,
 h2,
@@ -33,36 +38,49 @@ dd {
     margin: 0;
 }
 
+
 /* We set the basic default settings for the body */
+
 body {
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
     line-height: 1.5;
 }
 
+
 /* Remove the default styling for all ul and il that have a class attribute */
+
 ul[class],
 ol[class] {
     list-style: none;
 }
 
+
 /* Elements a that do not have a class are reset to default styles */
+
 a:not([class]) {
     text-decoration-skip-ink: auto;
+    text-decoration: none;
 }
 
+
 /* Making it easier to work with images */
+
 img {
     max-width: 100%;
     display: block;
 }
 
+
 /* We indicate a clear frequency in the data flow for article */
-article > * + * {
+
+article>*+* {
     margin-top: 1em;
 }
 
+
 /* Inheriting fonts for inputs and buttons */
+
 input,
 button,
 textarea,
@@ -70,7 +88,9 @@ select {
     font: inherit;
 }
 
+
 /* Remove all animations and transitions for people who prefer not to use them */
+
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;

@@ -17,6 +17,11 @@ table thead tr th {
   border-width: 1px 1px 1px;
 }
 
+table thead tr th a {
+  text-decoration: none;
+  color: black;
+}
+
 .content table thead th {
   border-width: 1px 1px 1px !important;
 }
@@ -21250,6 +21255,7 @@ ol[class] {
 a:not([class]) {
   -webkit-text-decoration-skip: ink;
           text-decoration-skip-ink: auto;
+  text-decoration: none;
 }
 
 /* Making it easier to work with images */

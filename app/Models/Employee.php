@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kyslik\ColumnSortable\Sortable;
 
 class Employee extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Sortable;
 
     protected $fillable = [
         'firstname',
@@ -20,6 +21,14 @@ class Employee extends Model
         'salary',
         'status',
 
+    ];
+
+    public $sortable = [
+        'id',
+        'firstname',
+        'position',
+        'email',
+        'status',
     ];
 
     public function country()
