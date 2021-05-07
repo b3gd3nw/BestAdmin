@@ -11,6 +11,16 @@
     font-size: 12px;
 }
 
+.d-flex-center {
+    display: flex;
+    justify-content: center;
+}
+
+.d-flex-around {
+    display: flex;
+    justify-content: space-around;
+}
+
 .d-flex-between-center {
     display: flex;
     justify-content: space-between;

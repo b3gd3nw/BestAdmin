@@ -140,7 +140,7 @@
                                 @break
 
                             @endswitch
-                            <td class="d-flex">
+                            <td class="d-flex-around">
                                 @if($employee['status'] != 'inactive')
                                 <form action="{{ route('employee.destroy', $employee['id'])  }}" method="POST">
                                     @csrf
@@ -168,6 +168,7 @@
                 @endforeach
                 </tbody>
             </table>
+            <div class="d-flex-center">{{ $employes->links('vendor.pagination.bulma') }}</div>
         </div>
     </div>
 @endsection

@@ -117,6 +117,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                <div class="d-flex-center">{{ $employes->links('vendor.pagination.bulma') }}</div>
             </div>
         </div>
 @endsection

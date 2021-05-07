@@ -229,7 +229,7 @@ class EmployeeController extends Controller
     {
         $skills = Skill::all();
         $employee_skills = EmployeeSkill::all();
-        $employes = DB::table('employees')->where('status', $status)->get();
+        $employes = DB::table('employees')->where('status', $status)->paginate(3);
 
         $data = [
             'view' => View::make('Admin.tables.filtered-table')

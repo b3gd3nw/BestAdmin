@@ -59,7 +59,7 @@ class PagesController extends Controller
         $bank = Bank::firstOrFail();
         $skills = Skill::all();
         $employee_skills = EmployeeSkill::all();
-        $employes = Employee::orderBy('id')->withTrashed()->get();
+        $employes = Employee::orderBy('id')->withTrashed()->paginate(3);
         $consumptions = Transaction::whereMonth('created_at', Carbon::now()->month)->where('type', 'consumption')->sum('amount');
         $budget = Category::whereMonth('created_at', Carbon::now()->month)->sum('budget');
 
@@ -77,7 +77,7 @@ class PagesController extends Controller
     {
         $skills = Skill::all();
         $employee_skills = EmployeeSkill::all();
-        $employes = Employee::orderBy('id')->withTrashed()->get();
+        $employes = Employee::orderBy('id')->withTrashed()->paginate(3);
         return view('Admin.general.employee', compact('employes', 'employee_skills', 'skills'));
     }
 
@@ -112,8 +112,8 @@ class PagesController extends Controller
     {
         $skills = Skill::all();
         $employee_skills = EmployeeSkill::all();
-        $employes = Employee::orderBy($request->get('order'), $request->get('by'))->withTrashed()->get();
-        
+        $employes = Employee::orderBy($request->get('order'), $request->get('by'))->withTrashed()->paginate(3);
+
         $data = [
             'view' => View::make('Admin.tables.sorted-' . $request->get('in'))
                 ->with('employes', $employes)

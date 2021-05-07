@@ -30,7 +30,7 @@
             @break
 
         @endswitch
-        <td>
+        <td class="d-flex-around">
             @if($employee->status != 'inactive')
                 <form action="{{ route('employee.destroy', $employee->id)  }}" method="POST">
                     @csrf
@@ -48,8 +48,6 @@
                     Delete
                 </button>
             @endif
-        </td>
-        <td>
             <button data-path="{{ route('employee.edit', $employee->id) }}" type="button" class="button is-warning is-rounded is-small edit_employee" id="edit_employee">
                 <i class="fas fa-edit">
                 </i>
