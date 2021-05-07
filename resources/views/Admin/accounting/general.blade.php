@@ -58,12 +58,27 @@
   </div>
   <div class="columns">
     <div class="column is-full">
-      <table class="table text-left">
+      <table class="table text-left" id="consumption-table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Category</th>
-            <th>Consumption</th>
+            <th class="is-hoverable order" id="id">
+              <div class="columns">
+                  <div class="column">#</div>
+                  <div class="column text-right"> <i class="fas fa-sort"></i></div>
+              </div>
+          </th>
+          <th class="is-hoverable order" id="category">
+            <div class="columns">
+                <div class="column">Category</div>
+                <div class="column text-right"> <i class="fas fa-sort"></i></div>
+            </div>
+          </th>
+            <th class="is-hoverable order" id="consumption">
+              <div class="columns">
+                  <div class="column">Consumption</div>
+                  <div class="column text-right"> <i class="fas fa-sort"></i></div>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody id="agtable">

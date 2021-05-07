@@ -4,6 +4,24 @@
   text-decoration: none;
 }
 
+table thead tr {
+  border-bottom: 2px solid #dbdbdb;
+}
+
+table thead tr th {
+  border: 1px solid #dbdbdb;
+  border-width: 1px 1px 1px;
+}
+
+.content table th,
+.content table td {
+  border-width: 1px 1px 1px !important;
+}
+
+.content table thead th {
+  border-width: 1px 1px 1px !important;
+}
+
 /*!
  * Font Awesome Free 5.15.3 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
@@ -21358,6 +21376,16 @@ body .content .columns .column .pl-1 {
   font-size: 12px;
 }
 
+.d-flex-between-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.has-border {
+  border: 1px solid black;
+}
+
 .has-background-none {
   background: none;
 }
@@ -21394,6 +21422,10 @@ body .content .columns .column .pl-1 {
   text-align: left;
 }
 
+.text-right {
+  text-align: right;
+}
+
 .opacity-3 {
   opacity: 0.3;
 }
@@ -21406,6 +21438,10 @@ body .content .columns .column .pl-1 {
 .is-justify-end {
   display: flex;
   justify-content: flex-end;
+}
+
+.is-hoverable {
+  cursor: pointer;
 }
 
 .red {
