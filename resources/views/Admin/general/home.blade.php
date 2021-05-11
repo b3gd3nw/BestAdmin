@@ -47,36 +47,21 @@
                 <table class="table text-left" id="dashboard-table">
                     <thead>
                     <tr>
-                        <th class="is-hoverable order" id="id">
-                            <div class="columns">
-                                <div class="column">#</div>
-                                <div class="column text-right"> <i class="fas fa-sort"></i></div>
-                            </div>
+                        <th>
+                            @sortablelink('id', '#', ['page' => $employes->currentPage()])
                         </th>
-                        <th class="is-hoverable order" id="firstname">
-                            <div class="columns">
-                                <div class="column">Name</div>
-                                <div class="column text-right"> <i class="fas fa-sort"></i></div>
-                            </div>
+                        <th>
+                            @sortablelink('firstname', 'Name', ['page' => $employes->currentPage()])
                         </th>
-                        <th class="is-hoverable order" id="position">
-                            <div class="columns">
-                                <div class="column">Position</div>
-                                <div class="column text-right"> <i class="fas fa-sort"></i></div>
-                            </div>
+                        <th>
+                            @sortablelink('position', 'Position', ['page' => $employes->currentPage()])
                         </th>
-                        <th class="is-hoverable order" id="email">
-                            <div class="columns">
-                                <div class="column">Email</div>
-                                <div class="column text-right"> <i class="fas fa-sort"></i></div>
-                            </div>
+                        <th>
+                            @sortablelink('email', 'Email', ['page' => $employes->currentPage()])
                         </th>
                         <th>Skills</th>
-                        <th class="is-hoverable order" id="status">
-                            <div class="columns">
-                                <div class="column">Status</div>
-                                <div class="column text-right"> <i class="fas fa-sort"></i></div>
-                            </div>
+                        <th>
+                            @sortablelink('status', 'Status', ['page' => $employes->currentPage()])
                         </th>
                     </tr>
                     </thead>
@@ -117,7 +102,7 @@
                     @endforeach
                     </tbody>
                 </table>
-                <div class="d-flex-center">{{ $employes->links('vendor.pagination.bulma') }}</div>
+                <div class="d-flex-center">{{ $employes->withQueryString()->links('vendor.pagination.bulma') }}</div>
             </div>
         </div>
 @endsection

@@ -48,13 +48,13 @@
                 <div class="dropdown-menu" id="dropdown-menu4" role="menu">
                     <div class="dropdown-content">
                         <div class="dropdown-item">
-                            <a data-path="{{ route('filterBy', 'active') }}" id="filter_active">Active</a>
+                            <a href="?status=active" id="filter_active">Active</a>
                         </div>
                         <div class="dropdown-item">
-                            <a data-path="{{ route('filterBy', 'pending') }}" id="filter_pending">Pending</a>
+                            <a href="?status=pending" id="filter_pending">Pending</a>
                         </div>
                         <div class="dropdown-item">
-                            <a data-path="{{ route('filterBy', 'inactive') }}" id="filter_inactive">Inactive</a>
+                            <a href="?status=inactive"  id="filter_inactive">Inactive</a>
                         </div>
                     </div>
                 </div>
@@ -73,36 +73,21 @@
             <table class="table text-left" id="employee-table">
                 <thead>
                 <tr>
-                    <th class="is-hoverable order" id="id">
-                        <div class="columns">
-                            <div class="column">#</div>
-                            <div class="column text-right"> <i class="fas fa-sort"></i></div>
-                        </div>
+                    <th>
+                        @sortablelink('id', '#', ['page' => $employes->currentPage()])
                     </th>
-                    <th class="is-hoverable order" id="firstname">
-                        <div class="columns">
-                            <div class="column">Name</div>
-                            <div class="column text-right"> <i class="fas fa-sort"></i></div>
-                        </div>
+                    <th>
+                        @sortablelink('firstname', 'Name', ['page' => $employes->currentPage()])
                     </th>
-                    <th class="is-hoverable order" id="position">
-                        <div class="columns">
-                            <div class="column">Position</div>
-                            <div class="column text-right"> <i class="fas fa-sort"></i></div>
-                        </div>
+                    <th>
+                        @sortablelink('position', 'Position', ['page' => $employes->currentPage()])
                     </th>
-                    <th class="is-hoverable order" id="email">
-                        <div class="columns">
-                            <div class="column">Email</div>
-                            <div class="column text-right"> <i class="fas fa-sort"></i></div>
-                        </div>
+                    <th>
+                        @sortablelink('email', 'Email', ['page' => $employes->currentPage()])
                     </th>
                     <th>Skills</th>
-                    <th class="is-hoverable order" id="status">
-                        <div class="columns">
-                            <div class="column">Status</div>
-                            <div class="column text-right"> <i class="fas fa-sort"></i></div>
-                        </div>
+                    <th>
+                        @sortablelink('status', 'Status', ['page' => $employes->currentPage()])
                     </th>
                     <th>Actions</th>
                 </tr>
@@ -168,7 +153,7 @@
                 @endforeach
                 </tbody>
             </table>
-            <div class="d-flex-center">{{ $employes->links('vendor.pagination.bulma') }}</div>
+            <div class="d-flex-center">{{ $employes->withQueryString()->links('vendor.pagination.bulma') }}</div>
         </div>
     </div>
 @endsection

@@ -59,7 +59,7 @@ class PagesController extends Controller
         $bank = Bank::firstOrFail();
         $skills = Skill::all();
         $employee_skills = EmployeeSkill::all();
-        $employes = Employee::orderBy('id')->withTrashed()->paginate(3);
+        $employes = Employee::withTrashed()->sortable()->paginate(3);
         $consumptions = Transaction::whereMonth('created_at', Carbon::now()->month)->where('type', 'consumption')->sum('amount');
         $budget = Category::whereMonth('created_at', Carbon::now()->month)->sum('budget');
 
@@ -70,14 +70,22 @@ class PagesController extends Controller
 
     /**
      * Receives employes from database and return view with them.
+     * 
+     * 
+     * @param  Request  $request
      *
      * @return  \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function employee()
+    public function employee(Request $request)
     {
         $skills = Skill::all();
         $employee_skills = EmployeeSkill::all();
-        $employes = Employee::orderBy('id')->withTrashed()->paginate(3);
+        if ($request->status) {
+            $employes = Employee::where('status', $request->status)->withTrashed()->sortable()->paginate(3);
+        } else {
+            $employes = Employee::withTrashed()->sortable()->paginate(3);
+        }
+        
         return view('Admin.general.employee', compact('employes', 'employee_skills', 'skills'));
     }
 
