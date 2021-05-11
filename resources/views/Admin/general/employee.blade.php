@@ -48,13 +48,13 @@
                 <div class="dropdown-menu" id="dropdown-menu4" role="menu">
                     <div class="dropdown-content">
                         <div class="dropdown-item">
-                            <a data-path="{{ route('filterBy', 'active') }}" id="filter_active">Active</a>
+                            <a href="?status=active" id="filter_active">Active</a>
                         </div>
                         <div class="dropdown-item">
-                            <a data-path="{{ route('filterBy', 'pending') }}" id="filter_pending">Pending</a>
+                            <a href="?status=pending" id="filter_pending">Pending</a>
                         </div>
                         <div class="dropdown-item">
-                            <a data-path="{{ route('filterBy', 'inactive') }}" id="filter_inactive">Inactive</a>
+                            <a href="?status=inactive"  id="filter_inactive">Inactive</a>
                         </div>
                     </div>
                 </div>

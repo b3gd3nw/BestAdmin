@@ -28408,51 +28408,34 @@ if (send_mail_btn) {
   });
 }
 
-var active_btn = document.querySelector('#filter_active');
+var dropdown_title = document.querySelector('#dropdown-title');
 
-if (active_btn) {
-  active_btn.addEventListener('click', function (e) {
-    var target = active_btn.getAttribute('data-path');
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
-      document.querySelector('#tbody').innerHTML = responce.data.view;
-      document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="green">active</span>';
-      init_edit();
-    });
-  });
-}
-
-var pending_btn = document.querySelector('#filter_pending');
-
-if (pending_btn) {
-  pending_btn.addEventListener('click', function (e) {
-    var target = pending_btn.getAttribute('data-path');
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
-      document.querySelector('#tbody').innerHTML = responce.data.view;
-      document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="orange">pending</span>';
-      init_edit();
-    });
-  });
-}
-
-var inactive_btn = document.querySelector('#filter_inactive');
-
-if (inactive_btn) {
-  inactive_btn.addEventListener('click', function (e) {
-    var target = inactive_btn.getAttribute('data-path');
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(target).then(function (responce) {
-      document.querySelector('#tbody').innerHTML = responce.data.view;
-      document.querySelector('#dropdown-title').innerHTML = 'Filter by <span class="red">inactive</span>';
-      init_edit();
-    });
-  });
+if (dropdown_title) {
+  if (getGet('status') === 'active') {
+    dropdown_title.innerHTML = 'Filter by <span class="green">active</span>';
+  } else if (getGet('status') === 'pending') {
+    dropdown_title.innerHTML = 'Filter by <span class="orange">pending</span>';
+  } else if (getGet('status') === 'inactive') {
+    dropdown_title.innerHTML = 'Filter by <span class="red">inactive</span>';
+  } else {
+    dropdown_title.innerHTML = 'Filter by ...';
+  }
 }
 
 var clear_btn = document.querySelector('#clr');
 
 if (clear_btn) {
   clear_btn.addEventListener('click', function (e) {
+    var baseUrl = window.location.href.split('?')[0];
+    window.history.pushState('name', '', baseUrl);
     window.location.reload();
   });
+}
+
+function getGet(name) {
+  var s = window.location.search;
+  s = s.match(new RegExp(name + '=([^&=]+)'));
+  return s ? s[1] : false;
 }
 
 /***/ }),
