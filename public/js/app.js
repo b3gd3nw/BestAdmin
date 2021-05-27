@@ -28207,10 +28207,13 @@ var srch = document.querySelector('#srch');
 
 if (srch) {
   srch.addEventListener('click', function (e) {
-    var bodyFormData = new FormData(document.querySelector('#frm'));
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/transactions', bodyFormData).then(function (responce) {
-      document.querySelector('#agtable').innerHTML = responce.data.view;
-    });
+    var date = document.querySelector(".range-calendar").value;
+
+    if (date) {
+      var baseUrl = window.location.href.split('?')[0];
+      window.history.pushState('name', '', baseUrl + "?filterby=".concat(date.replace(/\s/g, '')));
+      window.location.reload();
+    }
   });
 }
 
@@ -28427,7 +28430,7 @@ var clear_btn = document.querySelector('#clr');
 if (clear_btn) {
   clear_btn.addEventListener('click', function (e) {
     var baseUrl = window.location.href.split('?')[0];
-    window.history.pushState('name', '', baseUrl);
+    window.history.pushState('', '', baseUrl);
     window.location.reload();
   });
 }

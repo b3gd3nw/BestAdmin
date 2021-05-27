@@ -27,6 +27,7 @@ class Bank extends Model
         }
         $consumptions = [];
         $amount = 0;
+        $id = 0;
         $categories = Category::all();
         foreach ($categories as $category) {
             $concrete_trans = $transactions->where('categoryId', '=', $category->id);
@@ -36,10 +37,11 @@ class Bank extends Model
                     $amount = $amount + $transaction->amount;
                 }
             }
-            $consumptions [] = compact('category', 'amount');
+            $id++;
+            $category_name = $category->name;
+            $consumptions [] = compact('category', 'amount', 'id', 'category_name');
             $amount = 0;
         }
-
-        return $consumptions;
+        return collect($consumptions);
     }
 }

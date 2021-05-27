@@ -7,7 +7,9 @@
             <select name="categoryId" class="input" id="">
                 <option disabled selected value> -- select an option -- </option>
                 @foreach($categories as $category)
-                    <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>
+                    @if ($category->type === 'income')
+                        <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>    
+                    @endif
                 @endforeach
             </select>
             <span class="error red fs-12"></span>

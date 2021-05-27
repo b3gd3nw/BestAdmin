@@ -61,11 +61,12 @@ if (sbmt) {
 const srch = document.querySelector('#srch');
 if (srch) {
     srch.addEventListener('click', function(e) {
-        let bodyFormData = new FormData(document.querySelector('#frm'));
-        axios.post('/api/transactions', bodyFormData)
-            .then(responce => {
-                document.querySelector('#agtable').innerHTML = responce.data.view;
-            })
+        let date = document.querySelector(".range-calendar").value;
+        if (date) {
+            let baseUrl = window.location.href.split('?')[0];
+            window.history.pushState('name', '', baseUrl + `?filterby=${date.replace(/\s/g, '')}`);
+            window.location.reload();
+        }
     });
 }
 
@@ -292,7 +293,7 @@ const clear_btn = document.querySelector('#clr');
 if (clear_btn) {
     clear_btn.addEventListener('click', function(e) {
         let baseUrl = window.location.href.split('?')[0];
-        window.history.pushState('name', '', baseUrl);
+        window.history.pushState('', '', baseUrl);
         window.location.reload();
     });
 }

@@ -153,7 +153,7 @@
                 @endforeach
                 </tbody>
             </table>
-            <div class="d-flex-center">{{ $employes->withQueryString()->links('vendor.pagination.bulma') }}</div>
+            <div class="d-flex-start">{{ $employes->withQueryString()->links('vendor.pagination.bulma') }}</div>
         </div>
     </div>
 @endsection

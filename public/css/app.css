@@ -21391,6 +21391,16 @@ body .content .columns .column .pl-1 {
   justify-content: space-around;
 }
 
+.d-flex-start {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.d-flex-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .d-flex-between-center {
   display: flex;
   justify-content: space-between;
