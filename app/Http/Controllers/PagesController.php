@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Models\Bank;
 use App\Models\Category;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Arr;
 
 class PagesController extends Controller
 {
@@ -59,7 +60,7 @@ class PagesController extends Controller
         $bank = Bank::firstOrFail();
         $skills = Skill::all();
         $employee_skills = EmployeeSkill::all();
-        $employes = Employee::withTrashed()->sortable()->paginate(3);
+        $employes = Employee::withTrashed()->sortable()->paginate(6);
         $consumptions = Transaction::whereMonth('created_at', Carbon::now()->month)->where('type', 'consumption')->sum('amount');
         $budget = Category::whereMonth('created_at', Carbon::now()->month)->sum('budget');
 
@@ -81,7 +82,7 @@ class PagesController extends Controller
         $skills = Skill::all();
         $employee_skills = EmployeeSkill::all();
         if ($request->status) {
-            $employes = Employee::where('status', $request->status)->withTrashed()->sortable()->paginate(3);
+            $employes = Employee::where('status', $request->status)->withTrashed()->sortable()->paginate(6);
         } else {
             $employes = Employee::withTrashed()->sortable()->paginate(3);
         }
@@ -94,12 +95,33 @@ class PagesController extends Controller
      *
      * @return  \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function accounting_general()
+    public function accounting_general(Request $request)
     {
         $bank = new Bank();
-        $consumptions = $bank->getCategoriesConsumByMonth(null);
+        $transaction = new Transaction();
+        // $transactions = [
+
+        // ];
+        if ($request->by === "asc") {
+            $consumptions = $bank->getCategoriesConsumByMonth($request->filterby)
+                ->sortBy($request->sort, $flag = $request->sort != 'category_name' ? SORT_NUMERIC : SORT_STRING)
+                ->paginate(6, null, 'consumptions');
+            $transactions = $transaction->getTransactionsByMonth($request->filterby)
+                ->sortBy($request->sort)
+                ->paginate(6, null, 'transactions');
+        } else {
+            $consumptions = $bank->getCategoriesConsumByMonth($request->filterby)
+                ->sortByDesc($request->sort, $flag = $request->sort != 'category_name' ? SORT_NUMERIC : SORT_STRING)
+                ->paginate(6, null, 'consumptions');
+            $transactions = $transaction->getTransactionsByMonth($request->filterby)
+                ->sortByDesc($request->sort)
+                ->paginate(6, null, 'transactions');
+        }
+        // dd($consumptions);
         $categories = Category::all();
-        $transactions = Transaction::orderBy('created_at')->get();
+        //insert getTransByMonth methood
+        // $transactions = $transaction->getTransactionsByMonth($request->filterby)->paginate(2);//orderBy('created_at')->sortable()->paginate(6);
+        // dd($transactions);
         $bank = Bank::firstOrFail();
         $bank_amount = $bank->amount;
         return view('Admin.accounting.general', compact('consumptions', 'bank_amount', 'transactions', 'categories'));
