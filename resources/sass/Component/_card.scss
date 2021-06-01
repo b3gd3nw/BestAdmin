@@ -1,4 +1,29 @@
 .card {
+    border: none;
+    min-height: 250px;
+    max-height: 250px;
+        .card-content {
+            .top-content {
+                .title {
+                    padding: 10px 0;
+                }
+                border-bottom: 1px solid #f2f5f8;
+            }
+            .bottom-content {
+                p {
+                    padding: 5px 0;
+                }
+            }
+            li {
+                list-style: none;
+                .list-categories {
+                    ::before {
+                        content: '1';
+                    }
+                }
+            }
+        }
+
     .category-type {
         margin: 0 5px;
     }

@@ -98,3 +98,37 @@
 .is-hoverable {
     cursor: pointer;
 }
+
+.float-btn {
+    display: none;
+  position: fixed;
+  right: 20px;
+  bottom: 100px;            
+  color: #fff;
+  background-color: #000;
+  text-align: center;
+  font-size: 30px;
+  padding: 15px;
+  }
+
+  .sidebar-button {
+      margin-right: 10px;
+  }
+
+  .wrapper {
+    // margin-right: 10px; /* 1 */
+    // margin-left:  10px; /* 1 */
+  
+    // max-width: 960px; /* 2 */
+  
+    padding-right: 10px; /* 3 */
+    padding-left:  10px; /* 3 */
+  }
+  
+  .right-line {
+      border-right: 1px solid #f2f5f8;
+  }
+
+  .full-height {
+      min-height: 100%;
+  }
