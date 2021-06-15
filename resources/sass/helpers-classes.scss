@@ -100,15 +100,15 @@
 }
 
 .float-btn {
-    display: none;
-  position: fixed;
-  right: 20px;
-  bottom: 100px;            
-  color: #fff;
-  background-color: #000;
-  text-align: center;
-  font-size: 30px;
-  padding: 15px;
+//     display: none;
+//   position: fixed;
+//   right: 20px;
+//   bottom: 100px;            
+//   color: #fff;
+//   background-color: #000;
+//   text-align: center;
+//   font-size: 30px;
+//   padding: 15px;
   }
 
   .sidebar-button {
@@ -131,4 +131,8 @@
 
   .full-height {
       min-height: 100%;
+  }
+
+  .overflow-scroll {
+      overflow: scroll;
   }

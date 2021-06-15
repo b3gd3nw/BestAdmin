@@ -15,11 +15,11 @@ class EmployeeSkill extends Model
 
     public function skills()
     {
-        return $this->morphedByMany(Skill::class, 'taggable');
+        return $this->morphedByMany(Skill::class, 'employee_skill');
     }
 
     public function employes()
     {
-        return $this->morphedByMany(Employee::class, 'taggable');
+        return $this->morphedByMany(Employee::class, 'employee_skill');
     }
 }

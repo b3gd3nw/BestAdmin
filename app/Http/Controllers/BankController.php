@@ -21,7 +21,8 @@ class BankController extends Controller
     public function getAmount()
     {
         $bank = Bank::firstOrFail();
-        return response()->json(compact($bank->amount));
+        $amount = $bank->amount;
+        return response()->json(compact('amount'));
     }
 
     /**
@@ -122,5 +123,9 @@ class BankController extends Controller
             ->where('type', 'consumption')
             ->sum('amount');
         return $consumptions;
+    }
+
+    public function getCsrf() {
+        return csrf_token();
     }
 }

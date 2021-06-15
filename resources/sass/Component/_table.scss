@@ -1,3 +1,11 @@
+.table-header {
+    padding: 10px 10px;
+    align-items: baseline;
+    span {
+        margin: 0 5px;
+    }
+}
+
 table {
     thead {
         tr {

@@ -1,5 +1,5 @@
 import Dashboard from './components/Dashboard';
-import ExampleComponent from './components/ExampleComponent'
+import Employee from './components/Employee';
 
 export default {
     mode: 'history',
@@ -14,7 +14,7 @@ export default {
         },
         {
             path: '/employee',
-            component: ExampleComponent,
+            component: Employee,
             meta: {
                 title: 'Employee'
             }

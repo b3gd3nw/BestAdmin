@@ -36,6 +36,7 @@
         "bulma-tagsfield": "^0.1.3",
         "bulma-tagsinput": "^2.0.0",
         "font-awesome": "^4.7.0",
+        "gsap": "^3.6.1",
         "imask": "^6.0.7",
         "native-daterangepicker": "^0.0.12",
         "validate.js": "^0.13.1",

@@ -11140,18 +11140,6 @@ a.text-dark:focus {
   cursor: pointer;
 }
 
-.float-btn {
-  display: none;
-  position: fixed;
-  right: 20px;
-  bottom: 100px;
-  color: #fff;
-  background-color: #000;
-  text-align: center;
-  font-size: 30px;
-  padding: 15px;
-}
-
 .sidebar-button {
   margin-right: 10px;
 }
@@ -11169,6 +11157,26 @@ a.text-dark:focus {
 
 .full-height {
   min-height: 100%;
+}
+
+.overflow-scroll {
+  overflow: scroll;
+}
+
+.red {
+  color: red !important;
+}
+
+.orange {
+  color: #ffc100;
+}
+
+.green {
+  color: green;
+}
+
+.color-black {
+  color: #000 !important;
 }
 
 .container .main {
@@ -11190,6 +11198,10 @@ a.text-dark:focus {
 
 body {
   background-color: #f2f5f8 !important;
+}
+
+.auto-card {
+  min-height: auto !important;
 }
 
 .card {
@@ -11220,5 +11232,56 @@ body {
 
 .card .category-type {
   margin: 0 5px;
+}
+
+.table-header {
+  padding: 10px 10px;
+  align-items: baseline;
+}
+
+.table-header span {
+  margin: 0 5px;
+}
+
+table thead tr {
+  border-bottom: 2px solid #dbdbdb;
+}
+
+table thead tr th {
+  border: 1px solid #dbdbdb;
+  border-width: 1px 1px 1px;
+}
+
+table thead tr th a {
+  text-decoration: none;
+  color: black;
+}
+
+.content table thead th {
+  border-width: 1px 1px 1px !important;
+}
+
+.float-btn {
+  background-color: #8aff8a;
+  padding: 15px;
+  border-radius: 50%;
+}
+
+.sidebar-button .button {
+  border: none;
+  border-radius: 50%;
+}
+
+form .form-header {
+  display: flex;
+  padding: 10px;
+}
+
+form .form-header .subtitle {
+  margin-left: 5px;
+}
+
+form .form-body .field {
+  margin-right: 10px;
 }
 

@@ -30,6 +30,8 @@
 
 <script>
 import { bus } from '../app';
+import { gsap } from 'gsap';
+
 export default {
   data() {
     return {
@@ -48,6 +50,15 @@ export default {
     bus.$on('openSidebar', data => {
       this.open = data;
     })
+  },
+  watch: {
+    open: function() {
+      if (this.open === true) {
+        gsap.to(".slide", { x: 200, duration: 0.5 })
+      } else {
+        gsap.to(".slide", { x: 0, duration: 0.5 })
+      }
+    }
   }
 };
 </script>

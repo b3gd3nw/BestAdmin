@@ -13,6 +13,10 @@ import Buefy from 'buefy';
 import VueRouter from 'vue-router';
 import routes from './routes';
 import 'buefy/dist/buefy.css';
+// import axios from 'axios';
+// import VueAxios from 'vue-axios';
+
+// Vue.use(VueAxios, axios);
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 // internal icons
@@ -58,6 +62,11 @@ Vue.component('navbar', require('./components/Navbar.vue').default);
 Vue.component('sidebar', require('./components/Sidebar.vue').default);
 Vue.component('flybutton', require('./components/FlyButton.vue').default);
 Vue.component('app', require('./components/App.vue').default);
+Vue.component('dashboard-table', require('./components/Dashboard_table.vue').default);
+Vue.component('animated-integer', require('./components/AnimatedNumber.vue').default);
+Vue.component('float-btn', require('./components/FloatButton.vue').default);
+Vue.component('mail-form', require('./components/SendMailForm.vue').default);
+Vue.component('employee-form', require('./components/AddEmployeeForm.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

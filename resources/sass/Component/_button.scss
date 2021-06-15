@@ -1,11 +1,6 @@
-.button {
-    .float-btn {
-        width: 100px; 
-        height: 100px;
-        display: block;
-        position: fixed;
-        right: 0;
-        top: 200px;
-        z-index: 99999;
+.sidebar-button {
+    .button {
+        border: none;
+        border-radius: 50%;
     }
 }

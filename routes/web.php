@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PagesController;
+use App\Models\Employee;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -19,6 +21,32 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::prefix('/api')->group(function (){
+    Auth::routes();
+
+    Route::get('dashboard', [PagesController::class, 'index']);
+    Route::post('addincome', [BankController::class, 'store_income'])->name('storeIncome');
+    Route::post('addconsumption', [BankController::class, 'store_consumption'])->name('storeConsumption');
+    Route::get('csrf', [BankController::class, 'getCsrf']);
+    Route::get('employee_data', [EmployeeController::class, 'index']);
+    Route::resource('category', CategoryController::class);
+    // Route::get( 'all_members', [MemberController::class, 'all_members']);
+    // Route::resource( 'members', MemberController::class);
+    // Route::get('countries', [CountryController::class, 'fetchAll'])->name('countries');
+
+    // Route::group(['middleware' => 'auth'], function () {
+    //     Route::middleware(['role:admin'])->prefix('admin_panel')->group(function () {
+    //         Route::get('/', [App\Http\Controllers\Admin\HomeController::class, 'index'])->name('homeAdmin');
+
+    //         Route::get( 'getphoto/{member}', [MembersController::class, 'getPhoto'])->name('getphoto');
+    //         Route::get('deletephoto/{member}', [MembersController::class, 'deletePhoto'])->name('delphoto');
+    //         Route::resource('member', MembersController::class);
+    //     });
+    // });
+
+
+});
 
 Route::get('/{any}', function (){
     Auth::routes();

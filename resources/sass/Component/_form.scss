@@ -1,0 +1,14 @@
+form {
+    .form-header {
+        display: flex;
+        padding: 10px;
+        .subtitle {
+            margin-left: 5px;
+        }
+    }
+    .form-body {
+        .field {
+            margin-right: 10px;
+        }
+    }
+}
