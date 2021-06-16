@@ -1,12 +1,15 @@
 <template>
     <div class="card auto-card">
+        <div class="card-header">
+            <b-icon icon="envelope-open" size="is-small"></b-icon>
+            <h1 class="subtitle">
+                Send form on email
+            </h1>
+        </div>
         <div class="container">
             <form action="">
                 <div class="form-header">
-                    <b-icon icon="envelope-open" size="is-small">></b-icon>
-                    <h1 class="subtitle">
-                        Send form on email
-                    </h1>
+                    <b-icon icon="envelope-open-text" size="is-large"></b-icon>
                 </div>
                 <div class="form-body">
                    <div class="wrapper">
@@ -19,7 +22,6 @@
                                             maxlength="30">
                                         </b-input>
                                 </b-field>
-                                <b-button type="is-link">Send</b-button>
                             </div>
                         </div>
                    </div>
@@ -29,6 +31,9 @@
                 </div>
                 
             </form>
+        </div>
+        <div class="card-footer">
+            <b-button type="is-link">Send</b-button>
         </div>
     </div>
 </template>

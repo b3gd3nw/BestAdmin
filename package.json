@@ -41,6 +41,7 @@
         "native-daterangepicker": "^0.0.12",
         "validate.js": "^0.13.1",
         "validator": "^13.5.2",
-        "vue-router": "^3.5.1"
+        "vue-router": "^3.5.1",
+        "vue-the-mask": "^0.11.1"
     }
 }

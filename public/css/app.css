@@ -11163,6 +11163,10 @@ a.text-dark:focus {
   overflow: scroll;
 }
 
+.bottom-line {
+  border-bottom: 1px solid gray;
+}
+
 .red {
   color: red !important;
 }
@@ -11202,12 +11206,31 @@ body {
 
 .auto-card {
   min-height: auto !important;
+  max-height: auto !important;
+}
+
+.employee-card {
+  width: 600px;
 }
 
 .card {
   border: none;
   min-height: 250px;
-  max-height: 250px;
+}
+
+.card .card-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.card .card-header .subtitle {
+  margin-left: 5px;
+}
+
+.card .card-footer {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .card .card-content .top-content {
@@ -11274,6 +11297,8 @@ table thead tr th a {
 
 form .form-header {
   display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
 }
 
@@ -11282,6 +11307,8 @@ form .form-header .subtitle {
 }
 
 form .form-body .field {
+  min-width: 400px;
   margin-right: 10px;
+  max-width: 85%;
 }
 

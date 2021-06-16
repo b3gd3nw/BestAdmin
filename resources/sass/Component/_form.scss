@@ -1,6 +1,8 @@
 form {
     .form-header {
         display: flex;
+        justify-content: center;
+        align-items: center;
         padding: 10px;
         .subtitle {
             margin-left: 5px;
@@ -8,7 +10,9 @@ form {
     }
     .form-body {
         .field {
+            min-width: 400px;
             margin-right: 10px;
+            max-width: 85%;
         }
     }
 }

@@ -31,6 +31,8 @@ Route::prefix('/api')->group(function (){
     Route::get('csrf', [BankController::class, 'getCsrf']);
     Route::get('employee_data', [EmployeeController::class, 'index']);
     Route::resource('category', CategoryController::class);
+    Route::resource('employee', EmployeeController::class);
+    Route::get('countries', [CountryController::class, 'fetchAll'])->name('countries');
     // Route::get( 'all_members', [MemberController::class, 'all_members']);
     // Route::resource( 'members', MemberController::class);
     // Route::get('countries', [CountryController::class, 'fetchAll'])->name('countries');

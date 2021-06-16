@@ -11959,6 +11959,10 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vue_the_mask__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-the-mask */ "./node_modules/vue-the-mask/dist/vue-the-mask.js");
+/* harmony import */ var vue_the_mask__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_the_mask__WEBPACK_IMPORTED_MODULE_1__);
 //
 //
 //
@@ -11993,7 +11997,117 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    TheMask: vue_the_mask__WEBPACK_IMPORTED_MODULE_1__["TheMask"]
+  },
+  data: function data() {
+    return {
+      formData: null,
+      labelPosition: 'on-border',
+      firstname: '',
+      lastname: '',
+      selected: new Date(),
+      phone: '',
+      email: '',
+      position: '',
+      salary: '',
+      skills: [],
+      countries: []
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/countries").then(function (response) {
+      _this.countries = response.data;
+    });
+  },
+  methods: {
+    sendData: function sendData() {
+      var formData = new FormData(document.querySelector("#form"));
+      console.log(this.skills); // Axios.post("/api/employee", formData)
+      //     .then(response => {
+      //     })
+    }
+  }
+});
 
 /***/ }),
 
@@ -12302,6 +12416,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var gsap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! gsap */ "./node_modules/gsap/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 //
 //
 //
@@ -12347,50 +12463,77 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       email_form_open: false,
-      employee_form_open: false
+      employee_form_open: false,
+      table_data: []
     };
   },
-  watch: {
-    email_form_open: function email_form_open() {
-      this.email_form_open = this.email_form_open ? false : true;
-    },
-    employee_form_open: function employee_form_open() {
-      this.employee_form_open ? false : true;
-    }
+  mounted: function mounted() {
+    var self = this;
+    axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/employee_data').then(function (response) {
+      self.table_data = response.data;
+    });
   },
   methods: {
     goDown: function goDown(type) {
       if (type === "email") {
-        this.animate(this.email_form_open, ".email-form");
+        if (this.employee_form_open) {
+          this.closeForm(".employee-form");
+          this.employee_form_open = false;
+          this.openForm(".email-form", 1);
+          this.email_form_open = true;
+        } else if (this.email_form_open) {
+          this.closeForm(".email-form");
+          this.email_form_open = false;
+        } else {
+          this.openForm(".email-form");
+          this.email_form_open = true;
+        }
       } else {
-        this.animate(this.employee_form_open, ".employee-form");
+        if (this.email_form_open) {
+          this.closeForm(".email-form");
+          this.email_form_open = false;
+          this.openForm(".employee-form", 1, 525);
+          this.employee_form_open = true;
+        } else if (this.employee_form_open) {
+          this.closeForm(".employee-form");
+          this.employee_form_open = false;
+        } else {
+          this.openForm(".employee-form", 0, 525);
+          this.employee_form_open = true;
+        }
       }
     },
-    animate: function animate(target, selector) {
-      if (target === false) {
-        gsap__WEBPACK_IMPORTED_MODULE_0__["gsap"].to(".section-table", {
-          y: 200,
-          duration: 0.5
-        });
-        gsap__WEBPACK_IMPORTED_MODULE_0__["gsap"].to(selector, {
-          "display": "flex",
-          "position": "absolute",
-          duration: 1
-        });
-      } else {
-        gsap__WEBPACK_IMPORTED_MODULE_0__["gsap"].to(".section-table", {
-          y: 0,
-          duration: 0.5
-        });
-        gsap__WEBPACK_IMPORTED_MODULE_0__["gsap"].to(selector, {
-          "display": "none",
-          duration: 1
-        });
-      }
+    openForm: function openForm(selector) {
+      var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      var y = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 300;
+      gsap__WEBPACK_IMPORTED_MODULE_0__["gsap"].to(".section-table", {
+        y: y,
+        duration: 0.5,
+        delay: delay
+      });
+      gsap__WEBPACK_IMPORTED_MODULE_0__["gsap"].to(selector, {
+        "display": "flex",
+        "position": "absolute",
+        duration: 0.1,
+        delay: delay,
+        opacity: "1"
+      });
+    },
+    closeForm: function closeForm(selector) {
+      gsap__WEBPACK_IMPORTED_MODULE_0__["gsap"].to(".section-table", {
+        y: 0,
+        duration: 0.5
+      });
+      gsap__WEBPACK_IMPORTED_MODULE_0__["gsap"].to(selector, {
+        "display": "none",
+        duration: 1,
+        opacity: "0"
+      });
     }
   }
 });
@@ -12620,6 +12763,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -72272,22 +72420,25 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "card auto-card" }, [
+    _c(
+      "div",
+      { staticClass: "card-header" },
+      [
+        _c("b-icon", { attrs: { icon: "user-friends", size: "is-small" } }),
+        _vm._v(" "),
+        _c("h1", { staticClass: "subtitle" }, [
+          _vm._v("\n            Add new employee\n        ")
+        ])
+      ],
+      1
+    ),
+    _vm._v(" "),
     _c("div", { staticClass: "container" }, [
-      _c("form", { attrs: { action: "" } }, [
+      _c("form", { attrs: { action: "", id: "form" } }, [
         _c(
           "div",
           { staticClass: "form-header" },
-          [
-            _c(
-              "b-icon",
-              { attrs: { icon: "user-friends", size: "is-small" } },
-              [_vm._v(">")]
-            ),
-            _vm._v(" "),
-            _c("h1", { staticClass: "subtitle" }, [
-              _vm._v("\n                    Add new employee\n                ")
-            ])
-          ],
+          [_c("b-icon", { attrs: { icon: "user-plus", size: "is-large" } })],
           1
         ),
         _vm._v(" "),
@@ -72296,37 +72447,297 @@ var render = function() {
             _c("div", { staticClass: "columns" }, [
               _c(
                 "div",
-                { staticClass: "column is-flex is-align-items-center" },
+                {
+                  staticClass:
+                    "column is-flex is-align-items-center is-flex-direction-column"
+                },
+                [
+                  _c(
+                    "b-field",
+                    {
+                      attrs: {
+                        label: "First Name",
+                        "label-position": _vm.labelPosition
+                      }
+                    },
+                    [
+                      _c("b-input", {
+                        attrs: { name: "firstname", maxlength: "30" },
+                        model: {
+                          value: _vm.firstname,
+                          callback: function($$v) {
+                            _vm.firstname = $$v
+                          },
+                          expression: "firstname"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-field",
+                    {
+                      attrs: {
+                        label: "Last Name",
+                        "label-position": _vm.labelPosition
+                      }
+                    },
+                    [
+                      _c("b-input", {
+                        attrs: { name: "lastname", maxlength: "30" },
+                        model: {
+                          value: _vm.lastname,
+                          callback: function($$v) {
+                            _vm.lastname = $$v
+                          },
+                          expression: "lastname"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-field",
+                    {
+                      attrs: {
+                        label: "Select a birthdate",
+                        "label-position": _vm.labelPosition
+                      }
+                    },
+                    [
+                      _c("b-datepicker", {
+                        attrs: {
+                          name: "birthdate",
+                          placeholder: "Click to select...",
+                          icon: "calendar-alt",
+                          "trap-focus": ""
+                        },
+                        model: {
+                          value: _vm.selected,
+                          callback: function($$v) {
+                            _vm.selected = $$v
+                          },
+                          expression: "selected"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-field",
+                    {
+                      attrs: {
+                        label: "Select a country",
+                        "label-position": _vm.labelPosition
+                      }
+                    },
+                    [
+                      _c(
+                        "b-select",
+                        {
+                          attrs: {
+                            name: "countryId",
+                            placeholder: "Country",
+                            icon: "globe",
+                            "icon-pack": "fas",
+                            expanded: ""
+                          }
+                        },
+                        _vm._l(_vm.countries, function(country) {
+                          return _c(
+                            "option",
+                            {
+                              key: country["id"],
+                              domProps: { value: country["id"] }
+                            },
+                            [
+                              _vm._v(
+                                "\n                                        " +
+                                  _vm._s(country["name"]) +
+                                  "\n                                    "
+                              )
+                            ]
+                          )
+                        }),
+                        0
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-field",
+                    {
+                      attrs: {
+                        label: "Phone",
+                        "label-position": _vm.labelPosition
+                      }
+                    },
+                    [
+                      _c("b-input", {
+                        directives: [
+                          {
+                            name: "mask",
+                            rawName: "v-mask",
+                            value: "+##############",
+                            expression: "'+##############'"
+                          }
+                        ],
+                        attrs: { name: "phone", maxlength: "30" },
+                        model: {
+                          value: _vm.phone,
+                          callback: function($$v) {
+                            _vm.phone = $$v
+                          },
+                          expression: "phone"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "column" },
                 [
                   _c(
                     "b-field",
                     {
                       attrs: {
                         label: "Email",
-                        type: "is-danger",
-                        message: "This email is invalid"
+                        "label-position": _vm.labelPosition
                       }
                     },
                     [
                       _c("b-input", {
-                        attrs: { type: "email", maxlength: "30" }
+                        attrs: {
+                          name: "email",
+                          type: "email",
+                          maxlength: "30"
+                        },
+                        model: {
+                          value: _vm.email,
+                          callback: function($$v) {
+                            _vm.email = $$v
+                          },
+                          expression: "email"
+                        }
                       })
                     ],
                     1
                   ),
                   _vm._v(" "),
-                  _c("b-button", { attrs: { type: "is-link" } }, [
-                    _vm._v("Send")
-                  ])
+                  _c(
+                    "b-field",
+                    {
+                      attrs: {
+                        label: "Position",
+                        "label-position": _vm.labelPosition
+                      }
+                    },
+                    [
+                      _c("b-input", {
+                        attrs: { name: "position", maxlength: "30" },
+                        model: {
+                          value: _vm.position,
+                          callback: function($$v) {
+                            _vm.position = $$v
+                          },
+                          expression: "position"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-field",
+                    {
+                      attrs: {
+                        label: "Salary",
+                        "label-position": _vm.labelPosition
+                      }
+                    },
+                    [
+                      _c("b-input", {
+                        attrs: { name: "salary", maxlength: "30" },
+                        model: {
+                          value: _vm.salary,
+                          callback: function($$v) {
+                            _vm.salary = $$v
+                          },
+                          expression: "salary"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-field",
+                    {
+                      attrs: {
+                        label: "Add some tags",
+                        "label-position": _vm.labelPosition
+                      }
+                    },
+                    [
+                      _c("b-taginput", {
+                        attrs: {
+                          name: "skills",
+                          ellipsis: "",
+                          icon: "tag",
+                          placeholder: "Add a tag",
+                          "aria-close-label": "Delete this tag"
+                        },
+                        model: {
+                          value: _vm.skills,
+                          callback: function($$v) {
+                            _vm.skills = $$v
+                          },
+                          expression: "skills"
+                        }
+                      })
+                    ],
+                    1
+                  )
                 ],
                 1
               )
             ])
           ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-footer" })
+        ])
       ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "card-footer" }, [
+      _c(
+        "div",
+        { staticClass: "wrapper" },
+        [
+          _c(
+            "b-button",
+            {
+              attrs: { type: "is-link" },
+              on: {
+                click: function($event) {
+                  return _vm.sendData()
+                }
+              }
+            },
+            [_vm._v("Submit")]
+          ),
+          _vm._v(" "),
+          _c("b-button", [_vm._v("Cancel")])
+        ],
+        1
+      )
     ])
   ])
 }
@@ -72729,7 +73140,7 @@ var render = function() {
     _c("div", { staticClass: "columns" }, [
       _c(
         "div",
-        { staticClass: "column" },
+        { staticClass: "column bottom-line" },
         [
           _c(
             "b-button",
@@ -72765,10 +73176,7 @@ var render = function() {
     _vm._v(" "),
     _c(
       "div",
-      {
-        staticClass: "columns email-form",
-        staticStyle: { display: "none", "z-index": "0" }
-      },
+      { staticClass: "columns email-form", staticStyle: { display: "none" } },
       [_c("div", { staticClass: "column" }, [_c("mail-form")], 1)]
     ),
     _vm._v(" "),
@@ -72776,7 +73184,7 @@ var render = function() {
       "div",
       {
         staticClass: "columns employee-form",
-        staticStyle: { display: "none", "z-index": "0" }
+        staticStyle: { display: "none" }
       },
       [_c("div", { staticClass: "column" }, [_c("employee-form")], 1)]
     ),
@@ -73142,23 +73550,28 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "card auto-card" }, [
+    _c(
+      "div",
+      { staticClass: "card-header" },
+      [
+        _c("b-icon", { attrs: { icon: "envelope-open", size: "is-small" } }),
+        _vm._v(" "),
+        _c("h1", { staticClass: "subtitle" }, [
+          _vm._v("\n            Send form on email\n        ")
+        ])
+      ],
+      1
+    ),
+    _vm._v(" "),
     _c("div", { staticClass: "container" }, [
       _c("form", { attrs: { action: "" } }, [
         _c(
           "div",
           { staticClass: "form-header" },
           [
-            _c(
-              "b-icon",
-              { attrs: { icon: "envelope-open", size: "is-small" } },
-              [_vm._v(">")]
-            ),
-            _vm._v(" "),
-            _c("h1", { staticClass: "subtitle" }, [
-              _vm._v(
-                "\n                    Send form on email\n                "
-              )
-            ])
+            _c("b-icon", {
+              attrs: { icon: "envelope-open-text", size: "is-large" }
+            })
           ],
           1
         ),
@@ -73185,11 +73598,7 @@ var render = function() {
                       })
                     ],
                     1
-                  ),
-                  _vm._v(" "),
-                  _c("b-button", { attrs: { type: "is-link" } }, [
-                    _vm._v("Send")
-                  ])
+                  )
                 ],
                 1
               )
@@ -73199,7 +73608,14 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "form-footer" })
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "card-footer" },
+      [_c("b-button", { attrs: { type: "is-link" } }, [_vm._v("Send")])],
+      1
+    )
   ])
 }
 var staticRenderFns = []
@@ -76584,6 +77000,17 @@ if (inBrowser && window.Vue) {
 
 /* harmony default export */ __webpack_exports__["default"] = (VueRouter);
 
+
+/***/ }),
+
+/***/ "./node_modules/vue-the-mask/dist/vue-the-mask.js":
+/*!********************************************************!*\
+  !*** ./node_modules/vue-the-mask/dist/vue-the-mask.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function(e,t){ true?module.exports=t():undefined})(this,function(){return function(e){function t(r){if(n[r])return n[r].exports;var a=n[r]={i:r,l:!1,exports:{}};return e[r].call(a.exports,a,a.exports,t),a.l=!0,a.exports}var n={};return t.m=e,t.c=n,t.i=function(e){return e},t.d=function(e,n,r){t.o(e,n)||Object.defineProperty(e,n,{configurable:!1,enumerable:!0,get:r})},t.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(n,"a",n),n},t.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},t.p=".",t(t.s=10)}([function(e,t){e.exports={"#":{pattern:/\d/},X:{pattern:/[0-9a-zA-Z]/},S:{pattern:/[a-zA-Z]/},A:{pattern:/[a-zA-Z]/,transform:function(e){return e.toLocaleUpperCase()}},a:{pattern:/[a-zA-Z]/,transform:function(e){return e.toLocaleLowerCase()}},"!":{escape:!0}}},function(e,t,n){"use strict";function r(e){var t=document.createEvent("Event");return t.initEvent(e,!0,!0),t}var a=n(2),o=n(0),i=n.n(o);t.a=function(e,t){var o=t.value;if((Array.isArray(o)||"string"==typeof o)&&(o={mask:o,tokens:i.a}),"INPUT"!==e.tagName.toLocaleUpperCase()){var u=e.getElementsByTagName("input");if(1!==u.length)throw new Error("v-mask directive requires 1 input, found "+u.length);e=u[0]}e.oninput=function(t){if(t.isTrusted){var i=e.selectionEnd,u=e.value[i-1];for(e.value=n.i(a.a)(e.value,o.mask,!0,o.tokens);i<e.value.length&&e.value.charAt(i-1)!==u;)i++;e===document.activeElement&&(e.setSelectionRange(i,i),setTimeout(function(){e.setSelectionRange(i,i)},0)),e.dispatchEvent(r("input"))}};var s=n.i(a.a)(e.value,o.mask,!0,o.tokens);s!==e.value&&(e.value=s,e.dispatchEvent(r("input")))}},function(e,t,n){"use strict";var r=n(6),a=n(5);t.a=function(e,t){var o=!(arguments.length>2&&void 0!==arguments[2])||arguments[2],i=arguments[3];return Array.isArray(t)?n.i(a.a)(r.a,t,i)(e,t,o,i):n.i(r.a)(e,t,o,i)}},function(e,t,n){"use strict";function r(e){e.component(s.a.name,s.a),e.directive("mask",i.a)}Object.defineProperty(t,"__esModule",{value:!0});var a=n(0),o=n.n(a),i=n(1),u=n(7),s=n.n(u);n.d(t,"TheMask",function(){return s.a}),n.d(t,"mask",function(){return i.a}),n.d(t,"tokens",function(){return o.a}),n.d(t,"version",function(){return c});var c="0.11.1";t.default=r,"undefined"!=typeof window&&window.Vue&&window.Vue.use(r)},function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r=n(1),a=n(0),o=n.n(a),i=n(2);t.default={name:"TheMask",props:{value:[String,Number],mask:{type:[String,Array],required:!0},masked:{type:Boolean,default:!1},tokens:{type:Object,default:function(){return o.a}}},directives:{mask:r.a},data:function(){return{lastValue:null,display:this.value}},watch:{value:function(e){e!==this.lastValue&&(this.display=e)},masked:function(){this.refresh(this.display)}},computed:{config:function(){return{mask:this.mask,tokens:this.tokens,masked:this.masked}}},methods:{onInput:function(e){e.isTrusted||this.refresh(e.target.value)},refresh:function(e){this.display=e;var e=n.i(i.a)(e,this.mask,this.masked,this.tokens);e!==this.lastValue&&(this.lastValue=e,this.$emit("input",e))}}}},function(e,t,n){"use strict";function r(e,t,n){return t=t.sort(function(e,t){return e.length-t.length}),function(r,a){for(var o=!(arguments.length>2&&void 0!==arguments[2])||arguments[2],i=0;i<t.length;){var u=t[i];i++;var s=t[i];if(!(s&&e(r,s,!0,n).length>u.length))return e(r,u,o,n)}return""}}t.a=r},function(e,t,n){"use strict";function r(e,t){var n=!(arguments.length>2&&void 0!==arguments[2])||arguments[2],r=arguments[3];e=e||"",t=t||"";for(var a=0,o=0,i="";a<t.length&&o<e.length;){var u=t[a],s=r[u],c=e[o];s&&!s.escape?(s.pattern.test(c)&&(i+=s.transform?s.transform(c):c,a++),o++):(s&&s.escape&&(a++,u=t[a]),n&&(i+=u),c===u&&o++,a++)}for(var f="";a<t.length&&n;){var u=t[a];if(r[u]){f="";break}f+=u,a++}return i+f}t.a=r},function(e,t,n){var r=n(8)(n(4),n(9),null,null);e.exports=r.exports},function(e,t){e.exports=function(e,t,n,r){var a,o=e=e||{},i=typeof e.default;"object"!==i&&"function"!==i||(a=e,o=e.default);var u="function"==typeof o?o.options:o;if(t&&(u.render=t.render,u.staticRenderFns=t.staticRenderFns),n&&(u._scopeId=n),r){var s=u.computed||(u.computed={});Object.keys(r).forEach(function(e){var t=r[e];s[e]=function(){return t}})}return{esModule:a,exports:o,options:u}}},function(e,t){e.exports={render:function(){var e=this,t=e.$createElement;return(e._self._c||t)("input",{directives:[{name:"mask",rawName:"v-mask",value:e.config,expression:"config"}],attrs:{type:"text"},domProps:{value:e.display},on:{input:e.onInput}})},staticRenderFns:[]}},function(e,t,n){e.exports=n(3)}])});
 
 /***/ }),
 
