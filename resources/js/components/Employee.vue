@@ -88,30 +88,31 @@
                 });
             },
             goDown(type) {
+                console.log(this.employee_form_open);
                 if (type === "email") {
                     if (this.employee_form_open) {
-                        this.closeForm(".employee-form")
+                        this.closeForm(".employee-form");
                         this.employee_form_open = false;
-                        this.openForm(".email-form", 1)
+                        this.openForm(".email-form", 1);
                         this.email_form_open = true;
                     } else if (this.email_form_open) {
-                        this.closeForm(".email-form")
+                        this.closeForm(".email-form");
                         this.email_form_open = false;
                     } else {
-                        this.openForm(".email-form")
+                        this.openForm(".email-form");
                         this.email_form_open = true;
                     }
                 } else {
                     if (this.email_form_open) {
-                        this.closeForm(".email-form")
+                        this.closeForm(".email-form");
                         this.email_form_open = false;
-                        this.openForm(".employee-form", 1, 600)
+                        this.openForm(".employee-form", 1, 600);
                         this.employee_form_open = true;
                     } else if (this.employee_form_open) {
-                        this.closeForm(".employee-form")
+                        this.closeForm(".employee-form");
                         this.employee_form_open = false;
                     } else {
-                        this.openForm(".employee-form", 0, 600)
+                        this.openForm(".employee-form", 0, 600);
                         this.employee_form_open = true;
                     }
                 }

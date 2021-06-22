@@ -47,7 +47,7 @@
                                 </ValidationProvider>
                                 <ValidationProvider 
                                     rules="required" 
-                                    name="birthdate" 
+                                    name="birthdate"
                                     v-slot="{ errors }">
                                     <b-field label="Select a birthdate" :label-position="labelPosition"
                                         :type="{ 'is-danger': errors[0] }"
@@ -57,6 +57,7 @@
                                             v-model="selected"
                                             placeholder="Click to select..."
                                             icon="calendar-alt"
+                                            :max-date="new Date()"
                                             trap-focus>
                                         </b-datepicker>
                                     </b-field>
@@ -73,6 +74,7 @@
                                             placeholder="Country"
                                             icon="globe"
                                             icon-pack="fas"
+                                            v-model="country"
                                             expanded>
                                             <option :value="country['id']" v-for="country in countries" :key="country['id']">
                                                 {{ country['name'] }}
@@ -81,7 +83,7 @@
                                     </b-field>
                                 </ValidationProvider>
                                 <ValidationProvider 
-                                    rules="required" 
+                                    rules="required|fullnumber" 
                                     name="phone" 
                                     v-slot="{ errors }">
                                     <b-field label="Phone" :label-position="labelPosition"
@@ -98,6 +100,7 @@
                             </div>
                             <div class="column is-flex is-align-items-center is-flex-direction-column">
                                 <ValidationProvider 
+                                    ref="email"
                                     rules="required|email" 
                                     name="email" 
                                     v-slot="{ errors }">
@@ -143,7 +146,7 @@
                                     </b-field>
                                 </ValidationProvider>
                                 <ValidationProvider 
-                                    rules="required" 
+                                    rules="required|tags" 
                                     name="skills" 
                                     v-slot="{ errors }">
                                     <b-field label="Add some tags" :label-position="labelPosition"
@@ -154,7 +157,9 @@
                                             v-model="skills"
                                             ellipsis
                                             icon="tag"
+                                            maxtags="10"
                                             placeholder="Add a tag"
+                                            :before-adding="beforeAdding"
                                             aria-close-label="Delete this tag">
                                         </b-taginput>
                                     </b-field>
@@ -195,14 +200,16 @@ export default {
             labelPosition: 'on-border',
             firstname: '',
             lastname: '',
-            selected: new Date(),
+            selected: [],
+            country: '',
             phone: '',
             email: '',
             position: '',
             salary: '',
             skills: [],
             countries: [],
-            submitStatus: null
+            submitStatus: null,
+            unselectableDates: new Date()
         }
     },
     mounted() {
@@ -218,7 +225,11 @@ export default {
             formData.append('skills', this.skills);
             Axios.post("/api/employee", formData)
                 .then(response => {
-                    if(response.data.registered === true) {
+                    if(response.data.exists === true) {
+                        this.$refs.observer.setErrors({
+                            email: ['This email is already taken']
+                        })
+                    } else {
                         this.$buefy.toast.open({
                             message: `Employee succesfully registered!`,
                             type: 'is-success',
@@ -233,12 +244,16 @@ export default {
             this.lastname = "";
             this.phone = "";
             this.email = "";
+            this.country = "";
             this.position = "";
             this.salary = "";
             this.skills = [];
             requestAnimationFrame(() => {
                 this.$refs.observer.reset();
             });
+        },
+        beforeAdding(tag) {
+        	return tag.length < 10;
         },
     },
 }

@@ -77,7 +77,23 @@ const app = new Vue({
 
  // Validate 
 import { required, confirmed, length, email } from "vee-validate/dist/rules";
-import { extend } from "vee-validate";
+import { extend, localeChanged } from "vee-validate";
+import Axios from 'axios';
+  // const emails = [];
+
+  // function getMails() {
+  //   return new Promise(resolve => {
+  //     Axios.get('/api/emails')
+  //       .then(response => {
+  //         resolve(response.data.emails);
+  //     });
+  //   })
+  // }
+
+  // async function waitMails() {
+  //   emails = await getMails();
+  //   console.log(emails);
+  // }
 
 extend("required", {
   ...required,
@@ -113,5 +129,24 @@ extend('nochars', {
     },
     message: 'Letters only'
 });
+
+extend('fullnumber', {
+  validate(value, args) {
+    if(value.length > 12) {
+      return true;
+    }
+  },
+  message: 'Enter the full number'
+});
+
+extend('tags', {
+  validate(value, args) {
+    if(value.length > 2) {
+      return true;
+    }
+  },
+  message: 'At least three skills'
+});
+
 
 
