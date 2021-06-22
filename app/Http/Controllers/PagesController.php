@@ -99,9 +99,7 @@ class PagesController extends Controller
     {
         $bank = new Bank();
         $transaction = new Transaction();
-        // $transactions = [
 
-        // ];
         if ($request->by === "asc") {
             $consumptions = $bank->getCategoriesConsumByMonth($request->filterby)
                 ->sortBy($request->sort, $flag = $request->sort != 'category_name' ? SORT_NUMERIC : SORT_STRING)
@@ -117,13 +115,10 @@ class PagesController extends Controller
                 ->sortByDesc($request->sort)
                 ->paginate(6, null, 'transactions');
         }
-        // dd($consumptions);
         $categories = Category::all();
-        //insert getTransByMonth methood
-        // $transactions = $transaction->getTransactionsByMonth($request->filterby)->paginate(2);//orderBy('created_at')->sortable()->paginate(6);
-        // dd($transactions);
         $bank = Bank::firstOrFail();
         $bank_amount = $bank->amount;
+
         return view('Admin.accounting.general', compact('consumptions', 'bank_amount', 'transactions', 'categories'));
     }
 

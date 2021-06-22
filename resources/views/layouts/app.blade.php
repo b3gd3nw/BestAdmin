@@ -11,52 +11,12 @@
         <title>{{ config('app.name', 'Laravel') }} {{ app()->version() }}</title>
 
         <!-- Styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="{{ URL::asset('css/app.css') }}">
     </head>
     <body>
         <div id="app">
-            <nav class="navbar has-shadow">
-                <div class="container">
-                    <div class="navbar-brand">
-                        <a href="{{ url('/') }}" class="navbar-item">Best Admin</a>
-
-                        <div class="navbar-burger burger" data-target="navMenu">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-
-                    <div class="navbar-menu" id="navMenu">
-                        <div class="navbar-start"></div>
-
-                        <div class="navbar-end">
-                            @if (Auth::guest())
-                                <a class="navbar-item " href="{{ route('login') }}">Login</a>
-                            @else
-                                <div class="navbar-item has-dropdown is-hoverable">
-                                    <a class="navbar-link" href="#">{{ Auth::user()->name }}</a>
-
-                                    <div class="navbar-dropdown">
-                                        <a class="navbar-item" href="{{ route('logout') }}"
-                                           onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                                            Logout
-                                        </a>
-
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                              style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </nav>
-            @yield('content')
+            <app></app>
         </div>
-
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"></script>
     </body>
