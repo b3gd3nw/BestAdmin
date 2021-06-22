@@ -82,6 +82,10 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+        if (Employee::where('email', '=' , $request->get('email'))->first())
+        {
+            return response()->json(['exists' => true]);
+        }
         $employee = new Employee();
         $request->request->add(['status' => 'pending']);
         $skill = new Skill();
@@ -107,7 +111,7 @@ class EmployeeController extends Controller
             return redirect('/main')->withSuccess('Employee was successfully added!');
         } else {
             event(new MyEvent('New user ' . $request->firstname . ' ' . $request->lastname . ' was registered'));
-            return response()->json(['registered' => true]);
+            return response()->json(['exists' => false]);
         }
     }
 
@@ -310,7 +314,7 @@ class EmployeeController extends Controller
 
     public function uniqMail(Request $request)
     {
-        if (Employee::where('email', '=' , $request->input('email'))->first())
+        if (Employee::where('email', '=' , $request->get('value'))->first())
         {
             return response()->json(['exists' => true]);
         } else {

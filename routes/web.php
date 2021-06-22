@@ -36,6 +36,8 @@ Route::prefix('/api')->group(function (){
     Route::get('getemployes', [App\Http\Controllers\EmployeeController::class, 'getEmployes']);
     Route::get('countries', [CountryController::class, 'fetchAll'])->name('countries');
     Route::post('sendmail', [App\Http\Controllers\EmployeeController::class, 'sendMail'])->name('sendmail');
+    Route::post('email-check', [App\Http\Controllers\EmployeeController::class, 'uniqMail'])->name('check_mail');
+    Route::get('emails', [App\Http\Controllers\EmployeeController::class, 'getAllEmails']);
     // Route::get( 'all_members', [MemberController::class, 'all_members']);
     // Route::resource( 'members', MemberController::class);
     // Route::get('countries', [CountryController::class, 'fetchAll'])->name('countries');
