@@ -2,10 +2,10 @@
 <div class="wrapper">
     <div class="columns">
         <div class="column bottom-line">
-              <b-button type="is-link" @click="goDown('employee')">
+              <b-button type="is-link" :disabled="disabled" @click="goDown('employee')">
                   <b-icon icon="user-plus"></b-icon>
               </b-button>
-              <b-button type="is-link" @click="goDown('email')"> 
+              <b-button type="is-link" ref="email_btn" :disabled="disabled" @click="goDown('email')"> 
                   <b-icon icon="envelope-open-text"></b-icon>
               </b-button>
         </div>
@@ -53,7 +53,8 @@
             return {
                 email_form_open: false,
                 employee_form_open: false,
-                table_data : []
+                table_data : [],
+                disabled: false
             }
         },
         created() {
@@ -88,7 +89,10 @@
                 });
             },
             goDown(type) {
-                console.log(this.employee_form_open);
+                this.disabled = true;
+                setTimeout(()=> {
+                    this.disabled = false;
+                }, 500);
                 if (type === "email") {
                     if (this.employee_form_open) {
                         this.closeForm(".employee-form");
@@ -118,6 +122,7 @@
                 }
             },
             openForm(selector, delay = 0, y = 300) {
+                
                 gsap.to(".section-table", { y: y, duration: 0.5, delay: delay })
                 gsap.to(selector, {
                     "display": "flex",
