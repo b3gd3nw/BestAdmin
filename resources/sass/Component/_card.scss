@@ -1,7 +1,26 @@
+.auto-card {
+    min-height: auto !important;
+    max-height: auto !important;
+}
+.employee-card {
+    width: 600px;
+}
 .card {
+    .card-header {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        .subtitle {
+            margin-left: 5px;
+        }
+    }
+    .card-footer {
+        display: flex;
+        justify-content: flex-end;
+    }
+
     border: none;
     min-height: 250px;
-    max-height: 250px;
         .card-content {
             .top-content {
                 .title {

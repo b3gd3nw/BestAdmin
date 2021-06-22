@@ -13,7 +13,7 @@ class Bank extends Model
      * @param  string  $range
      * @return array
      */
-    public function getCategoriesConsumByMonth($range)
+    public function getCategoriesConsumByMonth($range = NULL)
     {
         if ($range) {
             $dates = explode('-', $range);

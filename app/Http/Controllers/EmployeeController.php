@@ -22,15 +22,28 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $countries = Country::all();
-        $data = [
-            'view' => View::make('modals.addemployee')
-                ->with('countries', $countries)
-                ->with('today', Carbon::now()->toDateString())
-                ->render()
-        ];
+        // $countries = Country::all();
+        // $data = [
+        //     'view' => View::make('modals.addemployee')
+        //         ->with('countries', $countries)
+        //         ->with('today', Carbon::now()->toDateString())
+        //         ->render()
+        // ];
+        $table_data = [];
+        $employes = Employee::where('status', 'pending')->get();
+        foreach ($employes as $employee) {
+            $skills = $employee->employeeskill;
+            $table_data [] = [
+                "user_id" => $employee->id,
+                "user_name" => $employee->firstname . ' ' . $employee->lastname,
+                "user_position" => $employee->position,
+                "user_email" => $employee->email,
+                // "user_skills" => $skills,
+                "user_status" => $employee->status
+            ];
+        }
 
-        return response()->json($data);
+        return response()->json($table_data);
     }
 
     /**

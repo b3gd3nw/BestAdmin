@@ -12,6 +12,7 @@
 
 // Helpers
 @import 'helpers-classes';
+@import 'color-classes';
 
 // Components
 @import './Component/container';
@@ -20,3 +21,7 @@
 @import './Component/card';
 @import './Component/custom_list';
 @import './Component/top-content';
+@import './Component/table';
+@import './Component/float-btn';
+@import './Component/button';
+@import './Component/form';

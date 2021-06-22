@@ -34,6 +34,6 @@ class Skill extends Model
 
     public function employeeskill()
     {
-        return $this->morphToMany(EmployeeSkill::class, 'taggable');
+        return $this->belongsToMany(Employee::class, 'employee_skills', 'employeeId', 'skillId');
     }
 }

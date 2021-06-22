@@ -1,14 +1,16 @@
 <template>
     <nav class="navbar">
-        <div class="sidebar-button is-flex is-align-items-center">
-            <b-button class="is-flex is-align-items-baseline" @click="openSidebar()">
-                <b-icon icon="bars"></b-icon>
-            </b-button>
+        <div class="is-flex slide">
+            <div class="sidebar-button is-flex is-align-items-center">
+                <b-button class="is-flex is-align-items-baseline" @click="openSidebar()">
+                    <b-icon icon="bars"></b-icon>
+                </b-button>
+                <!-- <float-button></float-button> -->
+            </div>
+            <div class="navbar-brand">
+                <h1 class="title">{{ $route.meta.title }}</h1>
+            </div>
         </div>
-        <div class="navbar-brand">
-            <h1 class="title">{{ $route.meta.title }}</h1>
-        </div>
-
         <div class="navbar-menu">
             <div class="navbar-end">
                 <b-dropdown
@@ -70,6 +72,8 @@
 
 <script>
 import { bus } from '../app';
+import FloatButton from './FloatButton.vue';
+import { gsap } from 'gsap';
 // import router from '../routes';
 
 // router.beforeEach((to, from, next) => {
@@ -78,6 +82,7 @@ import { bus } from '../app';
 
 // console.log(this.$route.name);
     export default {
+    components: { FloatButton },
         data() {
             return {
                 navigation: 'home'
@@ -86,8 +91,12 @@ import { bus } from '../app';
         methods: {
             openSidebar() {
                 bus.$emit('openSidebar', true);
+                
             }
-        },
+        },  
+        watch: {
+
+        }
     }
    
 </script>

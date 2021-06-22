@@ -57,16 +57,22 @@ class PagesController extends Controller
      */
     public function index()
     {
+        $category = new Category();
         $bank = Bank::firstOrFail();
         $skills = Skill::all();
         $employee_skills = EmployeeSkill::all();
         $employes = Employee::withTrashed()->sortable()->paginate(6);
+        $transactions = Transaction::whereMonth('created_at', Carbon::now()->month)->orderBy('created_at', 'desc')->with('category')->limit(2)->get();
+        $spent_budget = Transaction::where('type', '=', 'consumption')->sum('amount');
+        $categories = Category::limit(5)->get();
         $consumptions = Transaction::whereMonth('created_at', Carbon::now()->month)->where('type', 'consumption')->sum('amount');
         $budget = Category::whereMonth('created_at', Carbon::now()->month)->sum('budget');
-
+        $consumptions_category = $category->expenses_by_category();
         $bank_amount = $bank->amount;
 
-        return view('Admin.general.home', compact('consumptions', 'budget', 'bank_amount', 'employes', 'skills', 'employee_skills'));
+
+        return response()->json(compact('consumptions', 'consumptions_category', 'budget', 'bank_amount', 'employes', 'skills', 'employee_skills', 'transactions', 'categories', 'spent_budget'));
+        // return view('Admin.general.home', compact('consumptions', 'budget', 'bank_amount', 'employes', 'skills', 'employee_skills'));
     }
 
     /**
