@@ -7,6 +7,8 @@ use App\Models\Country;
 use App\Models\EmployeeSkill;
 use App\Models\Skill;
 use App\Models\Token;
+use App\Events\MyEvent;
+use App\Jobs\SendMailJob;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,13 +24,6 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        // $countries = Country::all();
-        // $data = [
-        //     'view' => View::make('modals.addemployee')
-        //         ->with('countries', $countries)
-        //         ->with('today', Carbon::now()->toDateString())
-        //         ->render()
-        // ];
         $table_data = [];
         $employes = Employee::where('status', 'pending')->get();
         foreach ($employes as $employee) {
@@ -39,6 +34,29 @@ class EmployeeController extends Controller
                 "user_position" => $employee->position,
                 "user_email" => $employee->email,
                 // "user_skills" => $skills,
+                "user_status" => $employee->status
+            ];
+        }
+
+        return response()->json($table_data);
+    }
+
+    public function getEmployes()
+    {
+        $table_data = [];
+        $employes = Employee::all();
+        foreach ($employes as $employee) {
+            $skills = $employee->employeeskill;
+            $table_data [] = [
+                "user_id" => $employee->id,
+                "user_name" => $employee->firstname . ' ' . $employee->lastname,
+                "user_birthdate" => $employee->birthdate,
+                "user_country" => $employee->country->name,
+                "user_phone" => $employee->phone,
+                "user_salary" => $employee->salary,
+                "user_position" => $employee->position,
+                "user_email" => $employee->email,
+                "user_skills" => $skills,
                 "user_status" => $employee->status
             ];
         }
@@ -64,14 +82,16 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
+        $employee = new Employee();
         $request->request->add(['status' => 'pending']);
         $skill = new Skill();
         $skills = $skill->skillFilter($request->skills);
 
+        $request->merge(['birthdate' => Carbon::create($request->birthdate)]);
         $request->merge(['salary' => str_replace(['$', '.', ','], ['','', '.'], $request->salary)]);
-        $employeeId = Employee::create(
-            $request->all()
-        )->id;
+        $employeeId = $employee->fill($request->all());
+        $employee->save();
+        $employeeId = $employeeId->id;
 
         foreach ($skills as $skillId) {
             EmployeeSkill::create(compact('employeeId', 'skillId'));
@@ -83,9 +103,11 @@ class EmployeeController extends Controller
             $token->delete();
             unset($_COOKIE['token']);
             setcookie('token', null, -1, '/');
+
             return redirect('/main')->withSuccess('Employee was successfully added!');
         } else {
-            return redirect()->back()->withSuccess('Employee was successfully added!');
+            event(new MyEvent('New user ' . $request->firstname . ' ' . $request->lastname . ' was registered'));
+            return response()->json(['registered' => true]);
         }
     }
 
@@ -259,36 +281,30 @@ class EmployeeController extends Controller
      *
      * @return mixed
      */
-    public function sendMail()
+    public function sendMail(Request $request)
     {
+
         // Check email in db
-        $email = DB::table('employees')->where('email', $_POST['email'])->first();
+        $email = DB::table('employees')->where('email', $request->email)->first();
         if ($email) {
-            return redirect()->back()->withError('Email already in use');
-        }
-
-        // Generate token
-        $token = sha1(uniqid($_POST['email'], true));
-        $email = $_POST['email'];
-
-        // Assemble url
-        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/register/?token=' . $token;
-
-        // Send email
-        try{
-            Mail::send(['text' => 'url'], ['url' => $url], function ($m) use ($url) {
-                $m->from('hello@app.com', 'Your Application');
-
-                $m->to($_POST['email'], '')->subject('Hello employee, fill in the form.');
-            });
-
-            Token::create([
-                'token' => $token,
-                'email' => $email
-            ]);
-            return redirect()->back()->withSuccess('Message sent successfully!');
-        } catch (\Exception $e) {
-            return redirect()->back()->withError($e->getMessage());
+            return response()
+                ->json([
+                    'email' => $request->email,
+                    'exist' => true
+                    ]);
+        } else {
+            // Generate token
+            $token = sha1(uniqid($request->email, true));
+            // Assemble url
+            $url = 'http://' . $_SERVER['HTTP_HOST'] . '/register/?token=' . $token;
+            // create an instance of our job    
+            $job = (new SendMailJob($request->email, $url, $token))->onConnection('redis')->onQueue('email_sendler');
+            dispatch($job); // add a job to the queue
+            return response()
+                ->json([
+                    'email' => $request->email,
+                    'exist' => false
+                ]);
         }
     }
 

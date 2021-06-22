@@ -11306,9 +11306,20 @@ form .form-header .subtitle {
   margin-left: 5px;
 }
 
-form .form-body .field {
-  min-width: 400px;
+form .form-body span .field {
+  padding-bottom: 25px;
   margin-right: 10px;
-  max-width: 85%;
+}
+
+form .form-body span .field .control {
+  max-width: 300px;
+}
+
+form .form-body span .field .pagination-list .field {
+  padding-bottom: 0;
+}
+
+.notices .toast {
+  flex-basis: 0;
 }
 

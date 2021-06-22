@@ -13,18 +13,14 @@ import Buefy from 'buefy';
 import VueRouter from 'vue-router';
 import routes from './routes';
 import 'buefy/dist/buefy.css';
-// import axios from 'axios';
-// import VueAxios from 'vue-axios';
-
-// Vue.use(VueAxios, axios);
-
 import { library } from '@fortawesome/fontawesome-svg-core';
-// internal icons
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import Notifications from 'vue-notification';
 
 export const bus = new Vue();
 
+Vue.use(Notifications);
 Vue.use(VueRouter);
 library.add(fas);
 Vue.component('vue-fontawesome', FontAwesomeIcon);
@@ -78,3 +74,44 @@ const app = new Vue({
     el: '#app',
     router: new VueRouter(routes)
 });
+
+ // Validate 
+import { required, confirmed, length, email } from "vee-validate/dist/rules";
+import { extend } from "vee-validate";
+
+extend("required", {
+  ...required,
+  message: "This field is required"
+});
+
+extend("email", {
+  ...email,
+  message: "This field must be a valid email"
+});
+
+extend("confirmed", {
+  ...confirmed,
+  message: "This field confirmation does not match"
+});
+
+extend("length", {
+  ...length,
+  message: "This field must have 2 options"
+});
+
+extend('nochars', {
+  validate(value, args) {
+    const prohibited = '`1234567890=!@#$%^&_+~*(){}[]|/<>?,^:;!"№'.split('');
+    let counter = 0;
+    prohibited.forEach(char => {
+      if(value.includes(char)) {
+        counter++;
+      } 
+    })
+    if (counter === 0)
+      return true;
+    },
+    message: 'Letters only'
+});
+
+

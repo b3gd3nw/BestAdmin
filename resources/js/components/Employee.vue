@@ -43,6 +43,7 @@
 </div>
 </template>
 <script>
+    import { bus } from '../app';
     import { gsap } from 'gsap';
     import Axios from 'axios';
 
@@ -55,18 +56,39 @@
                 table_data : []
             }
         },
+        created() {
+            let pusher = new Pusher('ca4d156cba33b147c5d9', {
+                cluster: 'eu'
+            });
+
+            let channel = pusher.subscribe('my-channel');
+            channel.bind('my-event', data => {
+                this.showNotify(data);
+            });
+
+            bus.$on('closeEmployeeForm', data => {
+                this.goDown('employee');
+            });
+            bus.$on('closeEmailForm', data => {
+                this.goDown('email');
+            })
+        },
         mounted() {
             const self = this
-            Axios.get('/api/employee_data')
+            Axios.get('/api/getemployes ')
             .then(response => {
                 self.table_data = response.data
             })
         },
         methods: {
-            
+            showNotify(data) {
+                this.$buefy.toast.open({
+                    message: data.message,
+                    type: 'is-success',
+                });
+            },
             goDown(type) {
                 if (type === "email") {
-                    
                     if (this.employee_form_open) {
                         this.closeForm(".employee-form")
                         this.employee_form_open = false;
@@ -83,13 +105,13 @@
                     if (this.email_form_open) {
                         this.closeForm(".email-form")
                         this.email_form_open = false;
-                        this.openForm(".employee-form", 1, 525)
+                        this.openForm(".employee-form", 1, 600)
                         this.employee_form_open = true;
                     } else if (this.employee_form_open) {
                         this.closeForm(".employee-form")
                         this.employee_form_open = false;
                     } else {
-                        this.openForm(".employee-form", 0, 525)
+                        this.openForm(".employee-form", 0, 600)
                         this.employee_form_open = true;
                     }
                 }

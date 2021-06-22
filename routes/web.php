@@ -1,8 +1,9 @@
 <?php
 
+use App\Events\MyEvent;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\CountryController;
-use App\Http\Controllers\EmployeeController;
+// use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PagesController;
 use App\Models\Employee;
 use Illuminate\Contracts\Session\Session;
@@ -29,10 +30,12 @@ Route::prefix('/api')->group(function (){
     Route::post('addincome', [BankController::class, 'store_income'])->name('storeIncome');
     Route::post('addconsumption', [BankController::class, 'store_consumption'])->name('storeConsumption');
     Route::get('csrf', [BankController::class, 'getCsrf']);
-    Route::get('employee_data', [EmployeeController::class, 'index']);
+    Route::get('employee_data', [App\Http\Controllers\EmployeeController::class, 'index']);
     Route::resource('category', CategoryController::class);
     Route::resource('employee', EmployeeController::class);
+    Route::get('getemployes', [App\Http\Controllers\EmployeeController::class, 'getEmployes']);
     Route::get('countries', [CountryController::class, 'fetchAll'])->name('countries');
+    Route::post('sendmail', [App\Http\Controllers\EmployeeController::class, 'sendMail'])->name('sendmail');
     // Route::get( 'all_members', [MemberController::class, 'all_members']);
     // Route::resource( 'members', MemberController::class);
     // Route::get('countries', [CountryController::class, 'fetchAll'])->name('countries');

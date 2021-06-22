@@ -9,10 +9,21 @@ form {
         }
     }
     .form-body {
-        .field {
-            min-width: 400px;
-            margin-right: 10px;
-            max-width: 85%;
+        span {
+            .field {
+                padding-bottom: 25px;
+                // max-width: 400px;
+                margin-right: 10px;
+                .control {
+                    max-width: 300px;
+                }
+                .pagination-list {
+                    .field {
+                        padding-bottom: 0;
+                    }
+                }
+            }
         }
+      
     }
 }
