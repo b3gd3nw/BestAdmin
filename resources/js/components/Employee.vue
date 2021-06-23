@@ -33,9 +33,8 @@
                         Employes
                     </h1>
                 </div>
-                <dashboard-table
-                    :table_data="table_data"
-                ></dashboard-table>
+                <employee-table
+                ></employee-table>
                 </div>
             </div>
         </div>
@@ -53,7 +52,6 @@
             return {
                 email_form_open: false,
                 employee_form_open: false,
-                table_data : [],
                 disabled: false
             }
         },
@@ -75,11 +73,7 @@
             })
         },
         mounted() {
-            const self = this
-            Axios.get('/api/getemployes ')
-            .then(response => {
-                self.table_data = response.data
-            })
+ 
         },
         methods: {
             showNotify(data) {

@@ -64,6 +64,30 @@ class EmployeeController extends Controller
         return response()->json($table_data);
     }
 
+    public function getAllEmployes($status = null)
+    {
+        $employes = $status ? Employee::withTrashed()->where('status', '=', $status)->get() : Employee::withTrashed()->get();
+       
+        $table_data = [];
+        foreach ($employes as $employee) {
+            $skills = $employee->employeeskill;
+            $table_data [] = [
+                "user_id" => $employee->id,
+                "user_name" => $employee->firstname . ' ' . $employee->lastname,
+                "user_birthdate" => $employee->birthdate,
+                "user_country" => $employee->country->name,
+                "user_phone" => $employee->phone,
+                "user_salary" => $employee->salary,
+                "user_position" => $employee->position,
+                "user_email" => $employee->email,
+                "user_skills" => $skills,
+                "user_status" => $employee->status
+            ];
+        }
+
+        return response()->json($table_data);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -240,7 +264,7 @@ class EmployeeController extends Controller
         $employee->status = 'inactive';
         $employee->save();
         $employee->delete();
-        return redirect()->back()->withSuccess('Delete Success!');
+        return response()->json(['success' => true]);
     }
 
     /**
