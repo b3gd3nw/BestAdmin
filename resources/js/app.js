@@ -59,6 +59,7 @@ Vue.component('sidebar', require('./components/Sidebar.vue').default);
 Vue.component('flybutton', require('./components/FlyButton.vue').default);
 Vue.component('app', require('./components/App.vue').default);
 Vue.component('dashboard-table', require('./components/Dashboard_table.vue').default);
+Vue.component('employee-table', require('./components/Employee_table.vue').default);
 Vue.component('animated-integer', require('./components/AnimatedNumber.vue').default);
 Vue.component('float-btn', require('./components/FloatButton.vue').default);
 Vue.component('mail-form', require('./components/SendMailForm.vue').default);
