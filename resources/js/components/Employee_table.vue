@@ -47,8 +47,15 @@
         </b-table-column>
 
         <b-table-column field="user_status" label="Status" sortable v-slot="props">
-            
-            {{ props.row.user_status }}
+            <template v-if="props.row.user_status === 'active'">
+                <p class="green">{{ props.row.user_status }}</p>
+            </template>
+            <template v-if="props.row.user_status === 'inactive'">
+                <p class="red">{{ props.row.user_status }}</p>
+            </template>
+            <template v-if="props.row.user_status === 'pending'">
+                <p class="orange">{{ props.row.user_status }}</p>
+            </template>
         </b-table-column>
 
         <b-table-column field="actions" label="Actions" cell-class="is-flex is-justify-content-space-around" v-slot="props">
