@@ -3,8 +3,11 @@
     <div class="card auto-card">
         <div class="card-header">
             <b-icon icon="user-friends" size="is-small"></b-icon>
-            <h1 class="subtitle">
-                Add new employee
+            <h1 class="subtitle" v-if="f_data">
+                Edit employee
+            </h1>
+            <h1 class="subtitle" v-else>
+                Add new employee 
             </h1>
         </div>
         <div class="container">
@@ -172,7 +175,8 @@
         </div>
         <div class="card-footer">
             <div class="wrapper">
-                <b-button type="is-link" @click="handleSubmit(sendData)">Submit</b-button>
+                <b-button v-if="f_data" type="is-link" @click="handleSubmit(updateData)">Update</b-button>
+                <b-button v-else type="is-link" @click="handleSubmit(sendData)">Submit</b-button>
                 <b-button @click="closeForm()">Cancel</b-button>
             </div>
         </div>
@@ -188,6 +192,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 
 export default {
+    props: ['f_data'],
     components: {
         TheMask,
         ValidationObserver,
@@ -209,7 +214,25 @@ export default {
             skills: [],
             countries: [],
             submitStatus: null,
-            unselectableDates: new Date()
+            unselectableDates: new Date(),
+            userId: ''
+
+        }
+    },
+    watch: {
+        f_data: function(f_data) {
+          if(f_data) {
+                this.firstname = f_data.user_firstname
+                this.lastname = f_data.user_lastname
+                this.selected = new Date(f_data.user_birthdate)
+                this.country = f_data.user_country
+                this.phone = f_data.user_phone
+                this.email = f_data.user_email
+                this.position = f_data.user_position
+                this.salary = f_data.user_salary
+                this.skills = f_data.user_skills
+                this.userId = f_data.user_id
+          }
         }
     },
     mounted() {
@@ -236,6 +259,18 @@ export default {
                         });
                         this.closeForm();
                     }
+            });
+        },
+        updateData() {
+            let formData = new FormData(this.$refs["form"]);
+            formData.append('phone', this.phone);
+            formData.append('skills', this.skills);
+            console.log(formData.sa);
+            Axios.put(`/api/employee/${this.userId}`, formData)
+                .then(response => {
+        
+                        this.closeForm();
+
             });
         },
         closeForm() {

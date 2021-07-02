@@ -53,7 +53,6 @@ Vue.use(Buefy, {
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('navbar', require('./components/Navbar.vue').default);
 Vue.component('sidebar', require('./components/Sidebar.vue').default);
 Vue.component('flybutton', require('./components/FlyButton.vue').default);

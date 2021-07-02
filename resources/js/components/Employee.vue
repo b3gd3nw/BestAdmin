@@ -2,7 +2,7 @@
 <div class="wrapper">
     <div class="columns">
         <div class="column bottom-line">
-              <b-button type="is-link" :disabled="disabled" @click="goDown('employee')">
+              <b-button type="is-link" :disabled="disabled" @click="goDown('employee'), clearForm()">
                   <b-icon icon="user-plus"></b-icon>
               </b-button>
               <b-button type="is-link" ref="email_btn" :disabled="disabled" @click="goDown('email')"> 
@@ -17,7 +17,7 @@
     </div>
      <div class="columns employee-form" style="display:none;">
         <div class="column">
-            <employee-form></employee-form>
+            <employee-form :f_data="f_data"></employee-form>
         </div>
     </div>
     <div class="columns section-table">
@@ -52,7 +52,8 @@
             return {
                 email_form_open: false,
                 employee_form_open: false,
-                disabled: false
+                f_data: '',
+                disabled: false,
             }
         },
         created() {
@@ -71,6 +72,9 @@
             bus.$on('closeEmailForm', data => {
                 this.goDown('email');
             })
+            bus.$on('getEmployeeData', data => {
+                this.getEmployeeData(data);
+            });
         },
         mounted() {
  
@@ -83,6 +87,7 @@
                 });
             },
             goDown(type) {
+                console.log(this.f_data);
                 this.disabled = true;
                 setTimeout(()=> {
                     this.disabled = false;
@@ -133,6 +138,16 @@
                     duration: 1,
                     opacity: "0"
                 })
+            },
+            getEmployeeData(id) {
+                Axios.get(`/api/employee/${id}/edit`)
+                    .then(response => {
+                       this.f_data = response.data[0];
+                       this.goDown('employee')
+                    });
+            },
+            clearForm() {
+                this.f_data = null;
             }
         }
 

@@ -172,17 +172,21 @@ class EmployeeController extends Controller
                 }
             }
         }
-        $countries = Country::all();
-        $data = [
-            'view' => View::make('modals.editemployee')
-                ->with('skills', $skills)
-                ->with('employee', $employee)
-                ->with('today', Carbon::now()->toDateString())
-                ->with('countries', $countries)
-                ->render()
+        $form_data [] = [
+            "user_id" => $employee->id,
+            "user_firstname" => $employee->firstname,
+            "user_lastname" => $employee->lastname,
+            "user_birthdate" => $employee->birthdate,
+            "user_country" => $employee->country->id,
+            "user_phone" => $employee->phone,
+            "user_salary" => $employee->salary,
+            "user_position" => $employee->position,
+            "user_email" => $employee->email,
+            "user_skills" => $skills,
+            "user_status" => $employee->status
         ];
 
-        return response()->json($data);
+        return response()->json($form_data);
     }
 
     /**
@@ -242,7 +246,9 @@ class EmployeeController extends Controller
                 }
             }
             $request->merge(['status' => mb_strtolower($request->status)]);
+            dd($request->salary);
             $request->merge(['salary' => str_replace(['$', '.', ','], ['', '', '.'], $request->salary)]);
+     
             $data = $request->except('_method');
             $employee->update($data);
 

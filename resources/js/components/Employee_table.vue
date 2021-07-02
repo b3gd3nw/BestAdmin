@@ -59,16 +59,17 @@
         </b-table-column>
 
         <b-table-column field="actions" label="Actions" cell-class="is-flex is-justify-content-space-around" v-slot="props">
-            <b-button type="is-warning"
-                icon-right="edit" />
+            <b-button @click="editUser(props.row.user_id)" type="is-warning"
+                icon-right="user-edit" />
             <b-button type="is-danger"
                 @click="deleteUser(props.row.user_id)"
-                icon-right="trash" />
+                icon-right="trash-alt" />
         </b-table-column>
     </b-table>
 </template>
 
 <script>
+import { bus } from '../app';
 import Axios from 'axios'
     export default {
         data() {
@@ -111,6 +112,9 @@ import Axios from 'axios'
                             });
                         }
                     })
+            },
+            editUser(id) {
+                bus.$emit('getEmployeeData', id);
             }
         }
     }
